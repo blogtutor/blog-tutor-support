@@ -6,12 +6,12 @@
  * Version: 	0.1
  * Author:      Blog Tutor
  * Author URI:  https://blogtutor.com
- * GitHub URI: 	blogtutor/CHANGE-TO-PUBLIC-GITHUB-REPO
+ * GitHub URI: 	blogtutor/blog-tutor-support
  * License: 	GPLv2 or later
  * Text Domain: blog-tutor
  * Domain Path: /languages/
  */
- 
+
 if ( ! defined( 'ABSPATH' ) ) {
   exit; // Exit if accessed directly.
 }

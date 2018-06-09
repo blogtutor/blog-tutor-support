@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Blog Tutor Support
  * Description: Adds the Blog Tutor support widget to your WordPress dashboard for easy access to our knowledge base and contact form.
- * Version: 	0.1.1
+ * Version: 	0.2.1
  * Author:      Blog Tutor
  * Author URI:  https://blogtutor.com
  * GitHub URI: 	blogtutor/blog-tutor-support
@@ -15,6 +15,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
   exit; // Exit if accessed directly.
 }
+
+// GitHub updater
+include( dirname( __FILE__ ) . '/github-updater.php' );
 
 if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
 
@@ -96,6 +99,3 @@ class Blog_Tutor_Support {
 add_action( 'plugins_loaded', array( 'Blog_Tutor_Support', 'get_instance' ) );
 
 endif;
-
-// GitHub updater
-include( dirname( __FILE__ ) . '/github-updater.php' );

@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Blog Tutor Support
  * Description: Adds the Blog Tutor support widget to your WordPress dashboard for easy access to our knowledge base and contact form.
- * Version: 	0.1
+ * Version: 	0.1.1
  * Author:      Blog Tutor
  * Author URI:  https://blogtutor.com
  * GitHub URI: 	blogtutor/blog-tutor-support
@@ -15,6 +15,30 @@
 if ( ! defined( 'ABSPATH' ) ) {
   exit; // Exit if accessed directly.
 }
+
+// add a link to the WP Toolbar
+function custom_toolbar_link( $wp_admin_bar ) {
+  $str = file_get_contents( $_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' );
+  $re = '/(.{32})\\\\\/(.{32})/';
+
+  // Get Cloudproxy API Keys
+  preg_match_all( $re, $str, $matches, PREG_SET_ORDER, 0 );
+  $API_KEY = $matches[0][1];
+  $API_SECRET = $matches[0][2];
+
+  $Cloudproxy_clear = "https://waf.sucuri.net/api?v2&k=" . $API_KEY . "&s=" . $API_SECRET . "&a=clear_cache";
+  $args = array(
+      'id' => 'btButton',
+      'title' => 'Clear Cloudproxy',
+      'href' => $Cloudproxy_clear,
+      'meta' => array(
+          'class' => 'btButton',
+          'title' => 'Easily Clear the Caches'
+          )
+  );
+  $wp_admin_bar->add_node( $args );
+}
+add_action( 'admin_bar_menu', 'custom_toolbar_link', 99 );
 
 // GitHub updater
 include( dirname( __FILE__ ) . '/github-updater.php' );

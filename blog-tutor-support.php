@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Blog Tutor Support
  * Description: Adds the Blog Tutor support widget to your WordPress dashboard for easy access to our knowledge base and contact form.
- * Version: 	0.2.1
+ * Version: 	0.3
  * Author:      Blog Tutor
  * Author URI:  https://blogtutor.com
  * GitHub URI: 	blogtutor/blog-tutor-support
@@ -58,7 +58,7 @@ class Blog_Tutor_Support {
    *
    * @var string
    */
-  const VERSION = '0.2.1';
+  const VERSION = '0.3';
 
   /**
    * Instance of this class.

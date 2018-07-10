@@ -16,6 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit; // Exit if accessed directly.
 }
 
+// GitHub updater
+include( dirname( __FILE__ ) . '/github-updater.php' );
+
 // add a link to the WP Toolbar
 function custom_toolbar_link( $wp_admin_bar ) {
   $str = file_get_contents( $_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' );
@@ -39,9 +42,6 @@ function custom_toolbar_link( $wp_admin_bar ) {
   $wp_admin_bar->add_node( $args );
 }
 add_action( 'admin_bar_menu', 'custom_toolbar_link', 99 );
-
-// GitHub updater
-include( dirname( __FILE__ ) . '/github-updater.php' );
 
 if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
 

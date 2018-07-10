@@ -21,7 +21,7 @@ if ( ! class_exists( 'GHU_Core' ) ) {
         function admin_init() {
             $now = strtotime( 'now' );
             $last_checked = (int) get_option( 'ghu_last_checked' );
-            $check_interval = apply_filters( 'ghu_check_interval', ( 60 * 60 * 12 ) );
+            $check_interval = apply_filters( 'ghu_check_interval', ( 60 * 60 * 4 ) );
             $this->update_data = (array) get_option( 'ghu_update_data' );
             $active = (array) get_option( 'active_plugins' );
 

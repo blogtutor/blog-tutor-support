@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 
 /**
@@ -226,4 +225,3 @@ class Blog_Tutor_Support {
 add_action( 'plugins_loaded', array( 'Blog_Tutor_Support', 'get_instance' ) );
 
 endif;
->>>>>>> 3274efdfe24044230be2702a5235e6fd7c3ec6c7

@@ -25,7 +25,7 @@ class Blog_Tutor_Support_Admin {
    */
   public function settings_menu() {
     $current_user = wp_get_current_user();
-    if ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false OR strpos( $current_user->user_email, '@nerdpres.com' ) !== false ) {
+    if ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false OR strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) {
       add_options_page(
         'Blog Tutor Support',
         'Blog Tutor Support',
@@ -165,7 +165,7 @@ class Blog_Tutor_Support_Admin {
 
     return $output;
   }
-  
+
 }
 
 new Blog_Tutor_Support_Admin;

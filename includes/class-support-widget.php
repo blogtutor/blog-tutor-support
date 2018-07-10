@@ -22,7 +22,8 @@ class Blog_Tutor_Support_Widget {
   $options = get_option( 'blog_tutor_support_settings', array() );
 
     // test mode check
-    if ( isset( $options['test_mode'] ) && ! current_user_can( 'manage_options' ) ) {
+    // if ( isset( $options['test_mode'] ) && ! current_user_can( 'manage_options' ) ) {
+    if ( ! current_user_can( 'manage_options' ) ) {
       return;
     }
 
@@ -31,7 +32,8 @@ class Blog_Tutor_Support_Widget {
 	  			  echo 'TEST TEST TEST';
     }
 
-    if ( is_user_logged_in() && isset( $options['identify_users'] ) ) {
+    // if ( is_user_logged_in() && isset( $options['identify_users'] ) ) {
+    if ( is_user_logged_in() ) {
       $ajw_current_user = wp_get_current_user();
     ?>
       <script type="text/javascript">
@@ -42,7 +44,7 @@ class Blog_Tutor_Support_Widget {
 					 username: '<?php echo $ajw_current_user->user_login; ?>',
 					 firstname: '<?php echo $ajw_current_user->user_firstname; ?>',
 					 lastname: '<?php echo $ajw_current_user->user_lastname; ?>',
-					 displayname: '<?php echo $ajw_current_user->display_name; ?>',					 
+					 displayname: '<?php echo $ajw_current_user->display_name; ?>',
 					 useremail: '<?php echo $ajw_current_user->user_email; ?>',
 					 site_url: '<?php echo site_url(); ?>',
 					 sitename: '<?php echo get_bloginfo( 'name' ); ?>',
@@ -51,8 +53,8 @@ class Blog_Tutor_Support_Widget {
 				 custom: {  // These are used to prefill the contact form
 					 customerId: 1234,
 					 userEmail: '<?php echo $ajw_current_user->user_email; ?>',
-					 name: '<?php echo $ajw_current_user->user_firstname . ' ' . $ajw_current_user->user_lastname; ?>' 			
-				}	
+					 name: '<?php echo $ajw_current_user->user_firstname . ' ' . $ajw_current_user->user_lastname; ?>'
+				}
          };
          window.supportHeroWidget.track( properties );
         }

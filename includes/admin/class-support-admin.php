@@ -57,18 +57,18 @@ class Blog_Tutor_Support_Admin {
       $option
     );
 
-    add_settings_field(
-      'test_mode',
-      __( 'Test mode', 'blog-tutor-support' ),
-      array( $this, 'checkbox_element_callback' ),
-      $option,
-      'options_section',
-      array(
-        'menu'  => $option,
-        'id'    => 'test_mode',
-        'label' => __( 'If checked show the widget to admins only.', 'blog-tutor-support' ),
-      )
-    );
+    // add_settings_field(
+    //   'test_mode',
+    //   __( 'Test mode', 'blog-tutor-support' ),
+    //   array( $this, 'checkbox_element_callback' ),
+    //   $option,
+    //   'options_section',
+    //   array(
+    //     'menu'  => $option,
+    //     'id'    => 'test_mode',
+    //     'label' => __( 'If checked show the widget to admins only.', 'blog-tutor-support' ),
+    //   )
+    // );
 
     add_settings_field(
       'embed_code',
@@ -83,18 +83,18 @@ class Blog_Tutor_Support_Admin {
       )
     );
 
-    add_settings_field(
-      'identify_users',
-      __( 'Identify Users', 'blog-tutor-support' ),
-      array( $this, 'checkbox_element_callback' ),
-      $option,
-      'options_section',
-      array(
-        'menu'  => $option,
-        'id'    => 'identify_users',
-        'label' => __( 'If checked Blog Tutor Support widget will identify the user ID, email and display name from logged users.', 'blog-tutor-support' ),
-      )
-    );
+    // add_settings_field(
+    //   'identify_users',
+    //   __( 'Identify Users', 'blog-tutor-support' ),
+    //   array( $this, 'checkbox_element_callback' ),
+    //   $option,
+    //   'options_section',
+    //   array(
+    //     'menu'  => $option,
+    //     'id'    => 'identify_users',
+    //     'label' => __( 'If checked Blog Tutor Support widget will identify the user ID, email and display name from logged users.', 'blog-tutor-support' ),
+    //   )
+    // );
 
     // Register settings.
     register_setting( $option, $option, array( $this, 'validate_options' ) );

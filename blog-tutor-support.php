@@ -19,27 +19,55 @@ if ( ! defined( 'ABSPATH' ) ) {
 // GitHub updater
 include( dirname( __FILE__ ) . '/github-updater.php' );
 
-// add a link to the WP Toolbar
+// Add a Clear Cloudproxy link to the Admin Bar
 function custom_toolbar_link( $wp_admin_bar ) {
-  $str = file_get_contents( $_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' );
-  $re = '/(.{32})\\\\\/(.{32})/';
 
-  // Get Cloudproxy API Keys
-  preg_match_all( $re, $str, $matches, PREG_SET_ORDER, 0 );
-  $API_KEY = $matches[0][1];
-  $API_SECRET = $matches[0][2];
+  if ( file_exists($_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' ) ) {
 
-  $Cloudproxy_clear = "https://waf.sucuri.net/api?v2&k=" . $API_KEY . "&s=" . $API_SECRET . "&a=clear_cache";
-  $args = array(
-      'id' => 'btButton',
-      'title' => 'Clear Cloudproxy',
-      'href' => $Cloudproxy_clear,
-      'meta' => array(
-          'class' => 'btButton',
-          'title' => 'Easily Clear the Caches'
-          )
-  );
-  $wp_admin_bar->add_node( $args );
+    // Get Cloudproxy API Keys
+    $str = file_get_contents( $_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' );
+    $re = '/(.{32})\\\\\/(.{32})/';
+
+    preg_match_all( $re, $str, $matches, PREG_SET_ORDER, 0 );
+    $API_KEY = $matches[0][1];
+    $API_SECRET = $matches[0][2];
+
+    if ( $API_KEY != '') {
+      // Build the Clear Cache link (Cloudproxy API v1) and add it to the admin bar
+      $Cloudproxy_clear = "https://waf.sucuri.net/api?&k=" . $API_KEY . "&s=" . $API_SECRET . "&a=clearcache";
+      $args = array(
+          'id' => 'btButton',
+          'title' => 'Clear Cloudproxy',
+          'href' => $Cloudproxy_clear,
+          'meta' => array(
+              'class' => 'btButton',
+              'target' => 'blank',
+              'title' => 'Clear the Cloudproxy cache'
+              )
+      );
+      $wp_admin_bar->add_node( $args );
+    } else {
+      $args = array(
+          'id' => 'btButton',
+          'title' => 'Cloudproxy API Key not set!',
+          'meta' => array(
+              'class' => 'btButton',
+              'title' => 'Your Cloudproxy API key is not configured in the Sucuri Plugin. Please contact us!'
+              )
+      );
+      $wp_admin_bar->add_node( $args );
+    }
+  } else {
+    $args = array(
+        'id' => 'btButton',
+        'title' => 'Sucuri Plugin Missing!',
+        'meta' => array(
+            'class' => 'btButton',
+            'title' => 'Your Sucuri Plugin is not configured. Please contact us!'
+            )
+    );
+    $wp_admin_bar->add_node( $args );
+  }
 }
 add_action( 'admin_bar_menu', 'custom_toolbar_link', 99 );
 

@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Blog Tutor Support
  * Description: Adds the Blog Tutor support widget to your WordPress dashboard for easy access to our knowledge base and contact form.
- * Version: 	0.3
+ * Version: 	0.3.1
  * Author:      Blog Tutor
  * Author URI:  https://blogtutor.com
  * GitHub URI: 	blogtutor/blog-tutor-support
@@ -19,9 +19,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 // GitHub updater
 include( dirname( __FILE__ ) . '/github-updater.php' );
 
-// Add a Clear Cloudproxy link to the Admin Bar
-function custom_toolbar_link( $wp_admin_bar ) {
+// Add Admin Bar Menu Items
+function bt_custom_toolbar_links( $wp_admin_bar ) {
 
+  // Add "Blog Tutor" parent menu Items
+  $args = array(
+  'id'      => 'blog-tutor-menu',
+  'title'   =>  'Blog Tutor',
+  'parent'  => false,
+  );
+  $wp_admin_bar->add_node( $args );
+
+  // Add a "Get Help" link to open the Support Hero widget
+  $args = array(
+      'id' => 'bt-get-help',
+      'title' => 'Get Help',
+      'href' => '#',
+      'parent'  => 'blog-tutor-menu',
+      'meta' => array(
+          'class' => 'btButton',
+          'title' => 'Click to open our knowledge base and contact form.',
+          'parent'  => 'blog-tutor-menu',
+          'onclick' => 'window.supportHeroWidget.show();'
+          )
+  );
+  $wp_admin_bar->add_node( $args );
+
+  // Add a Clear Cloudproxy link to the Admin Bar
   if ( file_exists($_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' ) ) {
 
     // Get Cloudproxy API Keys
@@ -36,20 +60,22 @@ function custom_toolbar_link( $wp_admin_bar ) {
       // Build the Clear Cache link (Cloudproxy API v1) and add it to the admin bar
       $Cloudproxy_clear = "https://waf.sucuri.net/api?&k=" . $API_KEY . "&s=" . $API_SECRET . "&a=clearcache";
       $args = array(
-          'id' => 'btButton',
-          'title' => 'Clear Cloudproxy',
+          'id' => 'bt-clear-cloudproxy',
+          'title' => 'Clear Cloudproxy Cache',
           'href' => $Cloudproxy_clear,
+          'parent'  => 'blog-tutor-menu',
           'meta' => array(
               'class' => 'btButton',
               'target' => 'blank',
-              'title' => 'Clear the Cloudproxy cache'
+              'title' => 'Clear the Cloudproxy cache',
+              'parent'  => 'blog-tutor-menu'
               )
       );
       $wp_admin_bar->add_node( $args );
     } else {
       $args = array(
-          'id' => 'btButton',
-          'title' => 'Cloudproxy API Key not set!',
+          'id' => 'bt-cloudproxy-api-not-set',
+          'title' => 'Cloudproxy API Key is not set!',
           'meta' => array(
               'class' => 'btButton',
               'title' => 'Your Cloudproxy API key is not configured in the Sucuri Plugin. Please contact us!'
@@ -59,8 +85,9 @@ function custom_toolbar_link( $wp_admin_bar ) {
     }
   } else {
     $args = array(
-        'id' => 'btButton',
-        'title' => 'Sucuri Plugin Missing!',
+        'id' => 'bt-sucuri-missing',
+        'title' => 'The Sucuri Plugin is missing!',
+        'parent'  => 'blog-tutor-menu',
         'meta' => array(
             'class' => 'btButton',
             'title' => 'Your Sucuri Plugin is not configured. Please contact us!'
@@ -69,7 +96,7 @@ function custom_toolbar_link( $wp_admin_bar ) {
     $wp_admin_bar->add_node( $args );
   }
 }
-add_action( 'admin_bar_menu', 'custom_toolbar_link', 99 );
+add_action( 'admin_bar_menu', 'bt_custom_toolbar_links', 99 );
 
 if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
 

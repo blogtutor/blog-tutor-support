@@ -41,7 +41,6 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
                   'class' => 'btButton',
                   'target' => 'blank',
                   'title' => 'Clear the Cloudproxy cache',
-                  'parent'  => 'blog-tutor-menu'
                   )
           );
           $wp_admin_bar->add_node( $args );
@@ -62,10 +61,11 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
         } else {
             $args = array(
               'id' => 'bt-cloudproxy-api-not-set',
-              'title' => 'Cloudproxy API Key is not set!',
+              'title' => 'Cloudproxy API Key is not set',
+              'parent'  => 'blog-tutor-menu',
               'meta' => array(
                   'class' => 'btButton',
-                  'title' => 'Your Cloudproxy API key is not configured in the Sucuri Plugin. Please contact us!'
+                  'title' => 'Your Cloudproxy API key is not set in the Sucuri Plugin. If your site should be configured to use Cloudproxy, please contact us!'
                   )
           );
           $wp_admin_bar->add_node( $args );
@@ -84,19 +84,21 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
       }
 
       // "Get Help" link to open the Support Hero widget
-      $args = array(
-          'id' => 'bt-get-help',
-          'title' => 'Get Help',
-          'href' => '#',
-          'parent'  => 'blog-tutor-menu',
-          'meta' => array(
-              'class' => 'btButton',
-              'title' => 'Click to open our knowledge base and contact form.',
-              'parent'  => 'blog-tutor-menu',
-              'onclick' => 'window.supportHeroWidget.show();'
-              )
-      );
-      $wp_admin_bar->add_node( $args );
+      // TO DO: GET THIS WORKING ON FRONT END TOO. MAYBE SET AS AN OPTION TO HAVE TAB ON FRONT END?
+      if (is_admin() ) {
+        $args = array(
+            'id' => 'bt-get-help',
+            'title' => 'Get Help',
+            'href' => '#',
+            'parent'  => 'blog-tutor-menu',
+            'meta' => array(
+                'class' => 'btButton',
+                'title' => 'Click to open our knowledge base and contact form.',
+                'onclick' => 'window.supportHeroWidget.show();'
+                )
+        );
+        $wp_admin_bar->add_node( $args );
+      }
   }
 }
 add_action( 'admin_bar_menu', 'bt_custom_toolbar_links', 99 );

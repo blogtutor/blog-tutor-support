@@ -27,10 +27,10 @@ class Blog_Tutor_Support_Widget {
       return;
     }
 
-    if ( isset( $options['embed_code'] ) ) {
-      echo $options['embed_code'];
-	  			  echo 'TEST TEST TEST';
-    }
+#    if ( isset( $options['embed_code'] ) ) {
+#      echo $options['embed_code'];
+#	  			  echo 'TEST TEST TEST';
+#    }
 
     // if ( is_user_logged_in() && isset( $options['identify_users'] ) ) {
     if ( is_user_logged_in() ) {

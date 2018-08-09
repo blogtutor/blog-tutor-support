@@ -22,17 +22,18 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
       if ( file_exists($_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' ) ) {
 
         // Get Cloudproxy API Keys
-        $str = file_get_contents( $_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' );
-        $re = '/(.{32})\\\\\/(.{32})/';
+        $input_lines = file_get_contents( $_SERVER[ "DOCUMENT_ROOT" ] . '/wp-content/uploads/sucuri/sucuri-settings.php' );
+        // Using # as regex delimiters since / was giving error
+        $regex = "#\"sucuriscan_cloudproxy_apikey\":\"(.{32})\\\/(.{32})#";
 
-        preg_match_all( $re, $str, $matches, PREG_SET_ORDER, 0 );
+        preg_match_all( $regex, $input_lines, $output_array, PREG_SET_ORDER, 0 );
 
-        if ( array_filter($matches) ) {
-          $API_KEY = $matches[0][1];
-          $API_SECRET = $matches[0][2];
+        if ( array_filter($output_array) ) {
+          $API_KEY = $output_array[0][1];
+          $API_SECRET = $output_array[0][2];
         }
 
-        if ( $API_KEY != '') {
+        if ( $API_KEY ) {
           // Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar
           $Cloudproxy_clear = "https://waf.sucuri.net/api?&k=" . $API_KEY . "&s=" . $API_SECRET . "&a=clearcache";
           $args = array(

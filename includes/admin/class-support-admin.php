@@ -79,7 +79,7 @@ class Blog_Tutor_Support_Admin {
       array(
         'menu' => $option,
         'id' => 'embed_code',
-        'description' => __( 'Get your widget embed code inside your Blog Tutor Support dashboard.', 'blog-tutor-support' ),
+        'description' => __( 'DEPRECATED! Get your widget embed code inside your Blog Tutor Support dashboard.', 'blog-tutor-support' ),
       )
     );
 

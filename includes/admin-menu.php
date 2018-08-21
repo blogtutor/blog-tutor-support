@@ -88,8 +88,6 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
       }
 
       // "Get Help" link to open the Support Hero widget
-      // TO DO: GET THIS WORKING ON FRONT END TOO. MAYBE SET AS AN OPTION TO HAVE TAB ON FRONT END?
-      if (is_admin() ) {
         $args = array(
             'id' => 'bt-get-help',
             'title' => 'Get Help',
@@ -102,7 +100,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
                 )
         );
         $wp_admin_bar->add_node( $args );
-      }
+
   }
 }
 add_action( 'admin_bar_menu', 'bt_custom_toolbar_links', 99 );

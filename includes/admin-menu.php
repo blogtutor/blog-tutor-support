@@ -33,7 +33,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
           $API_SECRET = $output_array[0][2];
         }
 
-        if ( $API_KEY ) {
+        if ( isset ( $API_KEY ) ) {
           // Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar
           $Cloudproxy_clear = "https://waf.sucuri.net/api?&k=" . $API_KEY . "&s=" . $API_SECRET . "&a=clearcache";
           $args = array(

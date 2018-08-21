@@ -28,8 +28,8 @@ class Blog_Tutor_Support_Widget {
 		echo '<script async data-cfasync="false" src="https://d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTk0OSZob3N0TmFtZT1ibG9ndHV0b3Iuc3VwcG9ydGhlcm8uaW8="></script>';
 
 		if ( is_user_logged_in() ) {
-			$ajw_current_user = wp_get_current_user(); ?>
-
+			$ajw_current_user = wp_get_current_user();
+      ?>
 			<script type="text/javascript">
 			jQuery( window ).load( function( $ ) {
 				if ( window.supportHeroWidget != undefined ) {
@@ -52,23 +52,34 @@ class Blog_Tutor_Support_Widget {
 						};
 						window.supportHeroWidget.track( properties );
 
-					<?php if ( ! is_admin() ) { // Hide help tab on front end; still loading widget code so help link in menu still works. ?>
+					<?php
+          if ( ! is_admin() ) { // Hide help tab on front end; still loading widget code so help link in menu still works.
+          ?>
 						window.supportHeroWidget.hideWidget();
-					<?php } ?>
+					<?php
+          }
+          ?>
 				}
 			});
 			</script>
 
-			<?php if ( ! is_admin() ) { ?>
+			<?php
+      if ( ! is_admin() ) {
+        ?>
 				<style type="text/css">
 				#supporthero-button { display: none !important; }
 				</style>
-			<?php	} ?>
-			<?php if ( is_admin() ) { ?>
+        <?php
+        }
+        ?>
+			<?php
+      if ( is_admin() ) {
+        ?>
 				<style type="text/css">
 				#plugin-information #supporthero-button, .wp-admin.wp-core-ui.update-php #supporthero-button { display: none !important; }
 				</style>
-			<?php	}
+        <?php
+      }
 		}
 	}
 }

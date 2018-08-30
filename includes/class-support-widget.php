@@ -43,22 +43,13 @@ class Blog_Tutor_Support_Widget {
 							site_url: '<?php echo site_url(); ?>',
 							sitename: '<?php echo get_bloginfo( 'name' ); ?>',
 							currentpage: window.location.href
-							},
-							custom: {  // These are used to prefill the contact form
-								customerId: 1234,
-								userEmail: '<?php echo $ajw_current_user->user_email; ?>',
-								name: '<?php echo $ajw_current_user->user_firstname . ' ' . $ajw_current_user->user_lastname; ?>'
-							}
-						};
-						window.supportHeroWidget.track( properties );
-
-					<?php
-          if ( ! is_admin() ) { // Hide help tab on front end; still loading widget code so help link in menu still works.
-          ?>
-						window.supportHeroWidget.hideWidget();
-					<?php
-          }
-          ?>
+						},
+						custom: {  // These are used to prefill the contact form
+							userEmail: '<?php echo $ajw_current_user->user_email; ?>',
+							name: '<?php echo $ajw_current_user->user_firstname . ' ' . $ajw_current_user->user_lastname; ?>'
+						}
+					};
+					window.supportHeroWidget.track( properties );
 				}
 			});
 			</script>

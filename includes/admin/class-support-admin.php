@@ -39,12 +39,13 @@ class Blog_Tutor_Support_Admin {
 
   public function blog_tutor_support_message() {
     $option = get_option('blog_tutor_support_settings');
-
-    ?>
-    	<div class="notice notice-success is-dismissible">
-    		<p><?php _e( $option['admin_notice'], 'blog-tutor-support' ); ?></p>
+    if ( ! empty( $option['admin_notice'] ) ) {
+      ?>
+      <div class="notice notice-success is-dismissible">
+        <p><?php _e( $option['admin_notice'], 'blog-tutor-support' ); ?></p>
       </div>
-    <?php
+      <?php
+    }
   }
 
   /**
@@ -63,7 +64,7 @@ class Blog_Tutor_Support_Admin {
     // Set Custom Fields cection.
     add_settings_section(
       'options_section',
-      __( 'Blog Tutor Support Widget', 'blog-tutor-support' ),
+      __( 'Blog Tutor Support Section', 'blog-tutor-support' ),
       array( $this, 'section_options_callback' ),
       $option
     );
@@ -83,7 +84,7 @@ class Blog_Tutor_Support_Admin {
 
     add_settings_field(
       'admin_notice',
-      __( 'Blog Tutor Support admin notice', 'blog-tutor-support' ),
+      __( 'Blog Tutor Support Notice', 'blog-tutor-support' ),
       array( $this, 'textarea_element_callback' ),
       $option,
       'options_section',

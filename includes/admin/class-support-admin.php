@@ -41,8 +41,8 @@ class Blog_Tutor_Support_Admin {
     $option = get_option('blog_tutor_support_settings');
     if ( ! empty( $option['admin_notice'] ) ) {
       ?>
-      <div class="notice notice-success is-dismissible">
-        <p><?php _e( $option['admin_notice'], 'blog-tutor-support' ); ?></p>
+      <div class="notice notice-success">
+        <p>Blog Tutor Support Notice: <strong><?php _e( $option['admin_notice'], 'blog-tutor-support' ); ?></strong></p>
       </div>
       <?php
     }

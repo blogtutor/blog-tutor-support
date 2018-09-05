@@ -17,6 +17,7 @@ class Blog_Tutor_Support_Admin {
    */
   public function __construct() {
     add_action( 'admin_menu', array( $this, 'settings_menu' ), 59 );
+    add_action( 'admin_notices', array( $this, 'blog_tutor_support_message' ), 59 );
     add_action( 'admin_init', array( $this, 'plugin_settings' ) );
   }
 
@@ -36,6 +37,17 @@ class Blog_Tutor_Support_Admin {
     }
   }
 
+  public function blog_tutor_support_message() {
+    $option = get_option('blog_tutor_support_settings');
+    if ( ! empty( $option['admin_notice'] ) ) {
+      ?>
+      <div class="notice notice-success is-dismissible">
+        <p><?php _e( $option['admin_notice'], 'blog-tutor-support' ); ?></p>
+      </div>
+      <?php
+    }
+  }
+
   /**
    * Render the settings page for this plugin.
    */
@@ -52,7 +64,7 @@ class Blog_Tutor_Support_Admin {
     // Set Custom Fields cection.
     add_settings_section(
       'options_section',
-      __( 'Blog Tutor Support Widget', 'blog-tutor-support' ),
+      __( 'Blog Tutor Support Section', 'blog-tutor-support' ),
       array( $this, 'section_options_callback' ),
       $option
     );
@@ -71,15 +83,15 @@ class Blog_Tutor_Support_Admin {
     // );
 
     add_settings_field(
-      'embed_code',
-      __( 'Blog Tutor Support embed code', 'blog-tutor-support' ),
+      'admin_notice',
+      __( 'Blog Tutor Support Notice', 'blog-tutor-support' ),
       array( $this, 'textarea_element_callback' ),
       $option,
       'options_section',
       array(
         'menu' => $option,
-        'id' => 'embed_code',
-        'description' => __( 'DEPRECATED! Get your widget embed code inside your Blog Tutor Support dashboard.', 'blog-tutor-support' ),
+        'id' => 'admin_notice',
+        'description' => __( 'Enter notice that will show for Blog Tutor only.', 'blog-tutor-support' ),
       )
     );
 

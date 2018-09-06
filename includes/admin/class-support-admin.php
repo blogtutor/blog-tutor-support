@@ -43,7 +43,7 @@ class Blog_Tutor_Support_Admin {
 		if ( ! empty( $option['admin_notice'] ) ) {
 			?>
 			<div class="notice notice-success">
-				<p>Blog Tutor Support Notice: <strong><?php sanitize_text_field( $option['admin_notice'] ); ?></strong></p>
+				<p>Blog Tutor Support Notice: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
 			</div>
 			<?php
 		}

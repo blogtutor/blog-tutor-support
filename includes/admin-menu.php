@@ -99,6 +99,23 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			),
 		);
 		$wp_admin_bar->add_node( $args );
+
+		$current_user = wp_get_current_user();
+		if ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) {
+
+			// "Plugin Settings" link to open the Blog Tutor Support settings page.
+			$args = array(
+				'id'     => 'bt-settings',
+				'title'  => 'Plugin Settings',
+				'href'   => '/wp-admin/options-general.php?page=blog-tutor-support',
+				'parent' => 'blog-tutor-menu',
+				'meta'   => array(
+					'class' => 'btButton',
+					'title' => 'Open Blog Tutor Suppor plugin settings.',
+				),
+			);
+			$wp_admin_bar->add_node( $args );
+		}
 	}
 }
 add_action( 'admin_bar_menu', 'bt_custom_toolbar_links', 99 );

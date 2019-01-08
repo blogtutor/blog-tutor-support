@@ -55,7 +55,7 @@ class Blog_Tutor_Support_Widget {
 			</script>
 
 			<?php
-      if ( ! is_admin() ) {
+      if ( ! is_admin() || isset( $options('hide-tab') )) {
         ?>
 				<style type="text/css">
 				#supporthero-button { display: none !important; }

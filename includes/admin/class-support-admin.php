@@ -83,6 +83,7 @@ class Blog_Tutor_Support_Admin {
 		//   )
 		// );
 
+// Add admin notice text area 
 		add_settings_field(
 			'admin_notice',
 			__( 'NerdPress Support Notice', 'nerdpress-support' ),
@@ -95,6 +96,19 @@ class Blog_Tutor_Support_Admin {
 				'description' => __( 'Enter notice that will show for NerdPress admins only.', 'nerdpress-support' ),
 			)
 		);
+
+// Add option to hide "Need Help?" tab in dashboard.
+		 add_settings_field(
+		   __( 'Hide tab', 'nerdpress-support' ),
+		   array( $this, 'checkbox_element_callback' ),
+		   $option,
+		   'options_section',
+		   array(
+		     'menu'  => $option,
+		     'id'    => 'hide-tab',
+		     'label' => __( 'If checked, hide the "Need Help?" tab in the dashboard.', 'nerdpress-support' ),
+		   )
+		 );
 
 		// add_settings_field(
 		//   'identify_users',

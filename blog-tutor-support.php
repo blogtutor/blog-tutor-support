@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Plugin Name: Blog Tutor Support
- * Description: Adds the Blog Tutor support widget to your WordPress dashboard for easy access to our knowledge base and contact form.
- * Version: 	0.4.2
- * Author:      Blog Tutor
- * Author URI:  https://blogtutor.com
+ * Plugin Name: NerdPress Support
+ * Description: Adds the NerdPress support widget to your WordPress dashboard for easy access to our knowledge base and contact form.
+ * Version: 	0.4.3
+ * Author:      NerdPress
+ * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support
  * License: 	GPLv2 or later
  * Text Domain: blog-tutor
@@ -36,7 +36,7 @@ class Blog_Tutor_Support {
    *
    * @var string
    */
-  const VERSION = '0.4.2';
+  const VERSION = '0.4.3';
 
   /**
    * Instance of this class.

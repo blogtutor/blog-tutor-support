@@ -7,10 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 	if ( current_user_can( 'editor' ) || current_user_can( 'administrator' ) ) {
-		// Add "Blog Tutor" parent menu Items.
+		// Add "NerdPress" parent menu Items.
 		$args = array(
-			'id'     => 'blog-tutor-menu',
-			'title'  => 'Blog Tutor',
+			'id'     => 'nerdpress-menu',
+			'title'  => 'NerdPress',
 			'parent' => false,
 		);
 		$wp_admin_bar->add_node( $args );
@@ -38,7 +38,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					'id'     => 'bt-clear-cloudproxy',
 					'title'  => 'Clear Cloudproxy Cache',
 					'href'   => $cloudproxy_clear,
-					'parent' => 'blog-tutor-menu',
+					'parent' => 'nerdpress-menu',
 					'meta'   => array(
 						'class'  => 'btButton',
 						'target' => 'blank',
@@ -52,12 +52,12 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					'id'     => 'bt-whitelist-cloudproxy',
 					'title'  => 'Whitelist Your IP Address',
 					'href'   => $cloudproxy_whitelist,
-					'parent' => 'blog-tutor-menu',
+					'parent' => 'nerdpress-menu',
 					'meta'   => array(
 						'class'  => 'btButton',
 						'target' => 'blank',
 						'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
-						'parent' => 'blog-tutor-menu',
+						'parent' => 'nerdpress-menu',
 					),
 				);
 				$wp_admin_bar->add_node( $args );
@@ -65,7 +65,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				$args = array(
 					'id'     => 'bt-cloudproxy-api-not-set',
 					'title'  => 'Cloudproxy API Key is not set',
-					'parent' => 'blog-tutor-menu',
+					'parent' => 'nerdpress-menu',
 					'meta'   => array(
 						'class' => 'btButton',
 						'title' => 'Your Cloudproxy API key is not set in the Sucuri Plugin. If your site should be configured to use Cloudproxy, please contact us!',
@@ -77,7 +77,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$args = array(
 				'id'     => 'bt-sucuri-missing',
 				'title'  => 'The Sucuri Plugin is missing!',
-				'parent' => 'blog-tutor-menu',
+				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
 					'title' => 'Your Sucuri Plugin is not configured. Please contact us!',
@@ -91,7 +91,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			'id'     => 'bt-get-help',
 			'title'  => 'Get Help',
 			'href'   => '#',
-			'parent' => 'blog-tutor-menu',
+			'parent' => 'nerdpress-menu',
 			'meta'   => array(
 				'class'   => 'btButton',
 				'title'   => 'Click to open our knowledge base and contact form.',
@@ -107,11 +107,11 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$args = array(
 				'id'     => 'bt-settings',
 				'title'  => 'Plugin Settings',
-				'href'   => '/wp-admin/options-general.php?page=blog-tutor-support',
-				'parent' => 'blog-tutor-menu',
+				'href'   => '/wp-admin/options-general.php?page=nerdpress-support',
+				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
-					'title' => 'Open Blog Tutor Suppor plugin settings.',
+					'title' => 'Open NerdPRess Support plugin settings.',
 				),
 			);
 			$wp_admin_bar->add_node( $args );

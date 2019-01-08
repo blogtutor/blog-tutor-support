@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 /**
- * Blog Tutor Support Admin.
+ * NerdPress Support Admin.
  *
  * @package  Blog_Tutor_Support/Admin
  * @category Admin
@@ -29,10 +29,10 @@ class Blog_Tutor_Support_Admin {
 		if ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) {
 			add_action( 'admin_notices', array( $this, 'blog_tutor_support_message' ), 59 );
 			add_options_page(
-				'Blog Tutor Support',
-				'Blog Tutor Support',
+				'NerdPress Support',
+				'NerdPress Support',
 				'manage_options',
-				'blog-tutor-support',
+				'nerdpress-support',
 				array( $this, 'html_settings_page' )
 			);
 		}
@@ -43,7 +43,7 @@ class Blog_Tutor_Support_Admin {
 		if ( ! empty( $option['admin_notice'] ) ) {
 			?>
 			<div class="notice notice-success">
-				<p>Blog Tutor Support Notice: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
+				<p>NerdPress Support Notice: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
 			</div>
 			<?php
 		}
@@ -65,7 +65,7 @@ class Blog_Tutor_Support_Admin {
 		// Set Custom Fields cection.
 		add_settings_section(
 			'options_section',
-			__( 'Blog Tutor Support Section', 'blog-tutor-support' ),
+			__( 'NerdPress Support Section', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
 			$option
 		);
@@ -85,14 +85,14 @@ class Blog_Tutor_Support_Admin {
 
 		add_settings_field(
 			'admin_notice',
-			__( 'Blog Tutor Support Notice', 'blog-tutor-support' ),
+			__( 'NerdPress Support Notice', 'nerdpress-support' ),
 			array( $this, 'textarea_element_callback' ),
 			$option,
 			'options_section',
 			array(
 				'menu'        => $option,
 				'id'          => 'admin_notice',
-				'description' => __( 'Enter notice that will show for Blog Tutor only.', 'blog-tutor-support' ),
+				'description' => __( 'Enter notice that will show for NerdPress admins only.', 'nerdpress-support' ),
 			)
 		);
 

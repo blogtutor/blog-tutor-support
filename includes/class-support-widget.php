@@ -25,7 +25,9 @@ class Blog_Tutor_Support_Widget {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 
 		// Load Support Hero Widget.
-		wp_enqueue_script( 'blog_tutor_support_widget_loader', 'https://d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTk0OSZob3N0TmFtZT1ibG9ndHV0b3Iuc3VwcG9ydGhlcm8uaW8=' );
+		echo '<script async data-cfasync="false" src="https://d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTk0OSZob3N0TmFtZT1ibG9ndHV0b3Iuc3VwcG9ydGhlcm8uaW8="></script>';
+		#wp_enqueue_script not working on front-end. Probably needs to move to a new function and call with add_action('wp_enqueue_script','') instead of calling with wp_footer
+		#wp_enqueue_script( 'blog_tutor_support_widget_loader', 'https://d29l98y0pmei9d.cloudfront.net/js/widget.min.js?k=Y2xpZW50SWQ9MTk0OSZob3N0TmFtZT1ibG9ndHV0b3Iuc3VwcG9ydGhlcm8uaW8=' );
 
 		if ( is_user_logged_in() ) {
 			$ajw_current_user = wp_get_current_user();

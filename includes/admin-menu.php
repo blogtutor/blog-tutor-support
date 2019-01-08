@@ -103,7 +103,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		$current_user = wp_get_current_user();
 		if ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) {
 
-			// "Plugin Settings" link to open the Blog Tutor Support settings page.
+			// "Plugin Settings" link to open the NerdPress Support settings page.
 			$args = array(
 				'id'     => 'bt-settings',
 				'title'  => 'Plugin Settings',

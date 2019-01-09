@@ -47,22 +47,24 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				);
 				$wp_admin_bar->add_node( $args );
 
-				// Clear current page from Cloudproxy cache.
-				$path                             = $_SERVER['REQUEST_URI'];
-				$cloudproxy_clear_page_from_cache = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret . '&a=clearcache&file=' . $path;
-				$args                             = array(
-					'id'     => 'bt-clear-cache-cloudproxy',
-					'title'  => 'Clear page from Cloudproxy',
-					'href'   => $cloudproxy_clear_page_from_cache,
-					'parent' => 'nerdpress-menu',
-					'meta'   => array(
-						'class'  => 'btButton',
-						'target' => 'blank',
-						'title'  => 'Clear this page from Cloudproxy cache.',
+				if ( ! is_admin() ) {
+					// Clear current page from Cloudproxy cache.
+					$path                             = $_SERVER['REQUEST_URI'];
+					$cloudproxy_clear_uri = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret . '&a=clearcache&file=' . $path;
+					$args                             = array(
+						'id'     => 'bt-clear-uri-cloudproxy',
+						'title'  => 'Clear this page from Cloudproxy',
+						'href'   => $cloudproxy_clear_uri,
 						'parent' => 'nerdpress-menu',
-					),
-				);
-				$wp_admin_bar->add_node( $args );
+						'meta'   => array(
+							'class'  => 'btButton',
+							'target' => 'blank',
+							'title'  => 'Clear this page from Cloudproxy cache.',
+							'parent' => 'nerdpress-menu',
+						),
+					);
+					$wp_admin_bar->add_node( $args );
+				}
 
 				$cloudproxy_whitelist = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret . '&a=whitelist';
 				$args                 = array(

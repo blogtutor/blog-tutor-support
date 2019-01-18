@@ -21,12 +21,20 @@ class Blog_Tutor_Support_Admin {
 		add_action( 'admin_init', array( $this, 'plugin_settings' ) );
 	}
 
+	public function is_nerdpress() {
+		if ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) {
+		 return true;
+	 }	else {
+		 return false;
+	 }
+	}
+
 	/**
 	 * Add the settings page.
 	 */
 	public function settings_menu() {
 		$current_user = wp_get_current_user();
-		if ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) {
+		if ( is_nerdpress() ) {
 			add_action( 'admin_notices', array( $this, 'blog_tutor_support_message' ), 59 );
 			add_options_page(
 				'NerdPress Support',

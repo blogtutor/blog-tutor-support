@@ -97,7 +97,7 @@ if ( ! class_exists( 'GHU_Core' ) ) {
 
                       // Check that API responded okay, else use a fallback link.
                       if ( ! is_wp_error( $changelog ) ) {
-                        $changelog = json_decode( wp_remote_retrieve_body( $changelog), true );
+                        $changelog = json_decode( wp_remote_retrieve_body( $changelog ), true );
                       } else {
                         $changelog = '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.';
                       }
@@ -106,7 +106,7 @@ if ( ! class_exists( 'GHU_Core' ) ) {
                       $changelog_output = '';
                       foreach ($changelog as $note => $release_note) {
                         $changelog_output .= '<h4>' . $changelog[$note]['tag_name'] . ' - ' . date ( "F j, Y", strtotime( $changelog[$note]['published_at'] ) ) . '</h4>';
-                        $changelog_output .= '<p style="font-weight:bold;"><b>' . $changelog[$note]['name'] . '</b></p>';
+                        $changelog_output .= '<p>' . $changelog[$note]['name'] . '</p>';
                         if ( $changelog[$note]['body'] != '' ) {
                           $changelog_output .= '<blockquote>' . nl2br( $changelog[$note]['body'] ) . '</blockquote>';
                         }

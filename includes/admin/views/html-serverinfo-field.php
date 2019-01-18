@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 // credit to: http://www.thecave.info/display-disk-free-space-percentage-in-php/
 /* get disk space free (in bytes) */
 $disk_free = disk_free_space( __FILE__ );
@@ -50,8 +53,16 @@ if ( $mem_percentage > 90 ) {
 ?>
 
 <link rel="stylesheet" href="<?php echo plugins_url( 'css/html-serverinfo-field-style.css', dirname( __FILE__, 2 ) ); ?>" type="text/css" media="all">
+
+<?php
+$loads = sys_getloadavg();
+?>
 <article>
-	<h2>Disc Space:</h2>
+	<h2 style="margin-top: 0;">CPU Load Averages: &nbsp; <?php echo $loads[0] . ' &nbsp; ' . $loads[1] . ' &nbsp; ' . $loads[2]; ?></h2>
+</article>
+
+<article>
+	<h2>Disk Space:</h2>
 	<p>Total: <?php echo $disk_total; ?></p>
 	<div class='progress'>
 		<div class='prgtext <?php if ( $disk_percentage>90 )echo 'prgtext-danger'; ?>'><?php echo $disk_percentage; ?>% Used</div>
@@ -63,19 +74,6 @@ if ( $mem_percentage > 90 ) {
 		</div>
 	</div>
 </article>
-<br>
-<br>
-
-<?php
-$loads = sys_getloadavg();
-?>
-<article>
-	<h2>CPU Load Average:</h2>
-	<p>1 Minute: <?php echo $loads[0]; ?></p>
-	<p>5 Minutes: <?php echo $loads[1]; ?></p>
-	<p>15 Minutes: <?php echo $loads[2]; ?></p>
-</article>
-<br>
 <br>
 
 <article>
@@ -96,20 +94,14 @@ $loads = sys_getloadavg();
 
 <article>
 	<h2>Server Information:</h2>
-	<p>SERVER_SOFTWARE:</p>
-	<p> <?php echo $_SERVER['SERVER_SOFTWARE']; ?></p>
-	<br>
-	<p>SERVER_PROTOCOL:</p>
-	<p> <?php echo $_SERVER['SERVER_PROTOCOL']; ?></p>
-	<br>
-	<p>DOCUMENT_ROOT:</p>
-	<p> <?php echo $_SERVER['DOCUMENT_ROOT']; ?></p>
-	<br>
-	<p>REMOTE_ADDR:</p>
-	<p> <?php echo $_SERVER['REMOTE_ADDR']; ?></p>
-	<br>
-	<p>HTTP_X_REAL_IP:</p>
-	<p> <?php echo $_SERVER['HTTP_X_REAL_IP']; ?></p>
-	<br>
+	<p><strong>PHP VERSION:</strong> <?php echo phpversion(); ?></p>
+	<p><strong>SERVER_SOFTWARE:</strong> <?php echo $_SERVER['SERVER_SOFTWARE']; ?></p>
+	<p><strong>SERVER_PROTOCOL:</strong> <?php echo $_SERVER['SERVER_PROTOCOL']; ?></p>
+	<p><strong>DOCUMENT_ROOT:</strong> <?php echo $_SERVER['DOCUMENT_ROOT']; ?></p>
+	<p><strong>REMOTE_ADDR:</strong> <?php echo $_SERVER['REMOTE_ADDR']; ?></p>
+	<P><strong>HTTP_CLIENT_IP:</strong> <?php if ( !empty( $_SERVER['HTTP_CLIENT_IP'] ) ) { echo $_SERVER['HTTP_CLIENT_IP']; } else { echo '(not set)'; } ?></p>
+	<p><strong>HTTP_X_SUCURI_CLIENTIP:</strong> <?php if ( !empty( $_SERVER['HTTP_X_SUCURI_CLIENTIP'] ) ) { echo $_SERVER['HTTP_X_SUCURI_CLIENTIP']; } ?></p>
+	<p><strong>HTTP_X_FORWARDED_FOR:</strong> <?php echo $_SERVER['HTTP_X_FORWARDED_FOR']; ?></p>
+	<p><strong>HTTP_X_REAL_IP:</strong> <?php echo $_SERVER['HTTP_X_REAL_IP']; ?></p>
 </article>
 <?php

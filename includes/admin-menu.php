@@ -120,7 +120,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		$wp_admin_bar->add_node( $args );
 
 		$current_user = wp_get_current_user();
-		if ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) {
+		if ( Blog_Tutor_Support_Admin::is_nerdpress() ) {
 
 			// "Plugin Settings" link to open the NerdPress Support settings page.
 			$args = array(

@@ -91,14 +91,25 @@ if ( ! class_exists( 'GHU_Core' ) ) {
                 foreach ( $this->update_data as $plugin_path => $info ) {
                     if ( $info['slug'] == $args->slug ) {
 
-                        $changelog = wp_safe_remote_get( 'https://www.nerdpress.net/support-plugin-changelog.html' );
+                      $changelog_url = 'https://api.github.com/repos/blogtutor/blog-tutor-support/releases';
+                      $changelog = wp_safe_remote_get( esc_url_raw( $changelog_url ) );
 
-                        // Check that file loaded okay, else use a fallback.
-                        if ( ! is_wp_error($changelog) && ($changelog['response']['code'] == 200 || $changelog['response']['code'] == 201)) {
-                          $changelog = $changelog['body'];
-                        } else {
-                          $changelog = '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.';
+                      // Check that API responded okay, else use a fallback link.
+                      if ( ! is_wp_error( $changelog ) ) {
+                        $changelog = json_decode( wp_remote_retrieve_body( $changelog), true );
+                      } else {
+                        $changelog = '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.';
+                      }
+
+                      // Parse and format the Github API Response
+                      $changelog_output = '';
+                      foreach ($changelog as $note => $release_note) {
+                        $changelog_output .= '<h4>' . $changelog[$note]['tag_name'] . ' - ' . date ( "F j, Y", strtotime( $changelog[$note]['published_at'] ) ) . '</h4>';
+                        $changelog_output .= '<p style="font-weight:bold;"><b>' . $changelog[$note]['name'] . '</b></p>';
+                        if ( $changelog[$note]['body'] != '' ) {
+                          $changelog_output .= '<blockquote>' . nl2br( $changelog[$note]['body'] ) . '</blockquote>';
                         }
+                      }
 
                         return (object) array(
                             'name'          => $info['name'],
@@ -108,7 +119,7 @@ if ( ! class_exists( 'GHU_Core' ) ) {
                             'sections' => array(
                                 'description' => $info['description'],
                                 #'changelog' => '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.'
-                                'changelog' => $changelog
+                                'changelog' =>  $changelog_output
                             )
                         );
                     }

@@ -82,6 +82,7 @@ if ( ! class_exists( 'GHU_Core' ) ) {
 
         /**
          * Get plugin info for the "View Details" popup
+         * NOTE: View Details & View Version x.x.x Details link only show up if an update is available.
          *
          * $args->slug = "edd-no-logins"
          * $plugin_path = "edd-no-logins/edd-no-logins.php"
@@ -118,7 +119,6 @@ if ( ! class_exists( 'GHU_Core' ) ) {
                             'download_link' => $info['package'],
                             'sections' => array(
                                 'description' => $info['description'],
-                                #'changelog' => '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.'
                                 'changelog' =>  $changelog_output
                             )
                         );

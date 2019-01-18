@@ -80,14 +80,14 @@ class Blog_Tutor_Support_Admin {
 
 		//   'test_mode',
 		// add_settings_field(
-		//   __( 'Test mode', 'blog-tutor-support' ),
+		//   __( 'Test mode', 'nerdpress-support' ),
 		//   array( $this, 'checkbox_element_callback' ),
 		//   $option,
 		//   'options_section',
 		//   array(
 		//     'menu'  => $option,
 		//     'id'    => 'test_mode',
-		//     'label' => __( 'If checked show the widget to admins only.', 'blog-tutor-support' ),
+		//     'label' => __( 'If checked show the widget to admins only.', 'nerdpress-support' ),
 		//   )
 		// );
 
@@ -121,16 +121,29 @@ class Blog_Tutor_Support_Admin {
 
 		// add_settings_field(
 		//   'identify_users',
-		//   __( 'Identify Users', 'blog-tutor-support' ),
+		//   __( 'Identify Users', 'nerdpress-support' ),
 		//   array( $this, 'checkbox_element_callback' ),
 		//   $option,
 		//   'options_section',
 		//   array(
 		//     'menu'  => $option,
 		//     'id'    => 'identify_users',
-		//     'label' => __( 'If checked Blog Tutor Support widget will identify the user ID, email and display name from logged users.', 'blog-tutor-support' ),
+		//     'label' => __( 'If checked Blog Tutor Support widget will identify the user ID, email and display name from logged users.', 'nerdpress-support' ),
 		//   )
 		// );
+
+		add_settings_field(
+		  'server_info',
+		  __( 'Server Stats', 'nerdpress-support' ),
+		  array( $this, 'server_info_element_callback' ),
+		  $option,
+		  'options_section',
+		  array(
+		    'menu'  => $option,
+		    'id'    => 'server_info',
+		    'label' => __( 'Showing sever stats and variables.', 'nerdpress-support' ),
+		  )
+		);
 
 		// Register settings.
 		register_setting( $option, $option, array( $this, 'validate_options' ) );
@@ -177,6 +190,25 @@ class Blog_Tutor_Support_Admin {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-textarea-field.php';
+	}
+
+	/**
+	 * Serverinfo element fallback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function server_info_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$value = $options[ $id ];
+		} else {
+			$value = isset( $args['default'] ) ? $args['default'] : '';
+		}
+
+		include dirname( __FILE__ ) . '/views/html-serverinfo-field.php';
 	}
 
 	/**

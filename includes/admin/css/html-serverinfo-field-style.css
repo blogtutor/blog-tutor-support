@@ -1,0 +1,29 @@
+.progress {
+  border: 2px solid #5E96E4;
+  height: 32px;
+  width: 350px;
+}
+.progress .prgbar-disk {
+  background: #A7C6FF;
+  position: relative;
+  height: 32px;
+  z-index: 999;
+}
+.progress .prgbar-mem {
+  background: #A7C6FF;
+  position: relative;
+  height: 32px;
+  z-index: 999;
+}
+.progress .prgtext {
+  color: #286692;
+  text-align: center;
+  font-size: 13px;
+  padding: 9px 0 0;
+  width: 350px;
+  position: absolute;
+  z-index: 1000;
+}
+.progress .prginfo { margin: 3px 0; }
+.progress .prgbar-danger{ background: red; }
+.progress .prgtext-danger { color: #FCFCFC; }

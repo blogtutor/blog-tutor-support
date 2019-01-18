@@ -90,13 +90,25 @@ if ( ! class_exists( 'GHU_Core' ) ) {
             if ( 'plugin_information' == $action ) {
                 foreach ( $this->update_data as $plugin_path => $info ) {
                     if ( $info['slug'] == $args->slug ) {
+
+                        $changelog = wp_safe_remote_get( 'https://www.nerdpress.net/support-plugin-changelog.html' );
+
+                        // Check that file loaded okay, else use a fallback.
+                        if ( ! is_wp_error($changelog) && ($changelog['response']['code'] == 200 || $changelog['response']['code'] == 201)) {
+                          $changelog = $changelog['body'];
+                        } else {
+                          $changelog = '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.';
+                        }
+
                         return (object) array(
                             'name'          => $info['name'],
                             'slug'          => $info['slug'],
                             'version'       => $info['new_version'],
                             'download_link' => $info['package'],
                             'sections' => array(
-                                'description' => $info['description']
+                                'description' => $info['description'],
+                                #'changelog' => '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.'
+                                'changelog' => $changelog
                             )
                         );
                     }

@@ -96,7 +96,7 @@ $disk_free =  $this->format_size($this->get_disk_info()['disk_free']);
 <article>
   <details>
     <summary>All Server Information:</summary>
-    <pre style="width: 70vw; ">
+    <pre style="width: 70vw ; white-space: pre-line;">
       <?php print_r($_SERVER); ?>
     </pre>
   </details>

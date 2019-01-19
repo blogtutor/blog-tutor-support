@@ -21,6 +21,9 @@ class Blog_Tutor_Support_Admin {
 		add_action( 'admin_init', array( $this, 'plugin_settings' ) );
 	}
 
+	/**
+	 * Check email address to see if user is a member of the NerdPress team (and also an administrator).
+	 */
 	public static function is_nerdpress() {
 		$current_user = wp_get_current_user();
 		if ( current_user_can( 'administrator' ) && ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) ) {
@@ -50,8 +53,8 @@ class Blog_Tutor_Support_Admin {
 		$option = get_option('blog_tutor_support_settings');
 		if ( ! empty( $option['admin_notice'] ) ) {
 			?>
-			<div class="notice notice-success">
-				<p>NerdPress Support Notice: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
+			<div class="notice" style="border-left-color:#0F145B">
+				<p><img src="/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;">NerdPress Notes: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
 			</div>
 			<?php
 		}

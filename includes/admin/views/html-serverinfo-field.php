@@ -19,10 +19,10 @@ function string_to_bytes( $string ) {
 }
 
 $mem_info             = get_system_mem_info();
-$mem_total            = $this->format_size( string_to_bytes( $mem_info['MemTotal'] ) );
-$mem_available        = $this->format_size( string_to_bytes( $mem_info['MemAvailable'] ) );
+$mem_total            = Blog_Tutor_Support_Helpers::format_size( string_to_bytes( $mem_info['MemTotal'] ) );
+$mem_available        = Blog_Tutor_Support_Helpers::format_size( string_to_bytes( $mem_info['MemAvailable'] ) );
 $mem_used_unformatted = string_to_bytes( $mem_info['MemTotal'] ) - string_to_bytes( $mem_info['MemAvailable'] );
-$mem_used             = $this->format_size( $mem_used_unformatted );
+$mem_used             = Blog_Tutor_Support_Helpers::format_size( $mem_used_unformatted );
 $mem_percentage       = sprintf( '%.2f', ( $mem_used_unformatted / string_to_bytes( $mem_info['MemTotal'] ) ) * 100 );
 
 if ( $mem_percentage > 90 ) {
@@ -39,9 +39,9 @@ if ( $mem_percentage > 90 ) {
 <?php
 $loads = sys_getloadavg();
 
-$disk_total = $this->format_size($this->get_disk_info()['disk_total']);
-$disk_used = $this->format_size($this->get_disk_info()['disk_used']);
-$disk_free =  $this->format_size($this->get_disk_info()['disk_free']);
+$disk_total = Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_total'] );
+$disk_used  = Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_used'] );
+$disk_free  = Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] );
 
 ?>
 <article>
@@ -51,8 +51,8 @@ $disk_free =  $this->format_size($this->get_disk_info()['disk_free']);
 	<h2>Disk Space:</h2>
 	<p>Total: <?php echo $disk_total; ?></p>
 	<div class='progress'>
-		<div class='prgtext <?php if ( $this->get_disk_info()['disk_percentage']>90 )echo 'prgtext-danger'; ?>'><?php echo $this->get_disk_info()['disk_percentage']; ?>% Used</div>
-		<div class='prgbar-disk <?php if ( $this->get_disk_info()['disk_percentage']>90 )echo 'prgbar-danger'; ?>' style='width: <?php echo $this->get_disk_info()['disk_percentage']; ?>%;'></div>
+		<div class='prgtext <?php if ( Blog_Tutor_Support_Helpers::get_disk_info()['disk_percentage']>90 )echo 'prgtext-danger'; ?>'><?php echo Blog_Tutor_Support_Helpers::get_disk_info()['disk_percentage']; ?>% Used</div>
+		<div class='prgbar-disk <?php if ( Blog_Tutor_Support_Helpers::get_disk_info()['disk_percentage']>90 )echo 'prgbar-danger'; ?>' style="width: <?php echo Blog_Tutor_Support_Helpers::get_disk_info()['disk_percentage']; ?>%;"></div>
 		<div class='prginfo'>
 			<span style='float: left;'><?php echo $disk_used . ' used'; ?></span>
 			<span style='float: right;'><?php echo $disk_free . ' free'; ?></span>

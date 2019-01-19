@@ -91,6 +91,7 @@ class Blog_Tutor_Support {
    * Include plugin functions.
    */
   protected function includes() {
+    include_once dirname( __FILE__ ) . '/includes/class-support-helpers.php';
     include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
   }
 }

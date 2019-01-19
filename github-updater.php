@@ -94,38 +94,37 @@ if ( ! class_exists( 'GHU_Core' ) ) {
 
                       $changelog_url = 'https://api.github.com/repos/blogtutor/blog-tutor-support/releases';
                       $changelog = wp_safe_remote_get( esc_url_raw( $changelog_url ) );
+                      $changelog_output = '';
 
                       // Check that API responded okay, else use a fallback link.
-                      if ( ! is_wp_error( $changelog ) ) {
+                      if ( ! is_wp_error( $changelog ) && wp_remote_retrieve_response_code( $changelog ) == '200' ) {
                         $changelog = json_decode( wp_remote_retrieve_body( $changelog ), true );
-                      } else {
-                        $changelog = '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.';
-                      }
-
-                      // Parse and format the Github API Response
-                      $changelog_output = '';
-                      foreach ($changelog as $note => $release_note) {
-                        $changelog_output .= '<h4>' . $changelog[$note]['tag_name'] . ' - ' . date ( "F j, Y", strtotime( $changelog[$note]['published_at'] ) ) . '</h4>';
-                        $changelog_output .= '<p>' . $changelog[$note]['name'] . '</p>';
-                        if ( $changelog[$note]['body'] != '' ) {
-                          $changelog_output .= '<blockquote>' . nl2br( $changelog[$note]['body'] ) . '</blockquote>';
+                        // Parse and format the Github API Response
+                        foreach ( $changelog as $note => $release_note ) {
+                          $changelog_output .= '<h4>' . $changelog[$note]['tag_name'] . ' - ' . date ( "F j, Y", strtotime( $changelog[$note]['published_at'] ) ) . '</h4>';
+                          $changelog_output .= '<p>' . $changelog[$note]['name'] . '</p>';
+                          if ( $changelog[$note]['body'] != '' ) {
+                            $changelog_output .= '<blockquote>' . nl2br( $changelog[$note]['body'] ) . '</blockquote>';
+                          }
                         }
+                      } else {
+                        $changelog_output = '<a href="https://github.com/blogtutor/blog-tutor-support/releases" target="_blank">View the changelog here</a>.';
                       }
 
-                        return (object) array(
-                            'name'          => $info['name'],
-                            'slug'          => $info['slug'],
-                            'version'       => $info['new_version'],
-                            'download_link' => $info['package'],
-                            'sections' => array(
-                                'description' => $info['description'],
-                                'changelog' =>  $changelog_output
-                            ),
-                            'banners' => array(
-                                'low' => 'https://www.nerdpress.net/wp-content/uploads/2019/01/nerdpress-support-plugin-header-small.jpg',
-                                'high' => 'https://www.nerdpress.net/wp-content/uploads/2019/01/nerdpress-support-plugin-header-large.jpg'
-                            )
-                        );
+                      return (object) array(
+                          'name'          => $info['name'],
+                          'slug'          => $info['slug'],
+                          'version'       => $info['new_version'],
+                          'download_link' => $info['package'],
+                          'sections' => array(
+                              'description' => $info['description'],
+                              'changelog' =>  $changelog_output
+                          ),
+                          'banners' => array(
+                              'low' => 'https://www.nerdpress.net/wp-content/uploads/2019/01/nerdpress-support-plugin-header-small.jpg',
+                              'high' => 'https://www.nerdpress.net/wp-content/uploads/2019/01/nerdpress-support-plugin-header-large.jpg'
+                          )
+                      );
                     }
                 }
             }

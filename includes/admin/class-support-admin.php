@@ -23,7 +23,7 @@ class Blog_Tutor_Support_Admin {
 
 	public static function is_nerdpress() {
 		$current_user = wp_get_current_user();
-		if ( current_user_can( 'administrator' ) && strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) {
+		if ( current_user_can( 'administrator' ) && ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) ) {
 		 return true;
 	 }	else {
 		 return false;

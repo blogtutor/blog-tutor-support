@@ -120,6 +120,10 @@ if ( ! class_exists( 'GHU_Core' ) ) {
                             'sections' => array(
                                 'description' => $info['description'],
                                 'changelog' =>  $changelog_output
+                            ),
+                            'banners' => array(
+                                'low' => 'https://www.nerdpress.net/wp-content/uploads/2019/01/nerdpress-support-plugin-header-small.jpg',
+                                'high' => 'https://www.nerdpress.net/wp-content/uploads/2019/01/nerdpress-support-plugin-header-large.jpg'
                             )
                         );
                     }

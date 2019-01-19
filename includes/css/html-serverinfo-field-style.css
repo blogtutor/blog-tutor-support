@@ -5,12 +5,14 @@
 }
 .progress .prgbar-disk {
   background: #A7C6FF;
+  width: <?php echo $disk_percentage; ?>%;
   position: relative;
   height: 32px;
   z-index: 999;
 }
 .progress .prgbar-mem {
   background: #A7C6FF;
+  width: <?php echo $mem_percentage; ?>%;
   position: relative;
   height: 32px;
   z-index: 999;

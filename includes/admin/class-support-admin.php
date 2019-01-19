@@ -231,6 +231,44 @@ class Blog_Tutor_Support_Admin {
 
 		return $output;
 	}
+
+	/**
+	 * Disk information.
+	 *
+	 * @return array disk information.
+	 */
+	public static function get_disk_info() {
+		// Credit to: http://www.thecave.info/display-disk-free-space-percentage-in-php/
+		/* Get disk space free (in bytes). */
+		$disk_free = disk_free_space( __FILE__ );
+		/* And get disk space total (in bytes).  */
+		$disk_total = disk_total_space( __FILE__ );
+		/* Now we calculate the disk space used (in bytes). */
+		$disk_used = $disk_total - $disk_free;
+		/* Percentage of disk used - this will be used to also set the width % of the progress bar. */
+		$disk_percentage = sprintf( '%.2f', ( $disk_used / $disk_total ) * 100 );
+		$disk_info  = array();
+		$disk_info['disk_total']       = $disk_total;
+		$disk_info['disk_used']        = $disk_used ;
+		$disk_info['disk_free']        = $disk_free ;
+		$disk_info['disk_percentage']  = $disk_percentage ;
+
+		return $disk_info;
+	}
+
+	/**
+	 * Format the argument from bytes to MB, GB, etc.
+	 *
+	 * @param array bytes size.
+	 *
+	 * @return array size from bytes to larger ammount.
+	 *
+	 */
+	public static function format_size( $bytes ) {
+		$types = array( 'B', 'KB', 'MB', 'GB', 'TB' );
+		for ( $i = 0; $bytes >= 1000 && $i < ( count( $types ) - 1 ); $bytes /= 1024, $i++ );
+		return ( round( $bytes, 2 ) . ' ' . $types[ $i ] );
+	}
 }
 
 new Blog_Tutor_Support_Admin();

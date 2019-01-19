@@ -119,7 +119,6 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		);
 		$wp_admin_bar->add_node( $args );
 
-		$current_user = wp_get_current_user();
 		if ( Blog_Tutor_Support_Admin::is_nerdpress() ) {
 
 			// "Plugin Settings" link to open the NerdPress Support settings page.
@@ -130,11 +129,30 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
-					'title' => 'Open NerdPRess Support plugin settings.',
+					'title' => 'Open NerdPress Support plugin settings.',
 				),
 			);
 			$wp_admin_bar->add_node( $args );
 		}
+	}
+
+	if ( Blog_Tutor_Support_Admin::is_nerdpress() ) {
+		// add cpu load to admin menu
+		function serverinfo_admin_menu_item($wp_admin_bar) {
+			$loads = sys_getloadavg();
+			$cpu_load_info = '<p>Load: ' . $loads[0] . ' &nbsp;' . $loads[1] . ' &nbsp;' . $loads[2] . '  &nbsp; Free Disk: ' . Blog_Tutor_Support_Admin::format_size( Blog_Tutor_Support_Admin::get_disk_info()['disk_free'] ) . '</p>';
+			$args = array(
+				'id' => 'cpu-load',
+				'title' => $cpu_load_info,
+				'href'   => '/wp-admin/options-general.php?page=nerdpress-support',
+				'meta'   => array(
+					'class' => 'btButton',
+					'title' => 'Open NerdPress Support plugin settings.',
+				),
+			);
+			$wp_admin_bar->add_node($args);
+		}
+		add_action('admin_bar_menu', 'serverinfo_admin_menu_item', 1000 );
 	}
 }
 add_action( 'admin_bar_menu', 'bt_custom_toolbar_links', 99 );

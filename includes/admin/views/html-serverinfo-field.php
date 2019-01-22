@@ -45,7 +45,7 @@ $disk_free  = Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helper
 
 ?>
 <article>
-	<h2 style="margin-top: 0;">CPU Load Averages: &nbsp; <?php echo $loads[0] . ' &nbsp; ' . $loads[1] . ' &nbsp; ' . $loads[2]; ?></h2>
+	<h2 style="margin-top: 0;">Load Averages: &nbsp; <?php echo $loads[0] . ' &nbsp; ' . $loads[1] . ' &nbsp; ' . $loads[2]; ?></h2>
 </article>
 <article>
 	<h2>Disk Space:</h2>

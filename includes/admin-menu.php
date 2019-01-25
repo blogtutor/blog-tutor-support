@@ -14,6 +14,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			'parent' => false,
 		);
 		$wp_admin_bar->add_node( $args );
+		$site_url = get_site_url();
 
 		// Add Child Menu Items.
 		// Add a Clear Cloudproxy link to the Admin Bar.
@@ -125,7 +126,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$args = array(
 				'id'     => 'bt-settings',
 				'title'  => 'Plugin Settings',
-				'href'   => '/wp-admin/options-general.php?page=nerdpress-support',
+				'href'   => $site_url . '/wp-admin/options-general.php?page=nerdpress-support',
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
@@ -144,7 +145,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$args          = array(
 				'id'    => 'cpu-load',
 				'title' => $cpu_load_info,
-				'href'  => '/wp-admin/options-general.php?page=nerdpress-support',
+				'href'  => $site_url . '/wp-admin/options-general.php?page=nerdpress-support',
 				'meta'  => array(
 					'class' => 'btButton',
 					'title' => 'Open NerdPress Support plugin settings.',

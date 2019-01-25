@@ -49,9 +49,9 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 				if ( ! is_admin() ) {
 					// Clear current page from Cloudproxy cache.
-					$path                             = $_SERVER['REQUEST_URI'];
+					$path                 = $_SERVER['REQUEST_URI'];
 					$cloudproxy_clear_uri = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret . '&a=clearcache&file=' . $path;
-					$args                             = array(
+					$args                 = array(
 						'id'     => 'bt-clear-uri-cloudproxy',
 						'title'  => 'Clear this page from Cloudproxy',
 						'href'   => $cloudproxy_clear_uri,
@@ -137,22 +137,22 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 	}
 
 	if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
-		// add cpu load to admin menu
-		function serverinfo_admin_menu_item($wp_admin_bar) {
-			$loads = sys_getloadavg();
+		// add cpu load to admin menu.
+		function serverinfo_admin_menu_item( $wp_admin_bar ) {
+			$loads         = sys_getloadavg();
 			$cpu_load_info = '<p>Load: ' . $loads[0] . ' &nbsp;' . $loads[1] . ' &nbsp;' . $loads[2] . '  &nbsp; Free Disk: ' . Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] ) . '</p>';
-			$args = array(
-				'id' => 'cpu-load',
+			$args          = array(
+				'id'    => 'cpu-load',
 				'title' => $cpu_load_info,
-				'href'   => '/wp-admin/options-general.php?page=nerdpress-support',
-				'meta'   => array(
+				'href'  => '/wp-admin/options-general.php?page=nerdpress-support',
+				'meta'  => array(
 					'class' => 'btButton',
 					'title' => 'Open NerdPress Support plugin settings.',
 				),
 			);
-			$wp_admin_bar->add_node($args);
+			$wp_admin_bar->add_node( $args );
 		}
-		add_action('admin_bar_menu', 'serverinfo_admin_menu_item', 1000 );
+		add_action( 'admin_bar_menu', 'serverinfo_admin_menu_item', 1000 );
 	}
 }
 add_action( 'admin_bar_menu', 'bt_custom_toolbar_links', 99 );

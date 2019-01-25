@@ -40,9 +40,10 @@ class Blog_Tutor_Support_Admin {
 	public function blog_tutor_support_message() {
 		$option = get_option('blog_tutor_support_settings');
 		if ( ! empty( $option['admin_notice'] ) ) {
+			$site_url = get_site_url();
 			?>
 			<div class="notice" style="border-left-color:#0F145B">
-				<p><img src="/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;">NerdPress Notes: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
+				<p><img src="<?php echo esc_url( $site_url ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;">NerdPress Notes: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
 			</div>
 			<?php
 		}

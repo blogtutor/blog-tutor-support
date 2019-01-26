@@ -3,7 +3,7 @@
 /**
  * Plugin Name: NerdPress Support
  * Description: Adds the NerdPress support widget to your WordPress dashboard for easy access to our knowledge base and contact form.
- * Version: 	0.5.0
+ * Version: 	0.5.0-beta.1
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support

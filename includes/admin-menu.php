@@ -3,8 +3,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+
 // Add Admin Bar Menu Items.
 function bt_custom_toolbar_links( $wp_admin_bar ) {
+	if ( ! is_admin() ) {
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
 
 	if ( current_user_can( 'editor' ) || current_user_can( 'administrator' ) ) {
 		// Add "NerdPress" parent menu Items.
@@ -14,11 +18,10 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			'parent' => false,
 		);
 		$wp_admin_bar->add_node( $args );
-		$site_url = get_site_url();
 
 		// Add Child Menu Items.
 		// Add a Clear Cloudproxy link to the Admin Bar.
-		if ( file_exists( $_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/sucuri/sucuri-settings.php' ) ) {
+		if ( is_plugin_active( 'sucuri-scanner/sucuri.php' ) ) {
 
 			// Get Cloudproxy API Keys.
 			$input_lines = file_get_contents( $_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/sucuri/sucuri-settings.php' );
@@ -93,14 +96,29 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				);
 				$wp_admin_bar->add_node( $args );
 			}
+		} elseif ( is_plugin_inactive( 'sucuri-scanner/sucuri.php' ) ) {
+			$args = array(
+				'id'     => 'bt-sucuri-inactive',
+				'title'  => 'The Sucuri Plugin is inactive!',
+				'href'   => '#',
+				'parent' => 'nerdpress-menu',
+				'meta'   => array(
+					'class' => 'btButton',
+					'title' => 'Your Sucuri Plugin is not activated. Please contact us!',
+					'onclick' => 'window.supportHeroWidget.show();',
+				),
+			);
+			$wp_admin_bar->add_node( $args );
 		} else {
 			$args = array(
 				'id'     => 'bt-sucuri-missing',
 				'title'  => 'The Sucuri Plugin is missing!',
+				'href'   => '#',
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
 					'title' => 'Your Sucuri Plugin is not configured. Please contact us!',
+					'onclick' => 'window.supportHeroWidget.show();',
 				),
 			);
 			$wp_admin_bar->add_node( $args );
@@ -126,7 +144,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$args = array(
 				'id'     => 'bt-settings',
 				'title'  => 'Plugin Settings',
-				'href'   => $site_url . '/wp-admin/options-general.php?page=nerdpress-support',
+				'href'   => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
@@ -140,13 +158,13 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 	if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 		// add cpu load to admin menu.
 		function serverinfo_admin_menu_item( $wp_admin_bar ) {
-			$loads         = sys_getloadavg();
+			$loads = sys_getloadavg();
 			if ( $loads ) {
 				$cpu_load_info = '<p>Load: ' . $loads[0] . ' &nbsp;' . $loads[1] . ' &nbsp;' . $loads[2] . '  &nbsp; Free Disk: ' . Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] ) . '</p>';
 				$args          = array(
 					'id'    => 'cpu-load',
 					'title' => $cpu_load_info,
-					'href'  => $site_url . '/wp-admin/options-general.php?page=nerdpress-support',
+					'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
 					'meta'  => array(
 						'class' => 'btButton',
 						'title' => 'Open NerdPress Support plugin settings.',

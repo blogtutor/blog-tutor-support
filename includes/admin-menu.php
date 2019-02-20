@@ -158,20 +158,26 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 	if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 		// add cpu load to admin menu.
 		function serverinfo_admin_menu_item( $wp_admin_bar ) {
-			$loads = sys_getloadavg();
-			if ( $loads ) {
-				$cpu_load_info = '<p>Load: ' . $loads[0] . ' &nbsp;' . $loads[1] . ' &nbsp;' . $loads[2] . '  &nbsp; Free Disk: ' . Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] ) . '</p>';
-				$args          = array(
-					'id'    => 'cpu-load',
-					'title' => $cpu_load_info,
-					'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
-					'meta'  => array(
-						'class' => 'btButton',
-						'title' => 'Open NerdPress Support plugin settings.',
-					),
-				);
-				$wp_admin_bar->add_node( $args );
+			$cpu_loads = sys_getloadavg();
+
+			if ( $cpu_loads ) {
+				$cpu_load_info = '<p>Load: ' . $cpu_loads[0] . ' &nbsp;' . $cpu_loads[1] . ' &nbsp;' . $cpu_loads[2] . '  &nbsp; ';
+			} else {
+				$cpu_load_info = '';
 			}
+
+			$disk_space_info = 'Free Disk: ' . Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] ) . '</p>';
+			$cpu_disk_info   = $cpu_load_info . $disk_space_info;
+			$args            = array(
+				'id'    => 'cpu-disk-info',
+				'title' => $cpu_disk_info,
+				'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
+				'meta'  => array(
+					'class' => 'btButton',
+					'title' => 'Open NerdPress Support plugin settings.',
+				),
+			);
+			$wp_admin_bar->add_node( $args );
 		}
 		add_action( 'admin_bar_menu', 'serverinfo_admin_menu_item', 1000 );
 	}

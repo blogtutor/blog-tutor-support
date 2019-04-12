@@ -24,7 +24,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		if ( is_plugin_active( 'sucuri-scanner/sucuri.php' ) ) {
 
 			// Get Cloudproxy API Keys.
-			$input_lines = file_get_contents( $_SERVER['DOCUMENT_ROOT'] . '/wp-content/uploads/sucuri/sucuri-settings.php' );
+			$input_lines = file_get_contents( ABSPATH . '/wp-content/uploads/sucuri/sucuri-settings.php' );
 			// Using # as regex delimiters since / was giving error.
 			$regex = "#\"sucuriscan_cloudproxy_apikey\":\"(.{32})\\\/(.{32})#";
 

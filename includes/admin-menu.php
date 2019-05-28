@@ -27,7 +27,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
 				$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
 			} else {
-				$input_lines = file_get_contents( ABSPATH . '/wp-content/uploads/sucuri/sucuri-settings.php' );
+				$upload_dir  = wp_upload_dir( $time = null, $create_dir = null );
+				$input_lines = file_get_contents( $upload_dir['basedir'] . '/sucuri/sucuri-settings.php' );
 			}
 			// Using # as regex delimiters since / was giving error.
 			$regex = "#\"sucuriscan_cloudproxy_apikey\":\"(.{32})\\\/(.{32})#";
@@ -107,8 +108,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'href'   => '#',
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
-					'class' => 'btButton',
-					'title' => 'Your Sucuri Plugin is not activated. Please contact us!',
+					'class'   => 'btButton',
+					'title'   => 'Your Sucuri Plugin is not activated. Please contact us!',
 					'onclick' => 'window.supportHeroWidget.show();',
 				),
 			);
@@ -120,8 +121,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'href'   => '#',
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
-					'class' => 'btButton',
-					'title' => 'Your Sucuri Plugin is not configured. Please contact us!',
+					'class'   => 'btButton',
+					'title'   => 'Your Sucuri Plugin is not configured. Please contact us!',
 					'onclick' => 'window.supportHeroWidget.show();',
 				),
 			);

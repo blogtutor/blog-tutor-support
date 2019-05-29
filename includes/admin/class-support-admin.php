@@ -18,7 +18,7 @@ class Blog_Tutor_Support_Admin {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'settings_menu' ), 59 );
-		add_action( 'admin_init', array( $this, 'plugin_settings' ) );
+		add_action( 'admin_init', array( $this, 'settings_tabs' ) );
 	}
 
 	/**
@@ -38,7 +38,7 @@ class Blog_Tutor_Support_Admin {
 	}
 
 	public function blog_tutor_support_message() {
-		$option = get_option('blog_tutor_support_settings');
+		$option = get_option( 'blog_tutor_support_settings' );
 		if ( ! empty( $option['admin_notice'] ) ) {
 			$site_url = get_site_url();
 			?>
@@ -57,88 +57,130 @@ class Blog_Tutor_Support_Admin {
 	}
 
 	/**
-	 * Plugin settings form fields.
+	 * Add Plugin Settings Tabs.
 	 */
-	public function plugin_settings() {
-		$option = 'blog_tutor_support_settings';
+	public function settings_tabs() {
+		/**
+		* Plugin settings form fields.
+		*/
+		$settings_option = 'blog_tutor_support_settings';
 
 		// Set Custom Fields cection.
 		add_settings_section(
 			'options_section',
 			__( 'NerdPress Support Section', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
-			$option
+			$settings_option
 		);
 
 		//   'test_mode',
 		// add_settings_field(
 		//   __( 'Test mode', 'nerdpress-support' ),
 		//   array( $this, 'checkbox_element_callback' ),
-		//   $option,
+		//   $settings_option,
 		//   'options_section',
 		//   array(
-		//     'menu'  => $option,
+		//     'menu'  => $settings_option,
 		//     'id'    => 'test_mode',
 		//     'label' => __( 'If checked show the widget to admins only.', 'nerdpress-support' ),
 		//   )
 		// );
 
-// Add admin notice text area
+		// Add admin notice text area
 		add_settings_field(
 			'admin_notice',
 			__( 'NerdPress Support Notice', 'nerdpress-support' ),
 			array( $this, 'textarea_element_callback' ),
-			$option,
+			$settings_option,
 			'options_section',
 			array(
-				'menu'        => $option,
+				'menu'        => $settings_option,
 				'id'          => 'admin_notice',
 				'description' => __( 'Enter notice that will show for NerdPress admins only.', 'nerdpress-support' ),
 			)
 		);
 
-// Add option to hide "Need Help?" tab in dashboard.
-		 add_settings_field(
-			 'hide_tab',
-		   __( 'Hide Help Tab?', 'nerdpress-support' ),
-		   array( $this, 'checkbox_element_callback' ),
-		   $option,
-		   'options_section',
-		   array(
-		     'menu'  => $option,
-		     'id'    => 'hide_tab',
-		     'label' => __( 'Hides the "Need Help?" tab in the bottom of the dashboard.', 'nerdpress-support' ),
-		   )
-		 );
+		// Add option to hide "Need Help?" tab in dashboard.
+		add_settings_field(
+			'hide_tab',
+			__( 'Hide Help Tab?', 'nerdpress-support' ),
+			array( $this, 'checkbox_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'hide_tab',
+				'label' => __( 'Hides the "Need Help?" tab in the bottom of the dashboard.', 'nerdpress-support' ),
+			)
+		);
 
 		// add_settings_field(
 		//   'identify_users',
 		//   __( 'Identify Users', 'nerdpress-support' ),
 		//   array( $this, 'checkbox_element_callback' ),
-		//   $option,
+		//   $settings_option,
 		//   'options_section',
 		//   array(
-		//     'menu'  => $option,
+		//     'menu'  => $settings_option,
 		//     'id'    => 'identify_users',
 		//     'label' => __( 'If checked Blog Tutor Support widget will identify the user ID, email and display name from logged users.', 'nerdpress-support' ),
 		//   )
 		// );
 
-		add_settings_field(
-		  'server_info',
-		  __( 'Server Stats', 'nerdpress-support' ),
-		  array( $this, 'server_info_element_callback' ),
-		  $option,
-		  'options_section',
-		  array(
-		    'menu'  => $option,
-		    'id'    => 'server_info',
-		    'label' => __( 'Showing sever stats and variables.', 'nerdpress-support' ),
-		  )
+		// Register settings.
+		register_setting( $settings_option, $settings_option, array( $this, 'validate_options' ) );
+
+		/**
+		* Server Information form fields.
+		*/
+		$information_option = 'blog_tutor_server_information';
+		// Set Custom Fields cection.
+		add_settings_section(
+			'information_section',
+			__( 'NerdPress Server Information Section', 'nerdpress-support' ),
+			array( $this, 'section_options_callback' ),
+			$information_option
 		);
 
-		// Register settings.
-		register_setting( $option, $option, array( $this, 'validate_options' ) );
+		add_settings_field(
+			'server_info',
+			__( 'Server Stats', 'nerdpress-support' ),
+			array( $this, 'server_info_element_callback' ),
+			$information_option,
+			'information_section',
+			array(
+				'menu'  => $information_option,
+				'id'    => 'server_info',
+				'label' => __( 'Showing sever stats and variables.', 'nerdpress-support' ),
+			)
+		);
+		register_setting( $information_option, $information_option, array( $this, 'validate_options' ) );
+
+		/**
+		* Sucuri form fields.
+		*/
+		$sucuri_option = 'blog_tutor_sucuri_settings';
+		// Set Custom Fields cection.
+		add_settings_section(
+			'information_section',
+			__( 'Sucuri settings Section', 'nerdpress-support' ),
+			array( $this, 'section_options_callback' ),
+			$sucuri_option
+		);
+
+		add_settings_field(
+			'sucuri_options',
+			__( 'Sucuri Options', 'nerdpress-support' ),
+			array( $this, 'sucuri_options_element_callback' ),
+			$sucuri_option,
+			'information_section',
+			array(
+				'menu'  => $sucuri_option,
+				'id'    => 'sucuri_options',
+				'label' => __( 'Sucuri actions and options.', 'nerdpress-support' ),
+			)
+		);
+		register_setting( $sucuri_option, $sucuri_option, array( $this, 'validate_options' ) );
 	}
 
 	/**
@@ -201,6 +243,25 @@ class Blog_Tutor_Support_Admin {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-serverinfo-field.php';
+	}
+
+	/**
+	 * Sucuri Options element fallback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function sucuri_options_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$value = $options[ $id ];
+		} else {
+			$value = isset( $args['default'] ) ? $args['default'] : '';
+		}
+
+		include dirname( __FILE__ ) . '/views/html-sucuri-options-field.php';
 	}
 
 	/**

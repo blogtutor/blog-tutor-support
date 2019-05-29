@@ -13,8 +13,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
-	<?php settings_errors(); ?>
+	<?php
+	settings_errors();
+	$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'nerdpress_settings';
+	?>
 
+	<h2 class="nav-tab-wrapper">
+		<a href="?page=nerdpress-support&tab=nerdpress_settings" class="nav-tab <?php echo 'nerdpress_settings' == $active_tab ? 'nav-tab-active' : ''; ?>">NerdPress Settings</a>
+		<a href="?page=nerdpress-support&tab=server_information" class="nav-tab <?php echo 'server_information' == $active_tab ? 'nav-tab-active' : ''; ?>">Server Information</a>
+		<a href="?page=nerdpress-support&tab=sucuri_settings" class="nav-tab <?php echo 'sucuri_settings' == $active_tab ? 'nav-tab-active' : ''; ?>">Sucuri Settings</a>
+	</h2>
+
+	<?php
+	if ( 'nerdpress_settings' == $active_tab ) {
+		?>
 	<form method="post" action="options.php">
 		<?php
 			settings_fields( 'blog_tutor_support_settings' );
@@ -22,5 +34,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 			submit_button();
 		?>
 	</form>
+
+		<?php
+	} elseif ( 'server_information' == $active_tab ) {
+		settings_fields( 'blog_tutor_server_information' );
+		do_settings_sections( 'blog_tutor_server_information' );
+	} elseif ( 'sucuri_settings' == $active_tab ) {
+		settings_fields( 'blog_tutor_sucuri_settings' );
+		do_settings_sections( 'blog_tutor_sucuri_settings' );
+	}
+	?>
+
 </div>
 <?php

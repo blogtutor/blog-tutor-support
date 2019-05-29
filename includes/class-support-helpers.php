@@ -19,8 +19,7 @@ class Blog_Tutor_Support_Helpers {
 		$current_user = wp_get_current_user();
 		if ( current_user_can( 'administrator' ) && ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false || strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) ) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -63,5 +62,39 @@ class Blog_Tutor_Support_Helpers {
 		return ( round( $bytes, 2 ) . ' ' . $types[ $i ] );
 	}
 
+	/**
+	 * Get Cloudproxy API Keys from sucuri-settings.php
+	 *
+	 * @return string Sucuri API call with bare arguments
+	 */
+	public static function get_sucuri_api_call() {
+		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
+			$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
+		} else {
+			$upload_dir  = wp_upload_dir( $time = null, $create_dir = null );
+			$input_lines = file_get_contents( $upload_dir['basedir'] . '/sucuri/sucuri-settings.php' );
+		}
+		// Using # as regex delimiters since / was giving error.
+		$regex = '#\"sucuriscan_cloudproxy_apikey\":\"(.{32})\\\/(.{32})#';
 
+		preg_match_all( $regex, $input_lines, $output_array, PREG_SET_ORDER, 0 );
+
+		if ( array_filter( $output_array ) ) {
+			$api_key    = $output_array[0][1];
+			$api_secret = $output_array[0][2];
+		}
+
+		if ( ! isset( $api_key ) ) {
+			return;
+		} else {
+			// $sucuri_api_call = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret;
+			$sucuri_api_call               = array();
+			$sucuri_api_call['address']    = 'https://waf.sucuri.net/api';
+			$sucuri_api_call['k_option']   = '?&k=';
+			$sucuri_api_call['api_key']    = $api_key;
+			$sucuri_api_call['s_option']   = '&s=';
+			$sucuri_api_call['api_secret'] = $api_secret;
+			return $sucuri_api_call;
+		}
+	}
 }

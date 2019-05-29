@@ -23,26 +23,13 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		// Add a Clear Cloudproxy link to the Admin Bar.
 		if ( is_plugin_active( 'sucuri-scanner/sucuri.php' ) ) {
 
-			// Get Cloudproxy API Keys.
-			if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
-				$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
-			} else {
-				$upload_dir  = wp_upload_dir( $time = null, $create_dir = null );
-				$input_lines = file_get_contents( $upload_dir['basedir'] . '/sucuri/sucuri-settings.php' );
-			}
-			// Using # as regex delimiters since / was giving error.
-			$regex = "#\"sucuriscan_cloudproxy_apikey\":\"(.{32})\\\/(.{32})#";
+			$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 
-			preg_match_all( $regex, $input_lines, $output_array, PREG_SET_ORDER, 0 );
-
-			if ( array_filter( $output_array ) ) {
-				$api_key    = $output_array[0][1];
-				$api_secret = $output_array[0][2];
-			}
-
-			if ( isset( $api_key ) ) {
+			// If is array then the api key excists.
+			if ( is_array( $sucuri_api_call_array ) ) {
+				$sucuri_api_call = implode( $sucuri_api_call_array );
 				// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
-				$cloudproxy_clear = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret . '&a=clearcache';
+				$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
 				$args             = array(
 					'id'     => 'bt-clear-cloudproxy',
 					'title'  => 'Clear Cloudproxy Cache',
@@ -59,7 +46,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				if ( ! is_admin() ) {
 					// Clear current page from Cloudproxy cache.
 					$path                 = $_SERVER['REQUEST_URI'];
-					$cloudproxy_clear_uri = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret . '&a=clearcache&file=' . $path;
+					$cloudproxy_clear_uri = $sucuri_api_call . '&a=clearcache&file=' . $path;
 					$args                 = array(
 						'id'     => 'bt-clear-uri-cloudproxy',
 						'title'  => 'Clear this page from Cloudproxy',
@@ -75,7 +62,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					$wp_admin_bar->add_node( $args );
 				}
 
-				$cloudproxy_whitelist = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret . '&a=whitelist';
+				$cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist';
 				$args                 = array(
 					'id'     => 'bt-whitelist-cloudproxy',
 					'title'  => 'Whitelist Your IP Address',

@@ -93,6 +93,7 @@ class Blog_Tutor_Support {
   protected function includes() {
     include_once dirname( __FILE__ ) . '/includes/class-support-helpers.php';
     include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
+    include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
   }
 }
 

@@ -61,21 +61,6 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					);
 					$wp_admin_bar->add_node( $args );
 				}
-
-				$cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist';
-				$args                 = array(
-					'id'     => 'bt-whitelist-cloudproxy',
-					'title'  => 'Whitelist Your IP Address',
-					'href'   => $cloudproxy_whitelist,
-					'parent' => 'nerdpress-menu',
-					'meta'   => array(
-						'class'  => 'btButton',
-						'target' => 'blank',
-						'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
-						'parent' => 'nerdpress-menu',
-					),
-				);
-				$wp_admin_bar->add_node( $args );
 			} else {
 				$args = array(
 					'id'     => 'bt-cloudproxy-api-not-set',

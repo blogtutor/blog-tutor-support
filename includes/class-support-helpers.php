@@ -89,8 +89,8 @@ class Blog_Tutor_Support_Helpers {
 		} else {
 			// $sucuri_api_call = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret;
 			$sucuri_api_call               = array();
-			$sucuri_api_call['address']    = 'https://waf.sucuri.net/api';
-			$sucuri_api_call['k_option']   = '?&k=';
+			$sucuri_api_call['address']    = 'https://waf.sucuri.net/api?v2';
+			$sucuri_api_call['k_option']   = '&k=';
 			$sucuri_api_call['api_key']    = $api_key;
 			$sucuri_api_call['s_option']   = '&s=';
 			$sucuri_api_call['api_secret'] = $api_secret;

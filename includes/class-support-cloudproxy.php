@@ -15,15 +15,13 @@ class Blog_Tutor_Support_Cloudproxy {
 	private $whitelist_option_name = 'cloudproxy_wl_ips';
 
 	public function __construct() {
-        
 		// Schedule a cron job that wipes all the whitelisted ips
 		add_action( 'bt_remove_whitelist_cron', array( $this, 'remove_whitelist_cron' ), 9 );
 		if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
-			wp_schedule_event( time(), 'daily', 'bt_remove_whitelist_cron' );
+			wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
 
         add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
         add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
-        
 	}
 
     public function bt_enqueue_scripts() {

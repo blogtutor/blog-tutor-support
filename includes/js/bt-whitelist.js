@@ -27,7 +27,8 @@ jQuery(document).ready(function($) {
     function wlNotify(ip) {
         var wlBox = document.createElement('div');
         wlBox.innerHTML = '<h4>NerdPress Notification</h4>Your IP ('
-                        + ip + ') has been whitelisted with the Sucuri Firewall.';
+                        + ip + ') has been automatically whitelisted '
+                        + '<br />on the Sucuri Firewall for the next 24 hours.';
         
         wlBox.style.padding = '0.3rem 1rem 1rem 1rem';
         wlBox.style.backgroundColor = 'rgb(152, 79, 159)';

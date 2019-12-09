@@ -32,5 +32,5 @@ if ( is_array( $sucuri_api_call_array ) ) {
 	</form>
 	<?php
 } else {
-	echo '<h2> Cloudproxy API Key is not found. </h2>';
+	echo '<h2> Sucuri Firewall API Key is not found. </h2>';
 }

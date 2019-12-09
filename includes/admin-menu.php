@@ -32,13 +32,13 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
 				$args             = array(
 					'id'     => 'bt-clear-cloudproxy',
-					'title'  => 'Clear Cloudproxy Cache',
-					'href'   => $cloudproxy_clear,
+					'title'  => 'Clear Sucuri Firewall Cache',
+					'href'   => '#',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
+                        'id'     => 'btClearcache',
 						'class'  => 'btButton',
-						'target' => 'blank',
-						'title'  => 'Clear the Cloudproxy cache',
+						'title'  => 'Clear the Sucuri Firewall Cache',
 					),
 				);
 				$wp_admin_bar->add_node( $args );
@@ -49,13 +49,13 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					$cloudproxy_clear_uri = $sucuri_api_call . '&a=clearcache&file=' . $path;
 					$args                 = array(
 						'id'     => 'bt-clear-uri-cloudproxy',
-						'title'  => 'Clear this page from Cloudproxy',
-						'href'   => $cloudproxy_clear_uri,
+						'title'  => 'Clear Sucuri Firewall Cache',
+						'href'   => '#',
 						'parent' => 'nerdpress-menu',
 						'meta'   => array(
 							'class'  => 'btButton',
 							'target' => 'blank',
-							'title'  => 'Clear this page from Cloudproxy cache.',
+							'title'  => 'Clear this page from Sucuri Firewall Cache.',
 							'parent' => 'nerdpress-menu',
 						),
 					);
@@ -64,11 +64,11 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			} else {
 				$args = array(
 					'id'     => 'bt-cloudproxy-api-not-set',
-					'title'  => 'Cloudproxy API Key is not set',
+					'title'  => 'Sucuri Firewall API Key is not set',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
 						'class' => 'btButton',
-						'title' => 'Your Cloudproxy API key is not set in the Sucuri Plugin. If your site should be configured to use Cloudproxy, please contact us!',
+						'title' => 'Your Sucuri Firewall API key is not set in the Sucuri Plugin. If your site should be configured to use Sucuri Firewall, please contact us!',
 					),
 				);
 				$wp_admin_bar->add_node( $args );
@@ -148,7 +148,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$args            = array(
 				'id'    => 'cpu-disk-info',
 				'title' => $cpu_disk_info,
-				'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
+				'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support&tab=server_information',
 				'meta'  => array(
 					'class' => 'btButton',
 					'title' => 'Open NerdPress Support plugin settings.',

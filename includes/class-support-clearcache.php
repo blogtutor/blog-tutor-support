@@ -1,0 +1,68 @@
+<?php
+session_start();
+if ( !defined('ABSPATH') )
+    die();
+
+    /**
+	 * Blog_Tutor_Support Clear Cache
+	 *
+	 * @package  Blog_Tutor_Support
+	 * @category Core
+	 * @author Andrey Kalashnikov
+	 */
+
+class Blog_Tutor_Support_Clearcache {
+    
+    public function __construct() {
+		add_action( 'admin_notices', array( $this, 'blog_tutor_clearcache_message' ), 59 );
+        add_action( 'wp_ajax_sucuri_clearcache', array( $this, 'sucuri_clearcache' ) );
+        add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
+    }
+
+    public function blog_tutor_clearcache_message() {
+        if(isset($_SESSION['s_clearcache'])) {
+        ?>
+			<div class="notice" style="border-left-color:#0F145B">
+				<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong>The Sucuri Firewall cache has been cleared. Please allow three minutes for it to fully flush.</strong></p>
+			</div>
+			<?php
+		}
+        unset($_SESSION['s_clearcache']);
+    }
+
+    public function sucuri_clearcache() {
+        check_ajax_referer('sucuri_clearcache_secure_me', 'sucuri_clearcache_nonce');
+
+		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
+		if ( is_array( $sucuri_api_call_array ) ) {
+            $sucuri_api_call = implode( $sucuri_api_call_array );
+            $cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
+            
+            $args = array( 'timeout' => 30 );
+            
+            $response = wp_remote_get( $cloudproxy_clear, $args );
+            if( is_wp_error( $response ) ) {
+                echo 'Error: Connection to Sucuri Clear Cache endpoint failed';
+                die();
+            }
+            
+            $body = wp_remote_retrieve_body( $response );
+            $_SESSION['s_clearcache'] = TRUE;
+            echo $body;
+            die();
+        }
+        
+        die();
+    }
+
+    public function bt_enqueue_scripts() {
+        wp_register_script( 'clearcache_js', plugins_url( 'js/bt-clearcache.js', __FILE__ ), array());
+        wp_localize_script( 'clearcache_js', 'sucuri_clearcache', array(
+            'endpoint'              => admin_url( 'admin-ajax.php' ),
+            'nonce'                 => wp_create_nonce( 'sucuri_clearcache_secure_me' ),
+        ));
+        wp_enqueue_script( 'clearcache_js' );
+    }
+}
+
+new Blog_Tutor_Support_Clearcache(); 

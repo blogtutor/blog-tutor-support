@@ -39,16 +39,15 @@ class Blog_Tutor_Support_Cloudproxy {
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
         $return_str = 'Sucuri Plugin isn\'t active';
 
-        if ( is_plugin_active( 'sucuri-scanner/sucuri.php' ) && is_array( $sucuri_api_call_array ) ):
+        $client_ip = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
+        if ( $client_ip != NULL && is_array( $sucuri_api_call_array ) ):
 
-            if( !user_can( get_current_user_id(), 'manage_options' ) ) {
+            if( !user_can( get_current_user_id(), 'edit_posts' ) ) {
                 echo 'IP cannot be whitelisted for the current user';
                 die();
             }
 
             $whitelisted_ips = get_option( $this->whitelist_option_name, array() );
-
-            $client_ip = $_SERVER['REMOTE_ADDR'];
            
             $return_str = 'IP is already whitelisted'; 
             if( !in_array( $client_ip, $whitelisted_ips ) ) {
@@ -60,7 +59,7 @@ class Blog_Tutor_Support_Cloudproxy {
 
                 $response = wp_remote_get( $cloudproxy_whitelist, $args );
                 if( is_wp_error( $response ) ) {
-                    echo 'Error: Connection to Sucuri CloudProxy API failed';
+                    echo 'Error: Connection to Sucuri Firewall API failed';
                     die();
                 }
 

@@ -51,7 +51,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						'id'	 => 'bt-clear-uri-cloudproxy',
 						'title'  => 'Clear this page from Sucuri Firewall',
 						// Keep using the v1 API for this menu item
-						'href'   => str_replace('api?v2', 'api?', $cloudproxy_clear_uri),
+						'href'   => str_replace('?&k', '?k', str_replace('api?v2', 'api?', $cloudproxy_clear_uri)),
 						'parent' => 'nerdpress-menu',
 						'meta'   => array(
 							'class'  => 'btButton',

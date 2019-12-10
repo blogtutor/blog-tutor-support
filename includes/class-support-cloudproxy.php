@@ -37,7 +37,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		check_ajax_referer('sucuri_whitelist_secure_me', 'sucuri_whitelist_nonce');
 		
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
-		$return_str = 'Sucuri Plugin isn\'t active';
+		$return_str = FALSE;
 
 		$client_ip = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		if ( $client_ip != NULL && is_array( $sucuri_api_call_array ) ):

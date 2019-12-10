@@ -2,8 +2,8 @@
 
 /**
  * Plugin Name: NerdPress Support
- * Description: Adds the NerdPress support widget to your WordPress dashboard for easy access to our knowledge base and contact form.
- * Version:     0.6.0-beta1
+ * Description: Helps your site work better with the Sucuri Firewall, and adds the NerdPress "Need Help?" support tab to your dashboard for easy access to our knowledge base and contact form.
+ * Version:     0.6.0
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support

@@ -16,7 +16,7 @@ class Blog_Tutor_Support_Clearcache {
 	public function __construct() {
 		add_action( 'admin_notices', array( $this, 'blog_tutor_clearcache_message' ), 59 );
 		add_action( 'wp_ajax_sucuri_clearcache', array( $this, 'sucuri_clearcache' ) );
-		add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
+		add_action( 'init', array( $this, 'bt_enqueue_scripts' ) );
 	}
 
 	public function blog_tutor_clearcache_message() {
@@ -42,7 +42,7 @@ class Blog_Tutor_Support_Clearcache {
 			
 			$response = wp_remote_get( $cloudproxy_clear, $args );
 			if( is_wp_error( $response ) ) {
-				echo 'Error: Connection to Sucuri Clear Cache endpoint failed';
+				echo false;
 				die();
 			}
 			
@@ -51,11 +51,16 @@ class Blog_Tutor_Support_Clearcache {
 				$message_body = json_decode($body, TRUE);
 			} catch(Exception $e) {
 				$_SESSION['s_clearcache'] = 'Invalid response from Sucuri Firewall API';
+				echo false;
 				die();
 			}
 
-			$_SESSION['s_clearcache'] = $message_body['messages'][0];
-			echo $message_body['messages'][0];
+			$message = ($message_body['status'] == 0
+				    ? 'There was a problem clearing the Sucuri Firewall cache. Please try again, and if it still doesn\'t work please contact support@nerdpress.net.'
+				    : $message_body['messages']['0']);
+
+			$_SESSION['s_clearcache'] = $message;
+			echo ($message_body['status'] == 0 ? false : $message);
 			die();
 		}
 		
@@ -63,12 +68,15 @@ class Blog_Tutor_Support_Clearcache {
 	}
 
 	public function bt_enqueue_scripts() {
-		wp_register_script( 'clearcache_js', plugins_url( 'js/bt-clearcache.js', __FILE__ ), array());
-		wp_localize_script( 'clearcache_js', 'sucuri_clearcache', array(
-			'endpoint'			  => admin_url( 'admin-ajax.php' ),
-			'nonce'				 => wp_create_nonce( 'sucuri_clearcache_secure_me' ),
-		));
-		wp_enqueue_script( 'clearcache_js' );
+		if( user_can( get_current_user_id(), 'edit_posts' ) ) {
+			wp_enqueue_script('jquery'); 
+			wp_register_script( 'clearcache_js', plugins_url( 'js/bt-clearcache.js', __FILE__ ), array() );
+			wp_localize_script( 'clearcache_js', 'sucuri_clearcache', array(
+				'endpoint'			  => admin_url( 'admin-ajax.php' ),
+				'nonce'				 => wp_create_nonce( 'sucuri_clearcache_secure_me' ),
+			));
+			wp_enqueue_script( 'clearcache_js' );
+		}
 	}
 }
 

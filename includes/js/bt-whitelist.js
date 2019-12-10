@@ -14,8 +14,11 @@ jQuery(document).ready(function($) {
 				sucuri_whitelist_nonce: sucuri_whitelist.nonce,
 			}
 		}).done(function(data) {
-			if(!data.includes('already whitelisted'))
-				wlNotify(data);
+			if(data && !data.includes('already whitelisted')) {
+				var msg = 'Your IP (' + data.match(/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/)[0]
+					+ ') has been automatically<br />whitelisted on the Sucuri Firewall for the next 24 hours';
+				wlNotify(msg);
+			}
 		});
 	}
 
@@ -27,7 +30,7 @@ jQuery(document).ready(function($) {
 window.crNerdPressNotification = function(message) {
 		var npBox = document.createElement('div');
 		npBox.innerHTML = '<h4><img src="/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" width="50" '
-						+ 'style="vertical-align:middle" />NerdPress Notification</h4>' + message.replace('86400 seconds', '24 hours');
+						+ 'style="vertical-align:middle" />NerdPress Notification</h4>' + message;
 		
 		npBox.style.padding = '0.3rem 1rem 1rem 1rem';
 		npBox.style.backgroundColor = 'rgb(152, 79, 159)';

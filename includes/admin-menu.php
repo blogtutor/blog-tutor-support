@@ -13,7 +13,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 	if ( current_user_can( 'editor' ) || current_user_can( 'administrator' ) ) {
 		// Add "NerdPress" parent menu Items.
 		$args = array(
-			'id'     => 'nerdpress-menu',
+			'id'	 => 'nerdpress-menu',
 			'title'  => 'NerdPress',
 			'parent' => false,
 		);
@@ -30,13 +30,13 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				$sucuri_api_call = implode( $sucuri_api_call_array );
 				// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
 				$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
-				$args             = array(
-					'id'     => 'bt-clear-cloudproxy',
+				$args			 = array(
+					'id'	 => 'bt-clear-cloudproxy',
 					'title'  => 'Clear Sucuri Firewall Cache',
 					'href'   => '#',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
-                        'id'     => 'btClearcache',
+						'id'	 => 'btClearcache',
 						'class'  => 'btButton',
 						'title'  => 'Clear the Sucuri Firewall Cache',
 					),
@@ -45,10 +45,10 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 				if ( ! is_admin() ) {
 					// Clear current page from Cloudproxy cache.
-					$path                 = $_SERVER['REQUEST_URI'];
+					$path				 = $_SERVER['REQUEST_URI'];
 					$cloudproxy_clear_uri = $sucuri_api_call . '&a=clearcache&file=' . $path;
-					$args                 = array(
-						'id'     => 'bt-clear-uri-cloudproxy',
+					$args				 = array(
+						'id'	 => 'bt-clear-uri-cloudproxy',
 						'title'  => 'Clear Sucuri Firewall Cache',
 						'href'   => '#',
 						'parent' => 'nerdpress-menu',
@@ -63,7 +63,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				}
 			} else {
 				$args = array(
-					'id'     => 'bt-cloudproxy-api-not-set',
+					'id'	 => 'bt-cloudproxy-api-not-set',
 					'title'  => 'Sucuri Firewall API Key is not set',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
@@ -75,7 +75,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			}
 		} elseif ( is_plugin_inactive( 'sucuri-scanner/sucuri.php' ) ) {
 			$args = array(
-				'id'     => 'bt-sucuri-inactive',
+				'id'	 => 'bt-sucuri-inactive',
 				'title'  => 'The Sucuri Plugin is inactive!',
 				'href'   => '#',
 				'parent' => 'nerdpress-menu',
@@ -88,7 +88,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$wp_admin_bar->add_node( $args );
 		} else {
 			$args = array(
-				'id'     => 'bt-sucuri-missing',
+				'id'	 => 'bt-sucuri-missing',
 				'title'  => 'The Sucuri Plugin is missing!',
 				'href'   => '#',
 				'parent' => 'nerdpress-menu',
@@ -103,7 +103,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 		// "Get Help" link to open the Support Hero widget
 		$args = array(
-			'id'     => 'bt-get-help',
+			'id'	 => 'bt-get-help',
 			'title'  => 'Get Help',
 			'href'   => '#',
 			'parent' => 'nerdpress-menu',
@@ -119,7 +119,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 			// "Plugin Settings" link to open the NerdPress Support settings page.
 			$args = array(
-				'id'     => 'bt-settings',
+				'id'	 => 'bt-settings',
 				'title'  => 'Plugin Settings',
 				'href'   => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
 				'parent' => 'nerdpress-menu',
@@ -145,8 +145,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 			$disk_space_info = 'Free Disk: ' . Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] ) . '</p>';
 			$cpu_disk_info   = $cpu_load_info . $disk_space_info;
-			$args            = array(
-				'id'    => 'cpu-disk-info',
+			$args			= array(
+				'id'	=> 'cpu-disk-info',
 				'title' => $cpu_disk_info,
 				'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support&tab=server_information',
 				'meta'  => array(

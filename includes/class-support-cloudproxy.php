@@ -42,6 +42,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		$client_ip = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		if ( $client_ip != NULL && is_array( $sucuri_api_call_array ) ):
 
+			wp_cache_delete('alloptions', 'options');
 			if( !user_can( get_current_user_id(), 'edit_posts' ) ) {
 				echo 'IP cannot be whitelisted for the current user';
 				die();
@@ -49,7 +50,7 @@ class Blog_Tutor_Support_Cloudproxy {
 
 			$whitelisted_ips = get_option( $this->whitelist_option_name, array() );
 		   
-			$return_str = 'IP is already whitelisted'; 
+			$return_str = 'IP is already whitelisted';
 			if( !in_array( $client_ip, $whitelisted_ips ) ) {
 				// Get the Sucuri's Cloudproxy endpoint
 				$sucuri_api_call = implode( $sucuri_api_call_array );
@@ -68,11 +69,11 @@ class Blog_Tutor_Support_Cloudproxy {
 				try {
 					$message = json_decode($body, TRUE);
 					$return_str = $message['messages'][0];
+					$this->save_whitelist_meta( $body, $whitelisted_ips );
 				} catch(Exception $e) {
 					echo 'Error while whitelisting your IP with Sucuri Firewall';
 					die();
 				}
-				$this->save_whitelist_meta( $body, $whitelisted_ips );
 			}
 
 		endif;

@@ -3,8 +3,6 @@
 jQuery(document).ready(function($) {
 	makeAjaxCall();  
 
-	$(document).on('tinymce-editor-init.autosave', makeAjaxCall);
-
 	function makeAjaxCall() {
 		$.ajax({
 			url: sucuri_whitelist.endpoint,

@@ -35,20 +35,27 @@ class Blog_Tutor_Support_Cloudproxy {
 
 	public function whitelist_cloudproxy_ip() {
 		check_ajax_referer('sucuri_whitelist_secure_me', 'sucuri_whitelist_nonce');
-		
+
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		$return_str = FALSE;
 
 		$client_ip = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		if ( $client_ip != NULL && is_array( $sucuri_api_call_array ) ):
 
-			wp_cache_delete('alloptions', 'options');
+			// Make sure the options isn't cached
+			$is_option_cached = wp_cache_get($this->whitelist_option_name, 'options');
+			if($is_option_cached)
+				wp_cache_delete($this->whitelist_option_name, 'options');
+
 			if( !user_can( get_current_user_id(), 'edit_posts' ) ) {
 				echo 'IP cannot be whitelisted for the current user';
 				die();
 			}
 
 			$whitelisted_ips = get_option( $this->whitelist_option_name, array() );
+			
+			// In case the option was empty and get_option returned an empty string
+			if(!is_array($whitelisted_ips)) $whitelisted_ips = array();
 		   
 			$return_str = 'IP is already whitelisted';
 			if( !in_array( $client_ip, $whitelisted_ips ) ) {

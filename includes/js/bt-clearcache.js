@@ -4,9 +4,11 @@ jQuery(document).ready(function($) {
 	$('#wp-admin-bar-bt-clear-cloudproxy a').click(makeAjaxCall);
 
 	function makeAjaxCall() {
-		var nText = 'One moment, please...	  ';
+		var nText = 'One moment, please...';
 		$(this).text(nText);
-		$('#wp-admin-bar-nerdpress-menu').off();
+
+		$('.hover').children().css('display', 'block');
+		$('#wp-admin-bar-nerdpress-menu').off('hover');
 
 		var self = this;
 		$.ajax({
@@ -21,6 +23,15 @@ jQuery(document).ready(function($) {
 			else {
 				if(!data) $(self).text('Error!');
 				else $(self).text('Success!');
+				$(document).click(function() {
+					$('#wp-admin-bar-nerdpress-menu').children('.ab-sub-wrapper').css('display', 'none');
+					$('#wp-admin-bar-nerdpress-menu').hover(function() {
+						$(this).children('.ab-sub-wrapper').css('display', 'block');
+					}, function() {
+						$(this).children('.ab-sub-wrapper').css('display', 'none');
+					});
+					$(this).off( 'click' );
+				});
 			}
 		});
 	}

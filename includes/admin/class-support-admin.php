@@ -114,6 +114,19 @@ class Blog_Tutor_Support_Admin {
 			)
 		);
 
+		// Add the choice of firewall option
+		add_settings_field(
+			'firewall_choice',
+			__( 'Firewall', 'nerdpress-support' ),
+			array( $this, 'radiobutton_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'firewall_choice'
+			)
+		);
+
 		// add_settings_field(
 		//   'identify_users',
 		//   __( 'Identify Users', 'nerdpress-support' ),
@@ -156,31 +169,39 @@ class Blog_Tutor_Support_Admin {
 		);
 		register_setting( $information_option, $information_option, array( $this, 'validate_options' ) );
 
-		/**
-		* Sucuri form fields.
-		*/
-		$sucuri_option = 'blog_tutor_sucuri_settings';
-		// Set Custom Fields cection.
-		add_settings_section(
-			'information_section',
-			__( 'Sucuri settings Section', 'nerdpress-support' ),
-			array( $this, 'section_options_callback' ),
-			$sucuri_option
-		);
 
-		add_settings_field(
-			'sucuri_options',
-			__( 'Sucuri Options', 'nerdpress-support' ),
-			array( $this, 'sucuri_options_element_callback' ),
-			$sucuri_option,
-			'information_section',
-			array(
-				'menu'  => $sucuri_option,
-				'id'    => 'sucuri_options',
-				'label' => __( 'Sucuri actions and options.', 'nerdpress-support' ),
-			)
-		);
-		register_setting( $sucuri_option, $sucuri_option, array( $this, 'validate_options' ) );
+		// Check if Securi's enabled to skip this branch since it would still execute even if the SFW tab is absent
+		$bt_options = get_option( 'blog_tutor_support_settings' );
+		$has_sucuri = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
+		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
+
+		if ( $has_sucuri && is_array( $sucuri_api_call_array ) ) {
+			/**
+			* Sucuri form fields.
+			*/
+			$sucuri_option = 'blog_tutor_sucuri_settings';
+			// Set Custom Fields cection.
+			add_settings_section(
+				'information_section',
+				__( 'Sucuri settings Section', 'nerdpress-support' ),
+				array( $this, 'section_options_callback' ),
+				$sucuri_option
+			);
+
+			add_settings_field(
+				'sucuri_options',
+				__( 'Sucuri Options', 'nerdpress-support' ),
+				array( $this, 'sucuri_options_element_callback' ),
+				$sucuri_option,
+				'information_section',
+				array(
+					'menu'  => $sucuri_option,
+					'id'    => 'sucuri_options',
+					'label' => __( 'Sucuri actions and options.', 'nerdpress-support' ),
+				)
+			);
+			register_setting( $sucuri_option, $sucuri_option, array( $this, 'validate_options' ) );
+		}
 	}
 
 	/**
@@ -205,6 +226,34 @@ class Blog_Tutor_Support_Admin {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
+	}
+
+	/**
+	 * Radio Button area callback
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function radiobutton_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+
+		$firewall = '';
+		if( isset( $options['firewall_choice'] ) ) { 
+			$firewall = $options['firewall_choice'];
+		} else {
+			$firewall = 'sucuri';
+			$options['firewall_choice'] = $firewall;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+ 
+		include dirname( __FILE__ ) . '/views/html-radiobutton-field.php';
 	}
 
 	/**

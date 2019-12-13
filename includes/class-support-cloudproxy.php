@@ -21,6 +21,7 @@ class Blog_Tutor_Support_Cloudproxy {
 			wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
 
 		add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
+		add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
 		add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
 	}
 
@@ -90,6 +91,11 @@ class Blog_Tutor_Support_Cloudproxy {
 
 	public function remove_whitelist_cron() {
 		delete_option( $this->whitelist_option_name );	
+	}
+
+	public function clear_whitelist() {
+		check_ajax_referer('clear_whitelist_secure_me', 'clear_whitelist_nonce');
+		$this->remove_whitelist_cron();
 	}
 
 	private function save_whitelist_meta( $body, $whitelisted_ips ) {

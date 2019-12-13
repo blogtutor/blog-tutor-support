@@ -51,6 +51,7 @@ class Blog_Tutor_Support {
   private function __construct() {
     // Load plugin text domain.
     add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+    add_action( 'init', array( $this, 'check_options' ) );
 
     // Include classes.
     $this->includes();
@@ -72,6 +73,28 @@ class Blog_Tutor_Support {
 
     return self::$instance;
   }
+
+  /**
+   * Check mandatory options, set to default if not present
+   */
+  public function check_options() {
+    // Perform the check only if logged in
+    if( !is_admin() ) return;
+
+    $option_array = 'blog_tutor_support_settings';
+    $default_opts = array(
+      'firewall_choice' => 'sucuri'
+    ); 
+
+    $bt_opts = get_option( $option_array, array() );
+
+    foreach( $default_opts as $key => $val ) {
+      if( !array_key_exists( $key, $bt_opts ) || !isset( $bt_opts[$key] ) )
+        $bt_opts[$key] = $val; 
+    }
+
+    update_option( $option_array, $bt_opts );
+  } 
 
   /**
    * Load the plugin text domain for translation.

@@ -1,24 +1,29 @@
 'use strict';
 
 jQuery(document).ready(function($) {
-	$('#clearwhitelist').click(makeAjaxCall);
+	$('#clearwhitelist').click(function() {
+		makeAjaxCall(this, 'clear_whitelist');
+	});
 
-	function makeAjaxCall() {
+	$('#clearwhitelistnp').click(function() {
+		makeAjaxCall(this, 'np_clear_whitelist');
+	});
+
+	function makeAjaxCall(thisCtx, action) {
 		var nText = 'One moment, please...	  ';
-		$(this).val(nText);
+		$(thisCtx).val(nText);
 
-		var self = this;
 		$.ajax({
 			url: clear_whitelist.endpoint,
 			type: 'post',
 			data: {
-				action: 'clear_whitelist',
+				action: action,
 				clear_whitelist_nonce: clear_whitelist.nonce,
 			}
 		}).done(function(data) {
-			if(!data) $(self).text('Error!');
+			if(!data) $(thisCtx).text('Error!');
 			else {
-				$(self).text('Success!');
+				$(thisCtx).text('Success!');
 				window.location.reload();
 			}
 		});

@@ -13,16 +13,35 @@ if( !defined( 'ABSPATH' ) ) {
 
 class Blog_Tutor_Support_Cloudproxy {
 	private $whitelist_option_name = 'cloudproxy_wl_ips';
+	private $np_whitelist_option_name = 'cloudproxy_wl_np_ips';
 
 	public function __construct() {
+		// Add a custom schedule string
+		add_filter( 'cron_schedules', array( $this, 'twoandaquarter' ) );
+
 		// Schedule a cron job that wipes all the whitelisted ips
 		add_action( 'bt_remove_whitelist_cron', array( $this, 'remove_whitelist_cron' ), 9 );
 		if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
 			wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
 
+		// Schedule a cron job for nerdpress whitelist ips
+		add_action( 'bt_remove_np_whitelist_cron', array( $this, 'remove_np_whitelist_cron' ), 9 );
+		if( !wp_next_scheduled( 'bt_remove_np_whitelist_cron' ) )
+			wp_schedule_event( time(), 'twoandaquarter', 'bt_remove_np_whitelist_cron' );
+
 		add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
 		add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
+		add_action( 'wp_ajax_np_clear_whitelist', array( $this, 'np_clear_whitelist' ) );
 		add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
+	}
+
+	public function twoandaquarter( $schedules ) {
+		$schedules['twoandaquarter'] = array(
+			'interval' => 2 * 3600 + 900,
+			'display'  => __( 'Once Every Two Hours and Fifteen Mintues' )
+		);
+		
+		return $schedules;
 	}
 
 	public function bt_enqueue_scripts() {
@@ -40,6 +59,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		$return_str = FALSE;
 
+		$npSuffix = '';
 		$client_ip = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		if ( $client_ip != NULL && is_array( $sucuri_api_call_array ) ):
 
@@ -53,7 +73,12 @@ class Blog_Tutor_Support_Cloudproxy {
 				die();
 			}
 
-			$whitelisted_ips = get_option( $this->whitelist_option_name, array() );
+			$is_nerdpress = Blog_Tutor_Support_Helpers::is_nerdpress();
+
+			$whitelist_opt = ( $is_nerdpress ? $this->np_whitelist_option_name 
+				       : $this->whitelist_option_name);
+
+			$whitelisted_ips = get_option( $whitelist_opt, array() );
 			
 			// In case the option was empty and get_option returned an empty string
 			if(!is_array($whitelisted_ips)) $whitelisted_ips = array();
@@ -62,9 +87,16 @@ class Blog_Tutor_Support_Cloudproxy {
 			if( !in_array( $client_ip, $whitelisted_ips ) ) {
 				// Get the Sucuri's Cloudproxy endpoint
 				$sucuri_api_call = implode( $sucuri_api_call_array );
-				$cloudproxy_whitelist = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . (24 * 3600);
+
+				// Aloo start timer
+				$hours = ( $is_nerdpress ? 2 : 24 );
+
+				$cloudproxy_whitelist = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . ($hours * 3600);
 
 				$args = array( 'timeout' => 30 );
+
+				if( $is_nerdpress )
+					$startTime = microtime(true) * 1000;
 
 				$response = wp_remote_get( $cloudproxy_whitelist, $args );
 				if( is_wp_error( $response ) ) {
@@ -72,12 +104,16 @@ class Blog_Tutor_Support_Cloudproxy {
 					die();
 				}
 
-				$body = wp_remote_retrieve_body( $response );
+				if( $is_nerdpress ) {
+					$reqTime = round( ( microtime(true) * 1000 - $startTime ) / 1000, 2);
+					$npSuffix = '[ReqTime=' . $reqTime . ']';
+				}
 
+				$body = wp_remote_retrieve_body( $response );
 				try {
 					$message = json_decode($body, TRUE);
 					$return_str = $message['messages'][0];
-					$this->save_whitelist_meta( $body, $whitelisted_ips );
+					$this->save_whitelist_meta( $body, $whitelisted_ips, $whitelist_opt );
 				} catch(Exception $e) {
 					echo 'Error while whitelisting your IP with Sucuri Firewall';
 					die();
@@ -85,7 +121,7 @@ class Blog_Tutor_Support_Cloudproxy {
 			}
 
 		endif;
-		echo $return_str;
+		echo $return_str . $npSuffix;
 		die();
 	}
 
@@ -93,15 +129,25 @@ class Blog_Tutor_Support_Cloudproxy {
 		delete_option( $this->whitelist_option_name );	
 	}
 
+	// Delete cron for NerdPress folks
+	public function remove_np_whitelist_cron() {
+		delete_option( $this->np_whitelist_option_name );
+	}
+
 	public function clear_whitelist() {
 		check_ajax_referer('clear_whitelist_secure_me', 'clear_whitelist_nonce');
 		$this->remove_whitelist_cron();
 	}
+	
+	public function np_clear_whitelist() {
+		check_ajax_referer('clear_whitelist_secure_me', 'clear_whitelist_nonce');
+		$this->remove_np_whitelist_cron();
+	}
 
-	private function save_whitelist_meta( $body, $whitelisted_ips ) {
+	private function save_whitelist_meta( $body, $whitelisted_ips, $whitelist_opt ) {
 		$ip_address = json_decode( $body, true )['output'][0];
 		$whitelisted_ips[] = $ip_address;
-		update_option( $this->whitelist_option_name, $whitelisted_ips );
+		update_option( $whitelist_opt, $whitelisted_ips );
 	}
 }
 

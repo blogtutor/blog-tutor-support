@@ -32,13 +32,6 @@ if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
  */
 class Blog_Tutor_Support {
   /**
-   * Plugin version.
-   *
-   * @var string
-   */
-  const VERSION = '0.6.0-beta1';
-
-  /**
    * Instance of this class.
    *
    * @var object

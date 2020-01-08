@@ -48,7 +48,7 @@ class Blog_Tutor_Support_Cloudproxy {
 
 	public function whitelist_cloudproxy_ip() {
 		check_ajax_referer('sucuri_whitelist_secure_me', 'sucuri_whitelist_nonce');
-        if( Blog_Tutor_Support_Helpers::is_nerdpress() ) return;
+		if( Blog_Tutor_Support_Helpers::is_nerdpress() ) return;
 
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		$return_str = FALSE;

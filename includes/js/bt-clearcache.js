@@ -20,8 +20,8 @@ jQuery(document).ready(function($) {
 			}
 		}).done(function(data) {
 			if(isDashboard()) {
-                window.location = injectParam('clearcache=true');
-            } else {
+				window.location = injectParam('clearcache=true');
+			} else {
 				if(!data) $(self).text('Error!');
 				else $(self).text('Success!');
 				$(document).click(function() {
@@ -41,11 +41,11 @@ jQuery(document).ready(function($) {
 		return window.location.href.includes('/wp-admin/');
 	}
 
-    function injectParam(paramStr) {
-        if(window.location.href.includes('?')) {
-            var parts = window.location.href.split('?');
-            parts[1] = paramStr + '&' + parts[1];
-            return parts.join('?').replace(/#/g, '');
-        } else return window.location.href.replace(/#/g, '') + '?' + paramStr;
-    }
+	function injectParam(paramStr) {
+		if(window.location.href.includes('?')) {
+			var parts = window.location.href.split('?');
+			parts[1] = paramStr + '&' + parts[1];
+			return parts.join('?').replace(/#/g, '');
+		} else return window.location.href.replace(/#/g, '') + '?' + paramStr;
+	}
 });

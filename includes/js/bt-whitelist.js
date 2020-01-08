@@ -13,13 +13,13 @@ jQuery(document).ready(function($) {
 			}
 		}).done(function(data) {
 			if(data && !data.includes('already whitelisted')) {
-                var ip;
-                try {
-				    ip = data.match(/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/)[0];
-                } catch(err) {
-                    console.warn('Error while reading response from Sucuri');
-                    return;
-                }
+				var ip;
+				try {
+					ip = data.match(/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/)[0];
+				} catch(err) {
+					console.warn('Error while reading response from Sucuri');
+					return;
+				}
 				var msg = 'Your IP (' + ip +  ') has been automatically<br />whitelisted on the Sucuri Firewall for the next 24 hours';
 
 				wlNotify(msg);

@@ -21,46 +21,49 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 		// Add Child Menu Items.
 		// Add a Clear Cloudproxy link to the Admin Bar.
-		if ( is_plugin_active( 'sucuri-scanner/sucuri.php' ) ) {
+		if ( Blog_Tutor_Support_Helpers::is_sucuri_plugin_active() ) {
 
 			$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 
 			// If is array then the api key excists.
 			if ( is_array( $sucuri_api_call_array ) ) {
 				$sucuri_api_call = implode( $sucuri_api_call_array );
-				// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
-				$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
-				$args			 = array(
-					'id'	 => 'bt-clear-cloudproxy',
-					'title'  => 'Clear Sucuri Firewall Cache',
-					'href'   => '#',
-					'parent' => 'nerdpress-menu',
-					'meta'   => array(
-						'id'	 => 'btClearcache',
-						'class'  => 'btButton',
-						'title'  => 'Clear the Sucuri Firewall Cache',
-					),
-				);
-				$wp_admin_bar->add_node( $args );
 
-                if( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
-                    $cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist&duration=3600';
-                    $wl_args	    = array(
-                        'id'	 => 'bt-whitelist-cloudproxy',
-                        'title'  => 'Whitelist Your IP Address',
-                        'href'   => $cloudproxy_whitelist,
-                        'parent' => 'nerdpress-menu',
-                        'meta'   => array(
-                            'class'	 => 'btButton',
-                            'target' => 'Blank',
-                            'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
-                            'parent'  => 'nerdpress-menu',
-                        ),
-                    );
-                    $wp_admin_bar->add_node( $wl_args );
-                }
+				if( Blog_Tutor_Support_Helpers::clear_cache_flag() ) {
+					// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
+					$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
+					$args			 = array(
+						'id'	 => 'bt-clear-cloudproxy',
+						'title'  => 'Clear Sucuri Firewall Cache',
+						'href'   => '#',
+						'parent' => 'nerdpress-menu',
+						'meta'   => array(
+							'id'	 => 'btClearcache',
+							'class'  => 'btButton',
+							'title'  => 'Clear the Sucuri Firewall Cache',
+						),
+					);
+					$wp_admin_bar->add_node( $args );
+				}
 
-				if ( ! is_admin() ) {
+				if( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+					$cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist&duration=3600';
+					$wl_args		= array(
+						'id'	 => 'bt-whitelist-cloudproxy',
+						'title'  => 'Whitelist Your IP Address',
+						'href'   => $cloudproxy_whitelist,
+						'parent' => 'nerdpress-menu',
+						'meta'   => array(
+							'class'	 => 'btButton',
+							'target' => 'Blank',
+							'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
+							'parent'  => 'nerdpress-menu',
+						),
+					);
+					$wp_admin_bar->add_node( $wl_args );
+				}
+
+				if ( ! is_admin() && Blog_Tutor_Support_Helpers::clear_cache_flag() ) {
 					// Clear current page from Cloudproxy cache.
 					$path				 = $_SERVER['REQUEST_URI'];
 					$cloudproxy_clear_uri = $sucuri_api_call . '&a=clearcache&file=' . $path;

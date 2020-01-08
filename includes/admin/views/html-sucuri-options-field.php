@@ -30,9 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <?php
 $whitelisted_ips = get_option( 'cloudproxy_wl_ips', array() );
-$whitelisted_np_ips = get_option( 'cloudproxy_wl_np_ips', array() );
 
-$whitelisted_ips = array_merge( $whitelisted_ips, $whitelisted_np_ips );
 if( count( $whitelisted_ips ) > 0 ) {	
 	wp_register_script( 'clear_whitelist_js', plugins_url( '../js/bt-clearwl.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
 	wp_localize_script( 'clear_whitelist_js', 'clear_whitelist', array(
@@ -48,7 +46,4 @@ if( count( $whitelisted_ips ) > 0 ) {
 	?>
 	<input id="clearwhitelist" type="submit" value="Clear Local Whitelist Cache">
 	<?php
-	if( count( $whitelisted_np_ips ) > 0 ) {
-		?><input id="clearwhitelistnp" type="submit" value="Clear Local NerdPress Whitelist Cache"><?php
-	}
 }

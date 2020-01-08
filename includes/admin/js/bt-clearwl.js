@@ -5,10 +5,6 @@ jQuery(document).ready(function($) {
 		makeAjaxCall(this, 'clear_whitelist');
 	});
 
-	$('#clearwhitelistnp').click(function() {
-		makeAjaxCall(this, 'np_clear_whitelist');
-	});
-
 	function makeAjaxCall(thisCtx, action) {
 		var nText = 'One moment, please...	  ';
 		$(thisCtx).val(nText);

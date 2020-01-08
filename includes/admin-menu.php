@@ -43,6 +43,23 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				);
 				$wp_admin_bar->add_node( $args );
 
+                if( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+                    $cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist&duration=3600';
+                    $wl_args	    = array(
+                        'id'	 => 'bt-whitelist-cloudproxy',
+                        'title'  => 'Whitelist Your IP Address',
+                        'href'   => $cloudproxy_whitelist,
+                        'parent' => 'nerdpress-menu',
+                        'meta'   => array(
+                            'class'	 => 'btButton',
+                            'target' => 'Blank',
+                            'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
+                            'parent'  => 'nerdpress-menu',
+                        ),
+                    );
+                    $wp_admin_bar->add_node( $wl_args );
+                }
+
 				if ( ! is_admin() ) {
 					// Clear current page from Cloudproxy cache.
 					$path				 = $_SERVER['REQUEST_URI'];

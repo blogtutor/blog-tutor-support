@@ -1,7 +1,4 @@
 <?php
-if( session_status() !== PHP_SESSION_ACTIVE )
-    session_start();
-
 if ( !defined('ABSPATH') )
 	die();
 
@@ -22,14 +19,12 @@ class Blog_Tutor_Support_Clearcache {
 	}
 
 	public function blog_tutor_clearcache_message() {
-		if(isset($_SESSION['s_clearcache'])) {
+        if( ! array_key_exists( 'clearcache', $_GET ) ) return;
 		?>
 			<div class="notice" style="border-left-color:#0F145B">
-				<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong><?php echo $_SESSION['s_clearcache']; ?></strong></p>
+				<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong>The cache is being cleared. Note that it may take up to two minutes for it to be fully flushed.</strong></p>
 			</div>
 			<?php
-		}
-		unset($_SESSION['s_clearcache']);
 	}
 
 	public function sucuri_clearcache() {
@@ -52,7 +47,6 @@ class Blog_Tutor_Support_Clearcache {
 			try {
 				$message_body = json_decode($body, TRUE);
 			} catch(Exception $e) {
-				$_SESSION['s_clearcache'] = 'Invalid response from Sucuri Firewall API';
 				echo false;
 				die();
 			}
@@ -61,7 +55,6 @@ class Blog_Tutor_Support_Clearcache {
 				    ? 'There was a problem clearing the Sucuri Firewall cache. Please try again, and if it still doesn\'t work please contact support@nerdpress.net.'
 				    : $message_body['messages']['0']);
 
-			$_SESSION['s_clearcache'] = $message;
 			echo ($message_body['status'] == 0 ? false : $message);
 			die();
 		}

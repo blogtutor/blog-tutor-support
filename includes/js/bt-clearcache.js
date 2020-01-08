@@ -19,8 +19,9 @@ jQuery(document).ready(function($) {
 				sucuri_clearcache_nonce: sucuri_clearcache.nonce,
 			}
 		}).done(function(data) {
-			if(isDashboard()) window.location.reload();
-			else {
+			if(isDashboard()) {
+                window.location = injectParam('clearcache=true');
+            } else {
 				if(!data) $(self).text('Error!');
 				else $(self).text('Success!');
 				$(document).click(function() {
@@ -39,4 +40,12 @@ jQuery(document).ready(function($) {
 	function isDashboard() {
 		return window.location.href.includes('/wp-admin/');
 	}
+
+    function injectParam(paramStr) {
+        if(window.location.href.includes('?')) {
+            var parts = window.location.href.split('?');
+            parts[1] = paramStr + '&' + parts[1];
+            return parts.join('?').replace(/#/g, '');
+        } else return window.location.href.replace(/#/g, '') + '?' + paramStr;
+    }
 });

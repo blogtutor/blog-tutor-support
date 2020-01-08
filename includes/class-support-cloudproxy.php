@@ -13,7 +13,6 @@ if( !defined( 'ABSPATH' ) ) {
 
 class Blog_Tutor_Support_Cloudproxy {
 	private $whitelist_option_name = 'cloudproxy_wl_ips';
-	private $np_whitelist_option_name = 'cloudproxy_wl_np_ips';
 
 	public function __construct() {
 		// Add a custom schedule string
@@ -24,14 +23,8 @@ class Blog_Tutor_Support_Cloudproxy {
 		if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
 			wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
 
-		// Schedule a cron job for nerdpress whitelist ips
-		add_action( 'bt_remove_np_whitelist_cron', array( $this, 'remove_np_whitelist_cron' ), 9 );
-		if( !wp_next_scheduled( 'bt_remove_np_whitelist_cron' ) )
-			wp_schedule_event( time(), 'twoandaquarter', 'bt_remove_np_whitelist_cron' );
-
 		add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
 		add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
-		add_action( 'wp_ajax_np_clear_whitelist', array( $this, 'np_clear_whitelist' ) );
 		add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
 	}
 
@@ -55,6 +48,7 @@ class Blog_Tutor_Support_Cloudproxy {
 
 	public function whitelist_cloudproxy_ip() {
 		check_ajax_referer('sucuri_whitelist_secure_me', 'sucuri_whitelist_nonce');
+        if( Blog_Tutor_Support_Helpers::is_nerdpress() ) return;
 
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		$return_str = FALSE;
@@ -73,11 +67,7 @@ class Blog_Tutor_Support_Cloudproxy {
 				die();
 			}
 
-			$is_nerdpress = Blog_Tutor_Support_Helpers::is_nerdpress();
-
-			$whitelist_opt = ( $is_nerdpress ? $this->np_whitelist_option_name 
-				       : $this->whitelist_option_name);
-
+			$whitelist_opt = $this->whitelist_option_name;
 			$whitelisted_ips = get_option( $whitelist_opt, array() );
 			
 			// In case the option was empty and get_option returned an empty string
@@ -88,25 +78,14 @@ class Blog_Tutor_Support_Cloudproxy {
 				// Get the Sucuri's Cloudproxy endpoint
 				$sucuri_api_call = implode( $sucuri_api_call_array );
 
-				// Aloo start timer
-				$hours = ( $is_nerdpress ? 2 : 24 );
-
-				$cloudproxy_whitelist = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . ($hours * 3600);
+				$cloudproxy_whitelist = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . (24 * 3600);
 
 				$args = array( 'timeout' => 30 );
-
-				if( $is_nerdpress )
-					$startTime = microtime(true) * 1000;
 
 				$response = wp_remote_get( $cloudproxy_whitelist, $args );
 				if( is_wp_error( $response ) ) {
 					echo 'Error: Connection to Sucuri Firewall API failed';
 					die();
-				}
-
-				if( $is_nerdpress ) {
-					$reqTime = round( ( microtime(true) * 1000 - $startTime ) / 1000, 2);
-					$npSuffix = '[ReqTime=' . $reqTime . ']';
 				}
 
 				$body = wp_remote_retrieve_body( $response );
@@ -129,19 +108,9 @@ class Blog_Tutor_Support_Cloudproxy {
 		delete_option( $this->whitelist_option_name );	
 	}
 
-	// Delete cron for NerdPress folks
-	public function remove_np_whitelist_cron() {
-		delete_option( $this->np_whitelist_option_name );
-	}
-
 	public function clear_whitelist() {
 		check_ajax_referer('clear_whitelist_secure_me', 'clear_whitelist_nonce');
 		$this->remove_whitelist_cron();
-	}
-	
-	public function np_clear_whitelist() {
-		check_ajax_referer('clear_whitelist_secure_me', 'clear_whitelist_nonce');
-		$this->remove_np_whitelist_cron();
 	}
 
 	private function save_whitelist_meta( $body, $whitelisted_ips, $whitelist_opt ) {

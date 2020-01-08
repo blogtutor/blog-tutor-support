@@ -114,7 +114,9 @@ class Blog_Tutor_Support_Cloudproxy {
 	}
 
 	private function save_whitelist_meta( $body, $whitelisted_ips, $whitelist_opt ) {
-		$ip_address = json_decode( $body, true )['output'][0];
+		$ip_address = filter_var( json_decode( $body, true )['output'][0], FILTER_VALIDATE_IP );
+		if( ! $ip_address ) return;
+
 		$whitelisted_ips[] = $ip_address;
 		update_option( $whitelist_opt, $whitelisted_ips );
 	}

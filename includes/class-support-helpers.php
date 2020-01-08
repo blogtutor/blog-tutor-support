@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 */
 class Blog_Tutor_Support_Helpers {
 	private static $sucuri_api_key = NULL;
-	private static $clear_cache_flag = NULL;
+	private static $sucuri_buttons_flag = NULL;
 	
 	private static function set_sucuri_api() {
 		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
@@ -162,17 +162,15 @@ class Blog_Tutor_Support_Helpers {
 	}
 
 	/**
-	 * Determine whether the clear cachge link should be displayed
+	 * Determine whether the whitelist and clear cache links should be displayed
 	 *
-	 * @return boolean. Whether the clear cache flag should be displayed
+	 * @return boolean. whether the buttons can be displayed
 	 */
-	public static function clear_cache_flag() {
-		if( self::$clear_cache_flag === NULL ) {
-			self::$clear_cache_flag =  (  self::is_sucuri_firewall_api_key_set() &&
-						self::is_sucuri_firewall_selected() &&
-						self::is_sucuri_firewall_active() );
+	public static function sucuri_buttons_flag() {
+		if( self::$sucuri_buttons_flag === NULL ) {
+			self::$sucuri_buttons_flag =  (  self::is_sucuri_firewall_api_key_set() && self::is_sucuri_firewall_active() );
 		}
 
-		return self::$clear_cache_flag;
+		return self::$sucuri_buttons_flag;
 	}
 }

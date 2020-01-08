@@ -29,7 +29,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			if ( is_array( $sucuri_api_call_array ) ) {
 				$sucuri_api_call = implode( $sucuri_api_call_array );
 
-				if( Blog_Tutor_Support_Helpers::clear_cache_flag() ) {
+				if( Blog_Tutor_Support_Helpers::sucuri_buttons_flag() ) {
 					// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
 					$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
 					$args			 = array(
@@ -44,7 +44,6 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						),
 					);
 					$wp_admin_bar->add_node( $args );
-				}
 
 				if( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 					$cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist&duration=3600';
@@ -62,8 +61,9 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					);
 					$wp_admin_bar->add_node( $wl_args );
 				}
+			}
 
-				if ( ! is_admin() && Blog_Tutor_Support_Helpers::clear_cache_flag() ) {
+				if ( ! is_admin() && Blog_Tutor_Support_Helpers::sucuri_buttons_flag() ) {
 					// Clear current page from Cloudproxy cache.
 					$path				 = $_SERVER['REQUEST_URI'];
 					$cloudproxy_clear_uri = $sucuri_api_call . '&a=clearcache&file=' . $path;

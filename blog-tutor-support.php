@@ -22,6 +22,9 @@ include( dirname( __FILE__ ) . '/github-updater.php' );
 // Load Admin menu
 include( dirname( __FILE__ ) . '/includes/admin-menu.php' );
 
+if ( ! defined( 'BT_PLUGIN_VERSION' ) )
+    define( 'BT_PLUGIN_VERSION', '0.6.3-beta1' );
+
 if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
 /**
  * Blog_Tutor_Support main class.

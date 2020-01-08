@@ -45,7 +45,7 @@ class Blog_Tutor_Support_Cloudproxy {
 	}
 
 	public function bt_enqueue_scripts() {
-		wp_register_script( 'whitelist_js', plugins_url( 'js/bt-whitelist.js', __FILE__ ), array());
+		wp_register_script( 'whitelist_js', plugins_url( 'js/bt-whitelist.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
 		wp_localize_script( 'whitelist_js', 'sucuri_whitelist', array(
 			'endpoint' => admin_url( 'admin-ajax.php' ),
 			'nonce'	   => wp_create_nonce( 'sucuri_whitelist_secure_me' ),

@@ -72,7 +72,7 @@ class Blog_Tutor_Support_Clearcache {
 	public function bt_enqueue_scripts() {
 		if( user_can( get_current_user_id(), 'edit_posts' ) ) {
 			wp_enqueue_script('jquery'); 
-			wp_register_script( 'clearcache_js', plugins_url( 'js/bt-clearcache.js', __FILE__ ), array() );
+			wp_register_script( 'clearcache_js', plugins_url( 'js/bt-clearcache.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
 			wp_localize_script( 'clearcache_js', 'sucuri_clearcache', array(
 				'endpoint'			  => admin_url( 'admin-ajax.php' ),
 				'nonce'				 => wp_create_nonce( 'sucuri_clearcache_secure_me' ),

@@ -34,7 +34,7 @@ $whitelisted_np_ips = get_option( 'cloudproxy_wl_np_ips', array() );
 
 $whitelisted_ips = array_merge( $whitelisted_ips, $whitelisted_np_ips );
 if( count( $whitelisted_ips ) > 0 ) {	
-	wp_register_script( 'clear_whitelist_js', plugins_url( '../js/bt-clearwl.js', __FILE__ ), array());
+	wp_register_script( 'clear_whitelist_js', plugins_url( '../js/bt-clearwl.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
 	wp_localize_script( 'clear_whitelist_js', 'clear_whitelist', array(
 		'endpoint' => admin_url( 'admin-ajax.php' ),
 		'nonce'	   => wp_create_nonce( 'clear_whitelist_secure_me' ),

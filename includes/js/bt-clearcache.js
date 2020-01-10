@@ -19,8 +19,9 @@ jQuery(document).ready(function($) {
 				sucuri_clearcache_nonce: sucuri_clearcache.nonce,
 			}
 		}).done(function(data) {
+			// Reload the page if it's the admin dashboard
 			if(isDashboard()) {
-				window.location = injectParam('clearcache=true');
+				window.location = injectParam('np_clear_sucuri=true');
 			} else {
 				if(!data) $(self).text('Error!');
 				else $(self).text('Success!');

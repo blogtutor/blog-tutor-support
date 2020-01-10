@@ -15,6 +15,8 @@ class Blog_Tutor_Support_Helpers {
 	private static $sucuri_buttons_flag = NULL;
 	
 	private static function set_sucuri_api() {
+		if( ! self::is_sucuri_plugin_installed() ) return;
+
 		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
 			$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
 		} else {
@@ -172,5 +174,20 @@ class Blog_Tutor_Support_Helpers {
 		}
 
 		return self::$sucuri_buttons_flag;
+	}
+
+	/**
+	* Display NerdPress Notification
+	* @param string $msg. String to display on the notification
+	* @return void
+	*/
+	public static function display_notification( $msg ) {
+		// Do not display if the message is empty
+		if( $msg == '' ) return;
+	?>
+		<div class="notice" style="border-left-color:#0F145B">
+			<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg ?></strong></p>
+			</div>
+			<?php
 	}
 }

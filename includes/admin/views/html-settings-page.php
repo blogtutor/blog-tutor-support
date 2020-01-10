@@ -14,7 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
 	<?php
-	settings_errors();
 	$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'nerdpress_settings';
 	?>
 

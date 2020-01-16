@@ -15,13 +15,15 @@ class Blog_Tutor_Support_Helpers {
 	private static $sucuri_buttons_flag = NULL;
 	
 	private static function set_sucuri_api() {
-		if( ! self::is_sucuri_plugin_installed() ) return;
-
 		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
 			$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
 		} else {
 			$upload_dir  = wp_upload_dir( $time = null, $create_dir = null );
-			$input_lines = file_get_contents( $upload_dir['basedir'] . '/sucuri/sucuri-settings.php' );
+			$path = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
+
+			if( file_exists( $path ) )  
+				$input_lines = file_get_contents( $path );
+			else return;
 		}
 
 		// Using # as regex delimiters since / was giving error.
@@ -160,7 +162,7 @@ class Blog_Tutor_Support_Helpers {
 	 * @return boolean. If the plugin is installed
 	 */
 	public static function is_sucuri_plugin_installed() {
-		return file_exists( wp_upload_dir( $time = null, $create_dir = null )['basedir'] . '/sucuri/sucuri-settings.php' );
+		return file_exists( plugin_dir_path( __FILE__ ) . '/../../sucuri-scanner/sucuri.php' );
 	}
 
 	/**
@@ -177,16 +179,40 @@ class Blog_Tutor_Support_Helpers {
 	}
 
 	/**
+	 * If the sucuri plugin is inactive but should be active
+	 *
+	 * @return boolean. Whether should be active but not
+	 */
+	public static function sucuri_inactive_flag() {
+		return ( self::is_sucuri_firewall_api_key_set() &&
+			! self::is_sucuri_firewall_active() &&
+			self::is_sucuri_firewall_selected() );
+	}
+
+	/**
+	 * If the Sucuri IP header is set but the api key is not
+	 *
+	 * @return boolean. Whether the Sucuri IP header is set but api key is not set
+	 */
+	public static function sucuri_missing_key_flag() {
+		return ( ! self::is_sucuri_firewall_api_key_set() &&
+				self::is_sucuri_firewall_active() );
+	}
+
+	/**
 	* Display NerdPress Notification
 	* @param string $msg. String to display on the notification
 	* @return void
 	*/
 	public static function display_notification( $msg ) {
-		// Do not display if the message is empty
-		if( $msg == '' ) return;
+		if( ! is_array( $msg ) )
+			$msg = array( 'status' => 1, 'msg' => $msg );
+
+		$msg_class = ( $msg['status'] ? 'notice' : 'error notice' );
 	?>
-		<div class="notice" style="border-left-color:#0F145B">
-			<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg ?></strong></p>
+		<link rel="stylesheet" href="<?php echo plugins_url(); ?>/blog-tutor-support/includes/css/html-notifications-style.css" type="text/css" media="all">
+		<div class="<?php echo $msg_class; ?>">
+			<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg['msg']; ?></strong></p>
 			</div>
 			<?php
 	}

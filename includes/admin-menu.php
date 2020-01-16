@@ -19,9 +19,21 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		);
 		$wp_admin_bar->add_node( $args );
 
-		// Add Child Menu Items.
-		// Add a Clear Cloudproxy link to the Admin Bar.
-		if ( Blog_Tutor_Support_Helpers::is_sucuri_plugin_active() ) {
+		if ( ! Blog_Tutor_Support_Helpers::is_sucuri_plugin_installed() ) {
+			$args = array(
+				'id'     => 'bt-sucuri-not-installed',
+				'title'  => 'The The Sucuri Plugin is not installed! Please contact us.',
+				'href'   => '#',
+				'parent' => 'nerdpress-menu',
+				'meta'   => array(
+					'class'   => 'btButton',
+					'title'   => 'The Sucuri Plugin is not installed! Please contact us.',
+					'onclick' => 'window.supportHeroWidget.show();'
+				)
+				
+			);
+			$wp_admin_bar->add_node( $args );
+		} elseif ( Blog_Tutor_Support_Helpers::is_sucuri_plugin_active() ) {
 
 			$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 
@@ -94,7 +106,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				);
 				$wp_admin_bar->add_node( $args );
 			}
-		} elseif ( is_plugin_inactive( 'sucuri-scanner/sucuri.php' ) ) {
+		} elseif ( is_plugin_inactive( 'sucuri-scanner/sucuri.php' ) || 
+				Blog_Support_Helpers::sucuri_inactive_flag() ) {
 			$args = array(
 				'id'	 => 'bt-sucuri-inactive',
 				'title'  => 'The Sucuri Plugin is inactive!',

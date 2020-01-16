@@ -1,0 +1,12 @@
+/**
+ * This file shall contain all admin notice styling
+ */
+
+.notice {
+	border-left-color: #0F145B;
+}
+
+.error.notice {
+	border-left-color: #ff0000;
+}
+

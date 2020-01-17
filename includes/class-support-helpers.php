@@ -184,8 +184,7 @@ class Blog_Tutor_Support_Helpers {
 	 * @return boolean. Whether should be active but not
 	 */
 	public static function sucuri_inactive_flag() {
-		return ( self::is_sucuri_firewall_api_key_set() &&
-			! self::is_sucuri_firewall_active() &&
+		return ( ! self::is_sucuri_firewall_active() &&
 			self::is_sucuri_firewall_selected() );
 	}
 

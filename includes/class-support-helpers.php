@@ -195,7 +195,7 @@ class Blog_Tutor_Support_Helpers {
 	 */
 	public static function sucuri_missing_key_flag() {
 		return ( ! self::is_sucuri_firewall_api_key_set() &&
-				self::is_sucuri_firewall_active() );
+				self::is_sucuri_firewall_selected() );
 	}
 
 	/**
@@ -207,10 +207,10 @@ class Blog_Tutor_Support_Helpers {
 		if( ! is_array( $msg ) )
 			$msg = array( 'status' => 1, 'msg' => $msg );
 
-		$msg_class = ( $msg['status'] ? 'notice' : 'error notice' );
+		$msg_class = ( $msg['status'] ? 'np-notice' : 'error np-notice' );
 	?>
 		<link rel="stylesheet" href="<?php echo plugins_url(); ?>/blog-tutor-support/includes/css/html-notifications-style.css" type="text/css" media="all">
-		<div class="<?php echo $msg_class; ?>">
+		<div class="notice <?php echo $msg_class; ?>">
 			<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg['msg']; ?></strong></p>
 			</div>
 			<?php

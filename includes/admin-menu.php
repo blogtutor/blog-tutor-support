@@ -28,7 +28,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'meta'   => array(
 					'class'   => 'btButton',
 					'title'   => 'The Sucuri Plugin is not installed! Please contact us.',
-					'onclick' => 'window.supportHeroWidget.show();'
+					'onclick' => 'window.supportHeroWidget.show("contact")();'
 				)
 				
 			);
@@ -43,7 +43,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'meta'   => array(
 					'class'   => 'btButton',
 					'title'   => 'Your Sucuri Plugin is not activated. Please contact us!',
-					'onclick' => 'window.supportHeroWidget.show();',
+					'onclick' => 'window.supportHeroWidget.show("contact")();',
 				),
 			);
 			$wp_admin_bar->add_node( $args );
@@ -110,11 +110,12 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		} elseif( Blog_Tutor_Support_Helpers::sucuri_missing_key_flag() ) {
 			$args = array(
 				'id'	 => 'bt-cloudproxy-api-not-set',
-				'title'  => 'Sucuri Firewall API Key is not set',
+				'title' => 'Missing Firewall API Keys! Please contact us',
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
-				'	title' => 'Your Sucuri Firewall API key is not set in the Sucuri Plugin. If your site should be configured to use Sucuri Firewall, please contact us!',
+					'title' => 'Missing Firewall API Keys! Please contact us',
+					'onclick' => 'window.supportHeroWidget.show("contact")();'
 				),
 			);
 			$wp_admin_bar->add_node( $args );
@@ -129,7 +130,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'meta'   => array(
 					'class'   => 'btButton',
 					'title'   => 'Your Sucuri Plugin is not configured. Please contact us!',
-					'onclick' => 'window.supportHeroWidget.show();'
+					'onclick' => 'window.supportHeroWidget.show("contact")();'
 				)
 			);
 			$wp_admin_bar->add_node( $args );
@@ -144,7 +145,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			'meta'   => array(
 				'class'   => 'btButton',
 				'title'   => 'Click to open our knowledge base and contact form.',
-				'onclick' => 'window.supportHeroWidget.show();',
+				'onclick' => 'window.supportHeroWidget.show("contact")();',
 			),
 		);
 		$wp_admin_bar->add_node( $args );

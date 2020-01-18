@@ -2,11 +2,12 @@
  * This file shall contain all admin notice styling
  */
 
-.notice {
+.np-notice {
 	border-left-color: #0F145B;
 }
 
-.error.notice {
+.error.np-notice {
 	border-left-color: #ff0000;
+	color: #ff0000;
 }
 

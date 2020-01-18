@@ -19,8 +19,9 @@ jQuery(document).ready(function($) {
 				try {
 					ip = data.match(/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/)[0];
 				} catch(err) {
-					npMsgString = '⚠  Heads up!<br />Automatically whitelisting your IP address on the Sucuri Firewall didn\'t work.<br />'
-						    + 'If the problem persists, please contact us at <a href="mailto:support@nerdpress.net">support@nerdpress.net</a>.';
+					npMsgString = '<strong>⚠  Heads up!</strong><br />Automatically whitelisting your IP address on the Sucuri Firewall didn\'t work.<br />'
+						    + 'If the problem persists, please contact us at <a '
+						    + ' style="text-decoration:none;color:#0F145B;" href="mailto:support@nerdpress.net">support@nerdpress.net</a>.';
 				}
 				
 				if(npMsgString === null)

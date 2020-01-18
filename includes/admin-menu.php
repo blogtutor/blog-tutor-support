@@ -145,7 +145,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			'meta'   => array(
 				'class'   => 'btButton',
 				'title'   => 'Click to open our knowledge base and contact form.',
-				'onclick' => 'window.supportHeroWidget.show("contact")();',
+				'onclick' => 'window.supportHeroWidget.show()();',
 			),
 		);
 		$wp_admin_bar->add_node( $args );

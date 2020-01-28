@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 * @author  Andrew Wilder, Sergio Scabuzzo
 	 */
 class Blog_Tutor_Support_Helpers {
-	private static $sucuri_api_key = NULL;
+	private static $sucuri_api_key = FALSE;
 	private static $sucuri_buttons_flag = NULL;
 	
 	private static function set_sucuri_api() {
@@ -100,7 +100,7 @@ class Blog_Tutor_Support_Helpers {
 	 * @return string Sucuri API call with bare arguments
 	 */
 	public static function get_sucuri_api_call() {
-		if( self::get_sucuri_api() === NULL ) {
+		if( self::get_sucuri_api() === FALSE ) {
 			self::set_sucuri_api();
 		}
 
@@ -120,11 +120,11 @@ class Blog_Tutor_Support_Helpers {
 	}
 
 	/**
-	 * Determine whether Sucuri Firewall is active
+	 * Determine whether Sucuri request header is set
 	 *
-	 * @return boolean. If SF is active
+	 * @return boolean. TRUE if set
 	 */
-	public static function is_sucuri_firewall_active() {
+	public static function is_sucuri_header_set() {
 		return isset( $_SERVER['HTTP_X_SUCURI_CLIENTIP'] );
 	}
 
@@ -134,7 +134,10 @@ class Blog_Tutor_Support_Helpers {
 	 * @return boolean. If the key is set
 	 */
 	public static function is_sucuri_firewall_api_key_set() {
-		return self::$sucuri_api_key !== NULL;
+		if( self::get_sucuri_api() === FALSE ) {
+			self::set_sucuri_api();
+		}
+		return ( ! empty( self::$sucuri_api_key ) );
 	}
 
 	/**
@@ -166,34 +169,37 @@ class Blog_Tutor_Support_Helpers {
 	}
 
 	/**
-	 * Determine whether the whitelist and clear cache links should be displayed
+	 * Determine whether the api key is set and Sucuri firewall setting
+	 * is selected
 	 *
-	 * @return boolean. whether the buttons can be displayed
+	 * @return boolean. TRUE if the key is set and the firewall is selected
 	 */
-	public static function sucuri_buttons_flag() {
+	public static function is_sucuri_api_and_settings_set() {
 		if( self::$sucuri_buttons_flag === NULL ) {
-			self::$sucuri_buttons_flag =  (  self::is_sucuri_firewall_api_key_set() && self::is_sucuri_firewall_active() );
+			self::$sucuri_buttons_flag = (
+				self::is_sucuri_firewall_api_key_set() 
+				&& self::is_sucuri_firewall_selected() 
+			);
 		}
-
 		return self::$sucuri_buttons_flag;
 	}
 
 	/**
 	 * If the sucuri plugin is inactive but should be active
 	 *
-	 * @return boolean. Whether should be active but not
+	 * @return boolean. TRUE if inactive but should be active
 	 */
-	public static function sucuri_inactive_flag() {
-		return ( ! self::is_sucuri_firewall_active() &&
+	public static function is_sucuri_inactive() {
+		return ( ! self::is_sucuri_firewall_api_key_set() &&
 			self::is_sucuri_firewall_selected() );
 	}
 
 	/**
-	 * If the Sucuri IP header is set but the api key is not
+	 * Determine whether Sucuri API key is missing
 	 *
-	 * @return boolean. Whether the Sucuri IP header is set but api key is not set
+	 * @return boolean. TRUE if the key is missing
 	 */
-	public static function sucuri_missing_key_flag() {
+	public static function is_sucuri_key_missing() {
 		return ( ! self::is_sucuri_firewall_api_key_set() &&
 				self::is_sucuri_firewall_selected() );
 	}

@@ -83,7 +83,7 @@ class Blog_Tutor_Support_Cloudproxy {
 
 				$cloudproxy_whitelist = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . (24 * 3600);
 
-				$args = array( 'timeout' => 30 );
+				$args = array( 'timeout' => 10 );
 
 				$response = wp_remote_get( $cloudproxy_whitelist, $args );
 				if( is_wp_error( $response ) ) {

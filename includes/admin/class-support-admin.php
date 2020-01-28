@@ -175,7 +175,7 @@ class Blog_Tutor_Support_Admin {
 		$has_sucuri = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 
-		if ( $has_sucuri && is_array( $sucuri_api_call_array ) ) {
+		if ( $has_sucuri ) {
 			/**
 			* Sucuri form fields.
 			*/

@@ -36,7 +36,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		} elseif ( is_plugin_inactive( 'sucuri-scanner/sucuri.php' ) ) {
 			$args = array(
 				'id'	 => 'bt-sucuri-inactive',
-				'title'  => 'The Sucuri Plugin is inactive!',
+				'title'  => 'The Sucuri Plugin is inactive! Please contact us.',
 				'href'   => '#',
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
@@ -46,49 +46,34 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				),
 			);
 			$wp_admin_bar->add_node( $args );
-		} else {
-			$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
+		}
+
+		if ( Blog_Tutor_Support_Helpers::is_sucuri_header_set() ||
+			Blog_Tutor_Support_Helpers::is_sucuri_firewall_selected() ) {
+
 			// If is array then the api key exists.
+			$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 			if ( is_array( $sucuri_api_call_array ) ) {
 				$sucuri_api_call = implode( $sucuri_api_call_array );
-
-				if( Blog_Tutor_Support_Helpers::is_sucuri_api_and_settings_set() ) {
-					// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
-					$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
-					$args			 = array(
-						'id'	 => 'bt-clear-cloudproxy',
-						'title'  => 'Clear Sucuri Firewall Cache',
-						'href'   => '#',
-						'parent' => 'nerdpress-menu',
-						'meta'   => array(
-							'id'	 => 'btClearcache',
-							'class'  => 'btButton',
-							'title'  => 'Clear the Sucuri Firewall Cache',
-						),
-					);
-					$wp_admin_bar->add_node( $args );
-				}
-
-				if( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
-					$cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist&duration=3600';
-					$wl_args		= array(
-						'id'	 => 'bt-whitelist-cloudproxy',
-						'title'  => 'Whitelist Your IP Address',
-						'href'   => $cloudproxy_whitelist,
-						'parent' => 'nerdpress-menu',
-						'meta'   => array(
-							'class'	 => 'btButton',
-							'target' => 'Blank',
-							'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
-							'parent'  => 'nerdpress-menu',
-						),
-					);
-					$wp_admin_bar->add_node( $wl_args );
-				}
+				// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
+				$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
+				$args			 = array(
+					'id'	 => 'bt-clear-cloudproxy',
+					'title'  => 'Clear Sucuri Firewall Cache',
+					'href'   => '#',
+					'parent' => 'nerdpress-menu',
+					'meta'   => array(
+						'id'	 => 'btClearcache',
+						'class'  => 'btButton',
+						'title'  => 'Clear the Sucuri Firewall Cache',
+					),
+				);
+				$wp_admin_bar->add_node( $args );
 				
-				if ( ! is_admin() && Blog_Tutor_Support_Helpers::is_sucuri_api_and_settings_set() ) {
-					// Clear current page from Cloudproxy cache.
-					$path				 = $_SERVER['REQUEST_URI'];
+
+				// Clear current page from Cloudproxy cache.
+				if ( ! is_admin() ) {
+					$path		 = $_SERVER['REQUEST_URI'];
 					$cloudproxy_clear_uri = $sucuri_api_call . '&a=clearcache&file=' . $path;
 					$args				 = array(
 						'id'	 => 'bt-clear-uri-cloudproxy',
@@ -105,7 +90,25 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					);
 					$wp_admin_bar->add_node( $args );
 				}
-			} elseif( Blog_Tutor_Support_Helpers::is_sucuri_key_missing() ) {
+				
+				if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+					$cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist&duration=3600';
+					$wl_args		= array(
+						'id'	 => 'bt-whitelist-cloudproxy',
+						'title'  => 'Whitelist Your IP Address',
+						'href'   => $cloudproxy_whitelist,
+						'parent' => 'nerdpress-menu',
+						'meta'   => array(
+							'class'	 => 'btButton',
+							'target' => 'Blank',
+							'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
+							'parent'  => 'nerdpress-menu',
+						),
+					);
+					$wp_admin_bar->add_node( $wl_args );
+				}
+
+			} else  {
 				$args = array(
 					'id'	 => 'bt-cloudproxy-api-not-set',
 					'title' => 'Missing Firewall API Keys! Please contact us',
@@ -118,7 +121,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				);
 				$wp_admin_bar->add_node( $args );
 			}
-		} 
+		}
 
 		// "Get Help" link to open the Support Hero widget
 		$args = array(

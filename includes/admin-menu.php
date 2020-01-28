@@ -6,12 +6,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Add Admin Bar Menu Items.
 function bt_custom_toolbar_links( $wp_admin_bar ) {
-	if ( ! is_admin() ) {
-		include_once ABSPATH . 'wp-admin/includes/plugin.php';
-	}
 
 	if ( current_user_can( 'editor' ) || current_user_can( 'administrator' ) ) {
-		// Add "NerdPress" parent menu Items.
+		
+		// On front end, load plugin.php so we can check for Sucuri Plugin status.
+		if ( ! is_admin() ) {
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}		
+		
+		// Add "NerdPress" parent menu items.
 		$args = array(
 			'id'	 => 'nerdpress-menu',
 			'title'  => 'NerdPress',

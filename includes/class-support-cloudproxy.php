@@ -13,6 +13,7 @@ if( !defined( 'ABSPATH' ) ) {
 
 class Blog_Tutor_Support_Cloudproxy {
 	private $whitelist_option_name = 'cloudproxy_wl_ips';
+	private $err_counter_option = 'nerdpress_whitelist_errors'; 
 
 	public function __construct() {
 		// Add a custom schedule string
@@ -46,82 +47,152 @@ class Blog_Tutor_Support_Cloudproxy {
 		wp_enqueue_script( 'whitelist_js' );
 	}
 
+	/**
+	 * Whitelist the user's ip with the Sucuri Firewall
+	 */
 	public function whitelist_cloudproxy_ip() {
+		// Since the method is called from the JS's AJAX context
+		// verify the nonce
 		check_ajax_referer('sucuri_whitelist_secure_me', 'sucuri_whitelist_nonce');
+
+		if( ! user_can( get_current_user_id(), 'edit_posts' ) ) {
+			echo 'IP cannot be whitelisted for the current user';
+			die();
+		}
+
+		// Terminate the operation, if the user is a nerdpress admin
 		if( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 			echo 'np_no_message';
 			die();
 		}
 
-		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		$return_str = FALSE;
-
 		$npSuffix = '';
+
 		$client_ip = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
-		if ( $client_ip != NULL && is_array( $sucuri_api_call_array ) ):
+		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 
+		$errors = get_option( $this->err_counter_option );
+		if ( $client_ip && is_array( $sucuri_api_call_array ) ) {
 			// Make sure the options isn't cached
-			$is_option_cached = wp_cache_get($this->whitelist_option_name, 'options');
-			if($is_option_cached)
-				wp_cache_delete($this->whitelist_option_name, 'options');
+			if ( wp_cache_get ( $this->whitelist_option_name, 'options' ) )
+				wp_cache_delete ( $this->whitelist_option_name, 'options' );
 
-			if( !user_can( get_current_user_id(), 'edit_posts' ) ) {
-				echo 'IP cannot be whitelisted for the current user';
-				die();
-			}
-
-			$whitelist_opt = $this->whitelist_option_name;
-			$whitelisted_ips = get_option( $whitelist_opt, array() );
-			
 			// In case the option was empty and get_option returned an empty string
-			if(!is_array($whitelisted_ips)) $whitelisted_ips = array();
+			if ( ( $whitelisted_ips = get_option( $$this->whitelist_option_name, array() ) ) === 0 );
+				$whitelisted_ips = array();
 		   
 			$return_str = 'IP is already whitelisted';
-			if( !in_array( $client_ip, $whitelisted_ips ) ) {
+			if ( ! in_array( $client_ip, $whitelisted_ips ) ) {
 				// Get the Sucuri's Cloudproxy endpoint
 				$sucuri_api_call = implode( $sucuri_api_call_array );
+				$cloudproxy_endpoint = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . (24 * 3600);
+				$args = array( 'timeout' => 15 );
 
-				$cloudproxy_whitelist = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . (24 * 3600);
-
-				$args = array( 'timeout' => 10 );
-
-				$response = wp_remote_get( $cloudproxy_whitelist, $args );
+				$response = wp_remote_get( $cloudprox_endpoint, $args );
 				if( is_wp_error( $response ) ) {
-					echo 'Error: Connection to Sucuri Firewall API failed';
+					// Add counter so we can keep track of the whilist errors
+					$errors = get_option( $this->err_counter_option, array() );
+					if ( isset( $errors[$client_ip] ) && 2 > ++$errors[$client_ip] ) {
+						update_option( $this->err_counter_option, $errors );
+						return;
+					} elseif ( ! isset( $errors[$client_ip] ) ) {
+						$errors[$client_ip] = 1;
+					}
+					$errors['last_response'] = serialize($response);
+					if ( $errors[$client_ip] > 2 ) 
+					
+					echo json_encode($errors);
 					die();
 				}
 
 				$body = wp_remote_retrieve_body( $response );
+				//$this->assemble_error_data_structure();
 				try {
 					$message = json_decode($body, TRUE);
 					$return_str = $message['messages'][0];
-					$this->save_whitelist_meta( $body, $whitelisted_ips, $whitelist_opt );
+					$this->save_whitelist_meta( $body, $whitelisted_ips );
+					$errors['last_response'] = $messaage;	
 				} catch(Exception $e) {
-					echo 'Error while whitelisting your IP with Sucuri Firewall';
+					$errors['last_response'] = $response;	
+					echo json_encode($errors);
 					die();
 				}
 			}
 
-		endif;
+		}
 		echo $return_str . $npSuffix;
 		die();
 	}
 
+	/**
+	 * Clear/remove the whitelist option from the table
+	 * Remove the attempt count for the whitelist
+	 *
+	 * @since
+	 */
 	public function remove_whitelist_cron() {
 		delete_option( $this->whitelist_option_name );	
+		delete_option( $this->err_counter_option );	
 	}
 
+	/**
+	 * Clear the whitelist option in the options table
+ 	 * This method is used by a JS AJAX call
+	 *
+	 * @since 
+	 */
 	public function clear_whitelist() {
 		check_ajax_referer('clear_whitelist_secure_me', 'clear_whitelist_nonce');
 		$this->remove_whitelist_cron();
 	}
 
-	private function save_whitelist_meta( $body, $whitelisted_ips, $whitelist_opt ) {
+	/**
+	 * Save all whitelisted ips to the options table
+ 	 *
+	 * @since
+	 *
+	 * @param string $body. JSON payload sent by Sucuri
+	 * @param array $whitelisted_ips. An array of IPv4/IPv6 address strings
+	 *
+	 */ 
+	private function save_whitelist_meta( $body, $whitelisted_ips ) {
 		$ip_address = filter_var( json_decode( $body, true )['output'][0], FILTER_VALIDATE_IP );
 		if( ! $ip_address ) return;
 
 		$whitelisted_ips[] = $ip_address;
-		update_option( $whitelist_opt, $whitelisted_ips );
+		update_option( $this->whitelist_opt_name, $whitelisted_ips );
+	}
+
+	/**
+	 * Assemble and send the error to a Zapier endpoint
+ 	 *
+	 * @since 0.6.5
+	 *
+	 * @global WP_User $current_user. Current User
+	 *
+	 * @param array $error Optional. If there are error other error fields you want to pass
+	 */
+	private function assemble_error_data_structure( $error = array() ) {
+		global $current_user;
+
+		$url = 'https://hooks.zapier.com/hooks/catch/332669/odd68kq/';
+
+		// Set error object
+		$error['domain'] = get_site_url();
+		$error['ip'] = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
+		$error['error_msg'] = 'Timeout Limit Exceeded. [TIMEOUT LIMIT TEST]';
+		$error['user'] = $current_user->user_login;
+
+		// Make request
+		wp_remote_post( $url, array(
+			'headers' => array( 
+				'Content-Type' => 'application/json'
+			),
+			'body' => json_encode($error),
+			'method' => 'POST',
+			'data_format' => 'body'
+		) ); 
 	}
 }
 

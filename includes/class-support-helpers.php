@@ -210,8 +210,11 @@ class Blog_Tutor_Support_Helpers {
 	* @return void
 	*/
 	public static function display_notification( $msg ) {
-		if( ! is_array( $msg ) )
+		if ( ! is_array( $msg ) )
 			$msg = array( 'status' => 1, 'msg' => $msg );
+	
+		// Exit if message is empty
+		if ( $msg['msg'] == '') return;
 
 		$msg_class = ( $msg['status'] ? 'np-notice' : 'error np-notice' );
 	?>

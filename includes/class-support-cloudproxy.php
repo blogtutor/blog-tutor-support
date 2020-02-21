@@ -71,51 +71,52 @@ class Blog_Tutor_Support_Cloudproxy {
 
 		$client_ip = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
-
-		$errors = get_option( $this->err_counter_option );
-		if ( $client_ip && is_array( $sucuri_api_call_array ) ) {
+		$errors = get_option( $this->err_counter_option ); 
+		if ( $client_ip && is_array( $sucuri_api_call_array ) && $errors[$client_ip] < 3 ) {
 			// Make sure the options isn't cached
 			if ( wp_cache_get ( $this->whitelist_option_name, 'options' ) )
 				wp_cache_delete ( $this->whitelist_option_name, 'options' );
 
 			// In case the option was empty and get_option returned an empty string
-			if ( ( $whitelisted_ips = get_option( $$this->whitelist_option_name, array() ) ) === 0 );
+			if ( ( $whitelisted_ips = get_option( $this->whitelist_option_name, array() ) ) === 0 )
 				$whitelisted_ips = array();
 		   
 			$return_str = 'IP is already whitelisted';
+			// Whitelist if not in the whitelist list
 			if ( ! in_array( $client_ip, $whitelisted_ips ) ) {
 				// Get the Sucuri's Cloudproxy endpoint
 				$sucuri_api_call = implode( $sucuri_api_call_array );
 				$cloudproxy_endpoint = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . (24 * 3600);
 				$args = array( 'timeout' => 15 );
 
-				$response = wp_remote_get( $cloudprox_endpoint, $args );
+				$response = wp_remote_get( $cloudproxy_endpoint, $args );
 				if( is_wp_error( $response ) ) {
-					// Add counter so we can keep track of the whilist errors
+					/**
+					 * Start storing the errors, once the error count for the same
+					 * IP exceeds 3, send an alert
+					 */
 					$errors = get_option( $this->err_counter_option, array() );
 					if ( isset( $errors[$client_ip] ) && 2 > ++$errors[$client_ip] ) {
-						update_option( $this->err_counter_option, $errors );
-						return;
+						// ignore
 					} elseif ( ! isset( $errors[$client_ip] ) ) {
 						$errors[$client_ip] = 1;
+					} else {
+						$this->alert_hook();
 					}
+
 					$errors['last_response'] = serialize($response);
-					if ( $errors[$client_ip] > 2 ) 
-					
-					echo json_encode($errors);
+					update_option( $this->err_counter_option, $errors );
+					echo 'Error';
 					die();
 				}
 
 				$body = wp_remote_retrieve_body( $response );
-				//$this->assemble_error_data_structure();
 				try {
 					$message = json_decode($body, TRUE);
 					$return_str = $message['messages'][0];
 					$this->save_whitelist_meta( $body, $whitelisted_ips );
-					$errors['last_response'] = $messaage;	
 				} catch(Exception $e) {
-					$errors['last_response'] = $response;	
-					echo json_encode($errors);
+					echo 'Error parsing JSON response from Sucuri';
 					die();
 				}
 			}
@@ -161,7 +162,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		if( ! $ip_address ) return;
 
 		$whitelisted_ips[] = $ip_address;
-		update_option( $this->whitelist_opt_name, $whitelisted_ips );
+		update_option( $this->whitelist_option_name, $whitelisted_ips );
 	}
 
 	/**
@@ -173,7 +174,7 @@ class Blog_Tutor_Support_Cloudproxy {
 	 *
 	 * @param array $error Optional. If there are error other error fields you want to pass
 	 */
-	private function assemble_error_data_structure( $error = array() ) {
+	private function alert_hook( $error = array() ) {
 		global $current_user;
 
 		$url = 'https://hooks.zapier.com/hooks/catch/332669/odd68kq/';

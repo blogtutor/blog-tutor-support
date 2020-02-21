@@ -16,9 +16,6 @@ class Blog_Tutor_Support_Cloudproxy {
 	private $err_counter_option = 'nerdpress_whitelist_errors'; 
 
 	public function __construct() {
-		// Add a custom schedule string
-		add_filter( 'cron_schedules', array( $this, 'twoandaquarter' ) );
-
 		// Schedule a cron job that wipes all the whitelisted ips
 		add_action( 'bt_remove_whitelist_cron', array( $this, 'remove_whitelist_cron' ), 9 );
 		if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
@@ -27,15 +24,6 @@ class Blog_Tutor_Support_Cloudproxy {
 		add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
 		add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
 		add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
-	}
-
-	public function twoandaquarter( $schedules ) {
-		$schedules['twoandaquarter'] = array(
-			'interval' => 2 * 3600 + 900,
-			'display'  => __( 'Once Every Two Hours and Fifteen Mintues' )
-		);
-		
-		return $schedules;
 	}
 
 	public function bt_enqueue_scripts() {
@@ -95,17 +83,7 @@ class Blog_Tutor_Support_Cloudproxy {
 					 * Start storing the errors, once the error count for the same
 					 * IP exceeds 3, send an alert
 					 */
-					$errors = get_option( $this->err_counter_option, array() );
-					if ( isset( $errors[$client_ip] ) && 2 > ++$errors[$client_ip] ) {
-						// ignore
-					} elseif ( ! isset( $errors[$client_ip] ) ) {
-						$errors[$client_ip] = 1;
-					} else {
-						$this->alert_hook();
-					}
-
-					$errors['last_response'] = serialize($response);
-					update_option( $this->err_counter_option, $errors );
+					$this->processWLError( $response, $client_ip, 'Timeout exceeded for Sucuri whitelisting endpoint' );
 					echo 'Error';
 					die();
 				}
@@ -115,6 +93,9 @@ class Blog_Tutor_Support_Cloudproxy {
 					$message = json_decode($body, TRUE);
 					$return_str = $message['messages'][0];
 					$this->save_whitelist_meta( $body, $whitelisted_ips );
+					if( $return_str == 'Invalid domain' ) {
+						$this->processWLError( $message, $client_ip, 'Invalid Sucuri API Key' );
+					}
 				} catch(Exception $e) {
 					echo 'Error parsing JSON response from Sucuri';
 					die();
@@ -182,7 +163,8 @@ class Blog_Tutor_Support_Cloudproxy {
 		// Set error object
 		$error['domain'] = get_site_url();
 		$error['ip'] = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
-		$error['error_msg'] = 'Timeout Limit Exceeded. [TIMEOUT LIMIT TEST]';
+		if ( ! isset( $error['error_msg'] ) )
+			$error['error_msg'] = 'Timeout Limit Exceeded. [TIMEOUT LIMIT TEST]';
 		$error['user'] = $current_user->user_login;
 
 		// Make request
@@ -194,6 +176,20 @@ class Blog_Tutor_Support_Cloudproxy {
 			'method' => 'POST',
 			'data_format' => 'body'
 		) ); 
+	}
+
+	private function processWLError( $response, $client_ip, $msg ) {
+		$errors = get_option( $this->err_counter_option, array() );
+		if ( isset( $errors[$client_ip] ) && 3 > ++$errors[$client_ip] ) {
+			// ignore
+		} elseif ( ! isset( $errors[$client_ip] ) ) {
+			$errors[$client_ip] = 1;
+		} else {
+			$this->alert_hook( array( 'error_msg' => $msg ) );
+		}
+
+		$errors['last_response'] = serialize( $response );
+		update_option( $this->err_counter_option, $errors );
 	}
 }
 

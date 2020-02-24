@@ -12,7 +12,6 @@ jQuery(document).ready(function($) {
 				sucuri_whitelist_nonce: sucuri_whitelist.nonce,
 			}
 		}).done(function(data) {
-			console.log(data);
 			if(data.includes('np_no_message')) return;
 			if(data && !data.includes('already whitelisted')) {
 				var ip;

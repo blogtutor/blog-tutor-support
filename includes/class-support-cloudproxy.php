@@ -164,7 +164,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		$error['domain'] = get_site_url();
 		$error['ip'] = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		if ( ! isset( $error['error_msg'] ) )
-			$error['error_msg'] = 'Timeout Limit Exceeded. [TIMEOUT LIMIT TEST]';
+			$error['error_msg'] = 'Unknown Error';
 		$error['user'] = $current_user->user_login;
 
 		// Make request

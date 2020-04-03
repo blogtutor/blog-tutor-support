@@ -44,7 +44,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		check_ajax_referer('sucuri_whitelist_secure_me', 'sucuri_whitelist_nonce');
 
 		if( ! user_can( get_current_user_id(), 'edit_posts' ) ) {
-			echo 'IP cannot be whitelisted for the current user';
+			echo 'np_no_message';
 			die();
 		}
 

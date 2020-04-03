@@ -15,6 +15,13 @@ class Blog_Tutor_Support_Cloudproxy {
 	private $whitelist_option_name = 'cloudproxy_wl_ips';
 	private $err_counter_option = 'nerdpress_whitelist_errors'; 
 
+	public static function init() {
+		if( ! current_user_can( 'edit_posts' ) )
+			return;
+		$class = __CLASS__;
+		new $class; 
+	}
+
 	public function __construct() {
 		// Schedule a cron job that wipes all the whitelisted ips
 		add_action( 'bt_remove_whitelist_cron', array( $this, 'remove_whitelist_cron' ), 9 );
@@ -43,11 +50,6 @@ class Blog_Tutor_Support_Cloudproxy {
 		// verify the nonce
 		check_ajax_referer('sucuri_whitelist_secure_me', 'sucuri_whitelist_nonce');
 
-		if( ! user_can( get_current_user_id(), 'edit_posts' ) ) {
-			echo 'np_no_message';
-			die();
-		}
-
 		// Terminate the operation, if the user is a nerdpress admin
 		if( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 			echo 'np_no_message';
@@ -61,7 +63,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		$errors = get_option( $this->err_counter_option ); 
 		if ( $client_ip && is_array( $sucuri_api_call_array ) && $errors[$client_ip] < 3 ) {
-			// Make sure the options isn't cached
+			// Make sure the option isn't cached
 			if ( wp_cache_get ( $this->whitelist_option_name, 'options' ) )
 				wp_cache_delete ( $this->whitelist_option_name, 'options' );
 
@@ -193,4 +195,4 @@ class Blog_Tutor_Support_Cloudproxy {
 	}
 }
 
-new Blog_Tutor_Support_Cloudproxy();
+add_action( 'init', array( 'Blog_Tutor_Support_Cloudproxy', 'init' ) );

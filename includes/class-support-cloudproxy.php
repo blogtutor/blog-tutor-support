@@ -24,7 +24,6 @@ class Blog_Tutor_Support_Cloudproxy {
 
 	public function __construct() {
 		// Schedule a cron job that wipes all the whitelisted ips
-		add_action( 'bt_remove_whitelist_cron', array( $this, 'remove_whitelist_cron' ), 9 );
 		if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
 			wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
 
@@ -117,7 +116,7 @@ class Blog_Tutor_Support_Cloudproxy {
 	 */
 	public function remove_whitelist_cron() {
 		delete_option( $this->whitelist_option_name );	
-		delete_option( $this->err_counter_option );	
+		delete_option( $this->err_counter_option );
 	}
 
 	/**
@@ -195,4 +194,9 @@ class Blog_Tutor_Support_Cloudproxy {
 	}
 }
 
+function remove_whitelist_cron() {
+    delete_option( 'cloudproxy_wl_ips' );	
+}
+
 add_action( 'init', array( 'Blog_Tutor_Support_Cloudproxy', 'init' ) );
+add_action( 'bt_remove_whitelist_cron', 'remove_whitelist_cron' );

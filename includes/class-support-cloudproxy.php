@@ -16,20 +16,20 @@ class Blog_Tutor_Support_Cloudproxy {
 	private $err_counter_option = 'nerdpress_whitelist_errors'; 
 
 	public static function init() {
-		if( ! current_user_can( 'edit_posts' ) )
-			return;
 		$class = __CLASS__;
 		new $class; 
 	}
 
 	public function __construct() {
-		// Schedule a cron job that wipes all the whitelisted ips
-		if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
-			wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
+        add_action( 'bt_remove_whitelist_cron', array( $this, 'remove_whitelist_cron' ) );
 
-		add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
-		add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
-		add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
+        if ( current_user_can( 'edit_posts' ) ) {
+            add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
+            add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
+            add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
+		    if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
+			    wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
+        }
 	}
 
 	public function bt_enqueue_scripts() {
@@ -194,10 +194,4 @@ class Blog_Tutor_Support_Cloudproxy {
 	}
 }
 
-function remove_whitelist_cron() {
-    delete_option( 'cloudproxy_wl_ips' );
-    delete_option( 'nerdpress_whitelist_errors' );	
-}
-
 add_action( 'init', array( 'Blog_Tutor_Support_Cloudproxy', 'init' ) );
-add_action( 'bt_remove_whitelist_cron', 'remove_whitelist_cron' );

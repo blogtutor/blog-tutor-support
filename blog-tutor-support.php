@@ -7,7 +7,7 @@
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support
- * License: 	  GPLv2 or later
+ * License: 	  GPLv2
  * Text Domain: blog-tutor
  * Domain Path: /languages/
  */

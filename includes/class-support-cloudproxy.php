@@ -195,7 +195,8 @@ class Blog_Tutor_Support_Cloudproxy {
 }
 
 function remove_whitelist_cron() {
-    delete_option( 'cloudproxy_wl_ips' );	
+    delete_option( 'cloudproxy_wl_ips' );
+    delete_option( 'nerdpress_whitelist_errors' );	
 }
 
 add_action( 'init', array( 'Blog_Tutor_Support_Cloudproxy', 'init' ) );

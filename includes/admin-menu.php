@@ -159,11 +159,13 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 			// add cpu load to admin menu.
 			function serverinfo_admin_menu_item( $wp_admin_bar ) {
-				$cpu_loads = sys_getloadavg();
-
-				if ( $cpu_loads ) {
-					$cpu_load_info = '<p>Load: ' . $cpu_loads[0] . ' &nbsp;' . $cpu_loads[1] . ' &nbsp;' . $cpu_loads[2] . '  &nbsp; ';
-				} else {
+				if ( function_exists( sys_getloadavg ) ) {
+					$cpu_loads = sys_getloadavg();
+				
+					if ( $cpu_loads ) {
+						$cpu_load_info = '<p>Load: ' . $cpu_loads[0] . ' &nbsp;' . $cpu_loads[1] . ' &nbsp;' . $cpu_loads[2] . '  &nbsp; ';
+					}
+ 				}	else {
 					$cpu_load_info = '';
 				}
 

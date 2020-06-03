@@ -44,13 +44,18 @@ $disk_total = Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helper
 $disk_used  = Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_used'] );
 $disk_free  = Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] );
 
-$loads = sys_getloadavg();
-if ( $loads ) {
-	?>
-	<article>
-		<h2 style="margin-top: 0;">Load Averages: &nbsp; <?php echo $loads[0] . ' &nbsp; ' . $loads[1] . ' &nbsp; ' . $loads[2]; ?></h2>
-	</article>
-<?php } ?>
+if ( function_exists( 'sys_getloadavg' ) ) {
+	$loads = sys_getloadavg();
+	if ( $loads ) {
+		?>
+		<article>
+			<h2 style="margin-top: 0;">Load Averages: &nbsp; <?php echo $loads[0] . ' &nbsp; ' . $loads[1] . ' &nbsp; ' . $loads[2]; ?></h2>
+		</article>
+		<?php
+	}
+} 
+
+?>
 
 <article>
 	<h2>Disk Space:</h2>

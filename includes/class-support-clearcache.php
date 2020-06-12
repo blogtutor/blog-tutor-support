@@ -31,12 +31,10 @@ class Blog_Tutor_Support_Clearcache {
 
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		if ( is_array( $sucuri_api_call_array ) ) {
-			$sucuri_api_call = implode( $sucuri_api_call_array );
+			$sucuri_api_call  = implode( $sucuri_api_call_array );
 			$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
-			
-			$args = array( 'timeout' => 30 );
-			
-			$response = wp_remote_get( $cloudproxy_clear, $args );
+			$args             = array( 'timeout' => 30 );
+			$response         = wp_remote_get( $cloudproxy_clear, $args );
 			if( is_wp_error( $response ) ) {
 				echo false;
 				die();
@@ -57,7 +55,7 @@ class Blog_Tutor_Support_Clearcache {
 					: $message_body['messages']['0']);
 
 			$option_payload = array(
-				'msg' => sanitize_text_field( $message ),
+				'msg'    => sanitize_text_field( $message ),
 				'status' => sanitize_text_field( $message_body['status'] )
 			);
 			update_option( 'clear_cache_msg', $option_payload );
@@ -75,8 +73,8 @@ class Blog_Tutor_Support_Clearcache {
 			wp_enqueue_script('jquery'); 
 			wp_register_script( 'clearcache_js', plugins_url( 'js/bt-clearcache.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
 			wp_localize_script( 'clearcache_js', 'sucuri_clearcache', array(
-				'endpoint'			  => admin_url( 'admin-ajax.php' ),
-				'nonce'				 => wp_create_nonce( 'sucuri_clearcache_secure_me' ),
+				'endpoint' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'sucuri_clearcache_secure_me' ),
 			));
 			wp_enqueue_script( 'clearcache_js' );
 		}

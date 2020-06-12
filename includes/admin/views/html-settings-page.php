@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		if( isset( $bt_opts['firewall_choice'] ) && $bt_opts['firewall_choice'] == 'sucuri' ) {
 		?>
 			<a href="?page=nerdpress-support&tab=sucuri_settings" class="nav-tab <?php echo 'sucuri_settings' == $active_tab ? 'nav-tab-active' : ''; ?>">Sucuri Settings</a>
-		<?php } ?>
+    <?php } ?>
 	</h2>
 
 	<?php
@@ -35,7 +35,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php
 			settings_fields( 'blog_tutor_support_settings' );
 			do_settings_sections( 'blog_tutor_support_settings' );
-			submit_button();
+			if ( isset( $bt_opts['firewall_choice'] ) && $bt_opts['firewall_choice'] == 'cloudflare' && isset( $bt_opts['cloudflare_zone'] ) && ! isset( $bt_opts['cloudflare_token'] ) ) {
+				echo '<h3>Cloudflare API Token not set! 👆</h3>';
+				echo '<h4>If using the Cloudflare Enterprice option for Firewall, the API Token must be set.</h4>';
+				echo '<h4>Select other Firewall option or add API Token.</h4>';
+				submit_button( __( 'Break Settings?', 'textdomain' ), 'delete' );
+			} else {
+				submit_button();
+			}
 		?>
 	</form>
 

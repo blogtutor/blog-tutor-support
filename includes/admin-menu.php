@@ -16,11 +16,40 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		
 		// Add "NerdPress" parent menu items.
 		$args = array(
-			'id'	 => 'nerdpress-menu',
+			'id'     => 'nerdpress-menu',
 			'title'  => 'NerdPress',
 			'parent' => false,
 		);
 		$wp_admin_bar->add_node( $args );
+
+		if ( Blog_Tutor_Support_Helpers::is_cloudflare_firewall_selected() ) {
+			$nerdpress_settings = get_option( 'blog_tutor_support_settings', array() );
+			if ( isset( $nerdpress_settings['cloudflare_zone'] ) && isset( $nerdpress_settings['cloudflare_token'] ) ) {
+				$args = array(
+					'id'     => 'hostname',
+					'title'  => 'Clear Cloudflare Cache',
+					'parent' => 'nerdpress-menu',
+					'meta'   => array(
+						'tabindex' => 9999
+					) 
+				);
+				$wp_admin_bar->add_node( $args );
+			} else {
+				$args = array(
+					'id'     => 'nerdpress-cloudflare-configuration-error',
+					'title'  => 'There is a problem with you Cloudflare Enterprise settings! Please contact us.',
+					'href'   => '#',
+					'parent' => 'nerdpress-menu',
+					'meta'   => array(
+						'tabindex' => 9999,
+						'class'    => 'btButton',
+						'title'    => 'There is a problem with you Cloudflare Enterprise settings! Please contact us.',
+						'onclick'  => 'window.supportHeroWidget.show("contact")();'
+					) 
+				);
+				$wp_admin_bar->add_node( $args );
+			}
+		}
 
 		if ( ! Blog_Tutor_Support_Helpers::is_sucuri_plugin_installed() ) {
 			$args = array(
@@ -36,9 +65,10 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				
 			);
 			$wp_admin_bar->add_node( $args );
+
 		} elseif ( is_plugin_inactive( 'sucuri-scanner/sucuri.php' ) ) {
 			$args = array(
-				'id'	 => 'bt-sucuri-inactive',
+				'id'     => 'bt-sucuri-inactive',
 				'title'  => 'The Sucuri Plugin is inactive! Please contact us.',
 				'href'   => '#',
 				'parent' => 'nerdpress-menu',
@@ -57,16 +87,16 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			// If is array then the api key exists.
 			$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 			if ( is_array( $sucuri_api_call_array ) ) {
-				$sucuri_api_call = implode( $sucuri_api_call_array );
 				// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
+				$sucuri_api_call  = implode( $sucuri_api_call_array );
 				$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
-				$args			 = array(
-					'id'	 => 'bt-clear-cloudproxy',
+				$args             = array(
+					'id'     => 'bt-clear-cloudproxy',
 					'title'  => 'Clear Sucuri Firewall Cache',
 					'href'   => '#',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
-						'id'	 => 'btClearcache',
+						'id'   => 'btClearcache',
 						'class'  => 'btButton',
 						'title'  => 'Clear the Sucuri Firewall Cache',
 					),
@@ -76,10 +106,10 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 				// Clear current page from Cloudproxy cache.
 				if ( ! is_admin() ) {
-					$path		 = $_SERVER['REQUEST_URI'];
+					$path                 = $_SERVER['REQUEST_URI'];
 					$cloudproxy_clear_uri = $sucuri_api_call . '&a=clearcache&file=' . $path;
-					$args				 = array(
-						'id'	 => 'bt-clear-uri-cloudproxy',
+					$args                 = array(
+						'id'     => 'bt-clear-uri-cloudproxy',
 						'title'  => 'Clear this page from Sucuri Firewall',
 						// Keep using the v1 API for this menu item
 						'href'   => str_replace('?&k', '?k', str_replace('api?v2', 'api?', $cloudproxy_clear_uri)),
@@ -96,16 +126,16 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				
 				if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 					$cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist&duration=3600';
-					$wl_args		= array(
-						'id'	 => 'bt-whitelist-cloudproxy',
+					$wl_args              = array(
+						'id'     => 'bt-whitelist-cloudproxy',
 						'title'  => 'Whitelist Your IP Address',
 						'href'   => $cloudproxy_whitelist,
 						'parent' => 'nerdpress-menu',
 						'meta'   => array(
-							'class'	 => 'btButton',
+							'class'  => 'btButton',
 							'target' => 'Blank',
 							'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
-							'parent'  => 'nerdpress-menu',
+							'parent' => 'nerdpress-menu',
 						),
 					);
 					$wp_admin_bar->add_node( $wl_args );
@@ -113,12 +143,12 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 			} else  {
 				$args = array(
-					'id'	 => 'bt-cloudproxy-api-not-set',
-					'title' => 'Missing Firewall API Keys! Please contact us',
+					'id'     => 'bt-cloudproxy-api-not-set',
+					'title'  => 'Missing Firewall API Keys! Please contact us',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
-						'class' => 'btButton',
-						'title' => 'Missing Firewall API Keys! Please contact us',
+						'class'   => 'btButton',
+						'title'   => 'Missing Firewall API Keys! Please contact us',
 						'onclick' => 'window.supportHeroWidget.show("contact")();'
 					),
 				);
@@ -128,7 +158,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 		// "Get Help" link to open the Support Hero widget
 		$args = array(
-			'id'	 => 'bt-get-help',
+			'id'     => 'bt-get-help',
 			'title'  => 'Get Help',
 			'href'   => '#',
 			'parent' => 'nerdpress-menu',
@@ -144,7 +174,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 			// "Plugin Settings" link to open the NerdPress Support settings page.
 			$args = array(
-				'id'	 => 'bt-settings',
+				'id'     => 'bt-settings',
 				'title'  => 'Plugin Settings',
 				'href'   => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
 				'parent' => 'nerdpress-menu',
@@ -171,8 +201,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				
 				$disk_space_info = 'Free Disk: ' . Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] ) . '</p>';
 				$cpu_disk_info   = $cpu_load_info . $disk_space_info;
-				$args			= array(
-					'id'	=> 'cpu-disk-info',
+				$args            = array(
+					'id'    => 'cpu-disk-info',
 					'title' => $cpu_disk_info,
 					'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support&tab=server_information',
 					'meta'  => array(

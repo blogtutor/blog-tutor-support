@@ -13,7 +13,7 @@ if( !defined( 'ABSPATH' ) ) {
 
 class Blog_Tutor_Support_Cloudproxy {
 	private $whitelist_option_name = 'cloudproxy_wl_ips';
-	private $err_counter_option = 'nerdpress_whitelist_errors'; 
+	private $err_counter_option    = 'nerdpress_whitelist_errors'; 
 
 	public static function init() {
 		$class = __CLASS__;
@@ -21,22 +21,22 @@ class Blog_Tutor_Support_Cloudproxy {
 	}
 
 	public function __construct() {
-        add_action( 'bt_remove_whitelist_cron', array( $this, 'remove_whitelist_cron' ) );
+		add_action( 'bt_remove_whitelist_cron', array( $this, 'remove_whitelist_cron' ) );
 
-        if ( current_user_can( 'edit_posts' ) ) {
-            add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
-            add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
-            add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
-		    if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
-			    wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
-        }
+		if ( current_user_can( 'edit_posts' ) ) {
+			add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
+			add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
+			add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
+			if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
+				wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
+		}
 	}
 
 	public function bt_enqueue_scripts() {
 		wp_register_script( 'whitelist_js', plugins_url( 'js/bt-whitelist.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
 		wp_localize_script( 'whitelist_js', 'sucuri_whitelist', array(
 			'endpoint' => admin_url( 'admin-ajax.php' ),
-			'nonce'	   => wp_create_nonce( 'sucuri_whitelist_secure_me' ),
+			'nonce'    => wp_create_nonce( 'sucuri_whitelist_secure_me' ),
 		));
 		wp_enqueue_script( 'whitelist_js' );
 	}
@@ -55,30 +55,30 @@ class Blog_Tutor_Support_Cloudproxy {
 			die();
 		}
 
-		$return_str = FALSE;
-		$npSuffix = '';
-
-		$client_ip = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
+		$return_str            = FALSE;
+		$npSuffix              = '';
+		$client_ip             = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
-		$errors = get_option( $this->err_counter_option ); 
+		$errors                = get_option( $this->err_counter_option ); 
 		if ( $client_ip && is_array( $sucuri_api_call_array ) && $errors[$client_ip] < 3 ) {
 			// Make sure the option isn't cached
-			if ( wp_cache_get ( $this->whitelist_option_name, 'options' ) )
+			if ( wp_cache_get ( $this->whitelist_option_name, 'options' ) ) {
 				wp_cache_delete ( $this->whitelist_option_name, 'options' );
+			}
 
 			// In case the option was empty and get_option returned an empty string
-			if ( ( $whitelisted_ips = get_option( $this->whitelist_option_name, array() ) ) === 0 )
+			if ( ( $whitelisted_ips = get_option( $this->whitelist_option_name, array() ) ) === 0 ) {
 				$whitelisted_ips = array();
+			}
 		   
 			$return_str = 'IP is already whitelisted';
 			// Whitelist if not in the whitelist list
 			if ( ! in_array( $client_ip, $whitelisted_ips ) ) {
 				// Get the Sucuri's Cloudproxy endpoint
-				$sucuri_api_call = implode( $sucuri_api_call_array );
+				$sucuri_api_call     = implode( $sucuri_api_call_array );
 				$cloudproxy_endpoint = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . (24 * 3600);
-				$args = array( 'timeout' => 15 );
-
-				$response = wp_remote_get( $cloudproxy_endpoint, $args );
+				$args                = array( 'timeout' => 15 );
+				$response            = wp_remote_get( $cloudproxy_endpoint, $args );
 				if( is_wp_error( $response ) ) {
 					/**
 					 * Start storing the errors, once the error count for the same
@@ -91,13 +91,13 @@ class Blog_Tutor_Support_Cloudproxy {
 
 				$body = wp_remote_retrieve_body( $response );
 				try {
-					$message = json_decode($body, TRUE);
+					$message    = json_decode( $body, TRUE );
 					$return_str = $message['messages'][0];
 					$this->save_whitelist_meta( $body, $whitelisted_ips );
 					if( $return_str == 'Invalid domain' ) {
 						$this->processWLError( $message, $client_ip, 'Invalid Sucuri API Key' );
 					}
-				} catch(Exception $e) {
+				} catch( Exception $e ) {
 					echo 'Error parsing JSON response from Sucuri';
 					die();
 				}
@@ -121,7 +121,7 @@ class Blog_Tutor_Support_Cloudproxy {
 
 	/**
 	 * Clear the whitelist option in the options table
- 	 * This method is used by a JS AJAX call
+	 * This method is used by a JS AJAX call
 	 *
 	 * @since 
 	 */
@@ -163,9 +163,10 @@ class Blog_Tutor_Support_Cloudproxy {
 
 		// Set error object
 		$error['domain'] = get_site_url();
-		$error['ip'] = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
-		if ( ! isset( $error['error_msg'] ) )
+		$error['ip']     = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
+		if ( ! isset( $error['error_msg'] ) ) {
 			$error['error_msg'] = 'Unknown Error';
+		}
 		$error['user'] = $current_user->user_login;
 
 		// Make request
@@ -173,8 +174,8 @@ class Blog_Tutor_Support_Cloudproxy {
 			'headers' => array( 
 				'Content-Type' => 'application/json'
 			),
-			'body' => json_encode($error),
-			'method' => 'POST',
+			'body'        => json_encode($error),
+			'method'      => 'POST',
 			'data_format' => 'body'
 		) ); 
 	}

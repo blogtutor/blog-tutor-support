@@ -63,7 +63,8 @@ class Blog_Tutor_Support_Admin {
 		/**
 		* Plugin settings form fields.
 		*/
-		$settings_option = 'blog_tutor_support_settings';
+		$settings_option   = 'blog_tutor_support_settings';
+		$bt_options        = get_option( 'blog_tutor_support_settings' );
 
 		// Set Custom Fields cection.
 		add_settings_section(
@@ -127,6 +128,37 @@ class Blog_Tutor_Support_Admin {
 			)
 		);
 
+		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'cloudflare' );
+
+// 		if ( $has_cloudflare ) {
+			// Add field Cloudflare Options
+			add_settings_field(
+				'cloudflare_zone',
+				__( 'Cloudflare DNS Zone', 'nerdpress-support' ),
+				array( $this, 'cloudflare_dns_element_callback' ),
+				$settings_option,
+				'options_section',
+				array(
+					'menu'    => $settings_option,
+					'id'      => 'cloudflare_zone',
+					'label'   => __( 'Cloudflare DNS Zone', 'nerdpress-support' ),
+					'default' => 'dns1',
+				)
+			);
+			add_settings_field(
+				'cloudflare_token',
+				__( 'Cloudflare API Token', 'nerdpress-support' ),
+				array( $this, 'cloudflare_token_element_callback' ),
+				$settings_option,
+				'options_section',
+				array(
+					'menu'  => $settings_option,
+					'id'    => 'cloudflare_token',
+					'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
+				)
+			);
+// 		}
+
 		// add_settings_field(
 		//   'identify_users',
 		//   __( 'Identify Users', 'nerdpress-support' ),
@@ -147,7 +179,7 @@ class Blog_Tutor_Support_Admin {
 		* Server Information form fields.
 		*/
 		$information_option = 'blog_tutor_server_information';
-		// Set Custom Fields cection.
+		// Set Custom Fields section.
 		add_settings_section(
 			'information_section',
 			__( 'NerdPress Server Information Section', 'nerdpress-support' ),
@@ -171,7 +203,6 @@ class Blog_Tutor_Support_Admin {
 
 
 		// Check if Securi's enabled to skip this branch since it would still execute even if the SFW tab is absent
-		$bt_options = get_option( 'blog_tutor_support_settings' );
 		$has_sucuri = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 
@@ -210,7 +241,7 @@ class Blog_Tutor_Support_Admin {
 	public function section_options_callback() {}
 
 	/**
-	 * Checkbox element fallback.
+	 * Checkbox element callback.
 	 *
 	 * @param array $args Callback arguments.
 	 */
@@ -234,21 +265,21 @@ class Blog_Tutor_Support_Admin {
 	 * @param array $args Callback arguments.
 	 */
 	public function radiobutton_element_callback( $args ) {
-		$menu    = $args['menu'];
-		$id      = $args['id'];
-		$options = get_option( $menu );
+		$menu     = $args['menu'];
+		$id       = $args['id'];
+		$options  = get_option( $menu );
+		$firewall = '';
 
 		if ( isset( $options[ $id ] ) ) {
 			$current = $options[ $id ];
 		} else {
-			$current = isset( $args['default'] ) ? $args['default'] : '0';
+			$current = isset( $args['default'] ) ? $args['default'] : 'cloudflare';
 		}
 
-		$firewall = '';
 		if( isset( $options['firewall_choice'] ) ) { 
 			$firewall = $options['firewall_choice'];
 		} else {
-			$firewall = 'sucuri';
+			$firewall = 'cloudflare';
 			$options['firewall_choice'] = $firewall;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
@@ -257,7 +288,7 @@ class Blog_Tutor_Support_Admin {
 	}
 
 	/**
-	 * Textarea element fallback.
+	 * Textarea element callback.
 	 *
 	 * @param array $args Callback arguments.
 	 */
@@ -276,7 +307,7 @@ class Blog_Tutor_Support_Admin {
 	}
 
 	/**
-	 * Serverinfo element fallback.
+	 * Serverinfo element callback.
 	 *
 	 * @param array $args Callback arguments.
 	 */
@@ -295,7 +326,7 @@ class Blog_Tutor_Support_Admin {
 	}
 
 	/**
-	 * Sucuri Options element fallback.
+	 * Sucuri Options element callback.
 	 *
 	 * @param array $args Callback arguments.
 	 */
@@ -311,6 +342,52 @@ class Blog_Tutor_Support_Admin {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-sucuri-options-field.php';
+	}
+
+	/**
+	 * Cloudflare Options element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function cloudflare_dns_element_callback( $args ) {
+// 		print_r( $args );
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$zone    = '';
+
+		if( isset( $options['cloudflare_zone'] ) ) { 
+			$zone = $options['cloudflare_zone'];
+		} else {
+			$zone = 'dns1';
+			$options['cloudflare_zone'] = $zone;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-cloudflare-dns-field.php';
+	}
+
+	/**
+	 * Cloudflare Token element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function cloudflare_token_element_callback( $args ) {
+// 		print_r( $args );
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$token   = '';
+		
+		if( isset( $options['cloudflare_token'] ) ) { 
+			$token = $options['cloudflare_token'];
+		} else {
+			$token = '';
+			$options['cloudflare_token'] = $token;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-cloudflare-token-field.php';
 	}
 
 	/**

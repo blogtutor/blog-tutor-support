@@ -19,7 +19,7 @@ class Blog_Tutor_Support_Helpers {
 			$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
 		} else {
 			$upload_dir  = wp_upload_dir( $time = null, $create_dir = null );
-			$path = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
+			$path        = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
 
 			if( file_exists( $path ) )  
 				$input_lines = file_get_contents( $path );
@@ -33,7 +33,7 @@ class Blog_Tutor_Support_Helpers {
 
 		if ( array_filter( $output_array ) ) {
 			self::$sucuri_api_key = array(
-				'api_key'	=> $output_array[0][1],
+				'api_key'    => $output_array[0][1],
 				'api_secret' => $output_array[0][2]
 			);
 		} else self::$sucuri_api_key = array();
@@ -64,17 +64,17 @@ class Blog_Tutor_Support_Helpers {
 	public static function get_disk_info() {
 		// Credit to: http://www.thecave.info/display-disk-free-space-percentage-in-php/
 		/* Get disk space free (in bytes). */
-		$disk_free = disk_free_space( __FILE__ );
+		$disk_free                    = disk_free_space( __FILE__ );
 		/* And get disk space total (in bytes).  */
-		$disk_total = disk_total_space( __FILE__ );
+		$disk_total                   = disk_total_space( __FILE__ );
 		/* Now we calculate the disk space used (in bytes). */
-		$disk_used = $disk_total - $disk_free;
+		$disk_used                    = $disk_total - $disk_free;
 		/* Percentage of disk used - this will be used to also set the width % of the progress bar. */
-		$disk_percentage			  = sprintf( '%.2f', ( $disk_used / $disk_total ) * 100 );
-		$disk_info					= array();
-		$disk_info['disk_total']	  = $disk_total;
-		$disk_info['disk_used']	   = $disk_used;
-		$disk_info['disk_free']	   = $disk_free;
+		$disk_percentage              = sprintf( '%.2f', ( $disk_used / $disk_total ) * 100 );
+		$disk_info                    = array();
+		$disk_info['disk_total']      = $disk_total;
+		$disk_info['disk_used']       = $disk_used;
+		$disk_info['disk_free']       = $disk_free;
 		$disk_info['disk_percentage'] = $disk_percentage;
 
 		return $disk_info;
@@ -104,15 +104,14 @@ class Blog_Tutor_Support_Helpers {
 			self::set_sucuri_api();
 		}
 
-		if ( ! isset( self::$sucuri_api_key['api_key'] ) ||
-			! isset( self::$sucuri_api_key['api_secret'] ) ) {
+		if ( ! isset( self::$sucuri_api_key['api_key'] ) || ! isset( self::$sucuri_api_key['api_secret'] ) ) {
 			return;
 		} else {
 			// $sucuri_api_call = 'https://waf.sucuri.net/api?&k=' . $api_key . '&s=' . $api_secret;
-			$sucuri_api_call			   = array();
-			$sucuri_api_call['address']	= 'https://waf.sucuri.net/api?v2';
+			$sucuri_api_call               = array();
+			$sucuri_api_call['address']    = 'https://waf.sucuri.net/api?v2';
 			$sucuri_api_call['k_option']   = '&k=';
-			$sucuri_api_call['api_key']	= self::$sucuri_api_key['api_key'];
+			$sucuri_api_call['api_key']    = self::$sucuri_api_key['api_key'];
 			$sucuri_api_call['s_option']   = '&s=';
 			$sucuri_api_call['api_secret'] = self::$sucuri_api_key['api_secret'];
 			return $sucuri_api_call;
@@ -138,6 +137,16 @@ class Blog_Tutor_Support_Helpers {
 			self::set_sucuri_api();
 		}
 		return ( ! empty( self::$sucuri_api_key ) );
+	}
+
+	/**
+	 * Determine whether Cloudflare Firewall option is selected
+	 *
+	 * @return boolean. If the option is selected
+	 */
+	public static function is_cloudflare_firewall_selected() {
+		$option_list = get_option( 'blog_tutor_support_settings', array() );
+		return ( isset( $option_list['firewall_choice'] ) && $option_list['firewall_choice'] == 'cloudflare' );
 	}
 
 	/**

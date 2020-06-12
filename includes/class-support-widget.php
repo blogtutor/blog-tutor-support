@@ -31,7 +31,7 @@ class Blog_Tutor_Support_Widget {
 
 		if ( is_user_logged_in() ) {
 			$ajw_current_user = wp_get_current_user();
-      ?>
+			?>
 			<script type="text/javascript">
 			jQuery( window ).load( function( $ ) {
 				if ( window.supportHeroWidget != undefined ) {
@@ -55,24 +55,21 @@ class Blog_Tutor_Support_Widget {
 				}
 			});
 			</script>
-
 			<?php
-      if ( ! is_admin() || ( isset( $options['hide_tab'] ) ) ) {
-        ?>
+			if ( ! is_admin() || ( isset( $options['hide_tab'] ) ) ) {
+			?>
 				<style type="text/css">
 				#supporthero-button { display: none !important; }
 				</style>
-        <?php
-        }
-        ?>
 			<?php
-      if ( is_admin() ) {
-        ?>
+			}
+			if ( is_admin() ) {
+				?>
 				<style type="text/css">
 				#plugin-information #supporthero-button, .wp-admin.wp-core-ui.update-php #supporthero-button { display: none !important; }
 				</style>
-        <?php
-      }
+				<?php
+			}
 		}
 	}
 }

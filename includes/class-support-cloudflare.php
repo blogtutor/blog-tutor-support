@@ -238,7 +238,7 @@ class NerdPress_Cloudflare_Client {
 		}
 		$error = array(
 			'host'    => array( self::$_cfTargetHost ),
-			'payload' => json_encode( $result['body'] ),
+			'payload' => stripslashes( str_replace( array( '\n', '\r' ), '', json_encode( $result['body'] ) ) ),
 			'cf-ray'  => json_encode( $result['headers']['CF-Ray'] ),
 			'cleared' => self::$cacheType,
 			'method'  => $method,

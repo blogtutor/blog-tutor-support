@@ -1,8 +1,7 @@
 jQuery( document ).ready( function( $ ) {
     'use strict';
 
-    $( '#wp-admin-bar-hostname' ).find( '.ab-item' ).css( 'cursor', 'pointer' );
-    $( '#wp-admin-bar-hostname' ).click( clearCache );
+    $( '#wp-admin-bar-hostname a' ).click( clearCache );
 
     function clearCache() {
 		var nText = 'One moment, please...	  ';

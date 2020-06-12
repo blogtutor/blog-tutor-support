@@ -28,22 +28,26 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				$args = array(
 					'id'     => 'hostname',
 					'title'  => 'Clear Cloudflare Cache',
+					'href'   => '#',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
-						'tabindex' => 9999
+						'tabindex' => 9999,
+						'id'   => 'cfClearcache',
+						'class'  => 'btButton',
+						'title'  => 'Clear the Cloudflare Cache',
 					) 
 				);
 				$wp_admin_bar->add_node( $args );
 			} else {
 				$args = array(
 					'id'     => 'nerdpress-cloudflare-configuration-error',
-					'title'  => 'There is a problem with you Cloudflare Enterprise settings! Please contact us.',
+					'title'  => 'There is a problem with your Cloudflare Enterprise settings! Please contact us.',
 					'href'   => '#',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
 						'tabindex' => 9999,
 						'class'    => 'btButton',
-						'title'    => 'There is a problem with you Cloudflare Enterprise settings! Please contact us.',
+						'title'    => 'There is a problem with your Cloudflare Enterprise settings! Please contact us.',
 						'onclick'  => 'window.supportHeroWidget.show("contact")();'
 					) 
 				);

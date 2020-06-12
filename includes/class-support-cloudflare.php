@@ -233,28 +233,29 @@ class NerdPress_Cloudflare_Client {
 	private static function sendAlert( $result, $methodName = '' ) {
 		$hookUrl = 'https://hooks.zapier.com/hooks/catch/332669/o1lpmis/';
 
-		if ( defined( 'NP_CALLING_CACHE_METHOD' ) )
+		if ( defined( 'NP_CALLING_CACHE_METHOD' ) ) {
 			$method = NP_CALLING_CACHE_METHOD;
+		}
+		$error = array(
+			'host'    => array( self::$_cfTargetHost ),
+			'payload' => json_encode( $result['body'] ),
+			'cf-ray'  => json_encode( $result['headers']['CF-Ray'] ),
+			'cleared' => self::$cacheType,
+			'method'  => $method,
+			'url'     => self::$triggerUrl,
+			'before'  => self::$beforeStatus,
+			'after'   => self::$afterStatus
+		);
 
-			$error = array(
-				'host'    => array( self::$_cfTargetHost ),
-				'payload' => json_encode( $result ),
-				'cleared' => self::$cacheType,
-				'method'  => $method,
-				'url'     => self::$triggerUrl,
-				'before'  => self::$beforeStatus,
-				'after'   => self::$afterStatus
-			);
-
-			$res = wp_remote_post( $hookUrl, array(
-					'headers' => array(
-						'Content-Type' => 'application/json'
-					),
-					'body'        => json_encode( $error ),
-					'method'      => 'POST',
-					'data_format' => 'body',
-					'timeout'     => 10,
-			) ); 
+		$res = wp_remote_post( $hookUrl, array(
+				'headers' => array(
+					'Content-Type' => 'application/json'
+				),
+				'body'        => json_encode( $error ),
+				'method'      => 'POST',
+				'data_format' => 'body',
+				'timeout'     => 10,
+		) ); 
 	}
 
 	/**
@@ -288,7 +289,8 @@ class NerdPress_Cloudflare_Client {
 			);
 		}
 
-		self::sendAlert( $result['body'] );
+// 		self::sendAlert( $result['body'] );
+		self::sendAlert( $result );
 	
 		if ( ! defined( 'NP_SUPPRESS_NOTIFICATION' ) )
 			self::storeResult( $result['body'] );

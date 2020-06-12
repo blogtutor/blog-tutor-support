@@ -111,9 +111,10 @@ class NerdPress_Cloudflare_Client {
 	public static function init() {
 		if ( self::$_hCloudflare )
 			return;
-		@self::$_cfTargetHost = get_option( 'np_cf_ei' )['hostname'];
-		if ( empty ( self::$_cfTargetHost ) )
-			self::$_cfTargetHost = preg_replace( '#https?://#i', '', home_url() ); 
+// 		@self::$_cfTargetHost = get_option( 'np_cf_ei' )['hostname'];
+// 		if ( empty ( self::$_cfTargetHost ) ) {
+			self::$_cfTargetHost = preg_replace( '#https?://#i', '', home_url() );
+//		}
 
 		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
 		if ( isset( $nerdpress_options['cloudflare_token'] ) ) {

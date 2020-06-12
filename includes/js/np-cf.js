@@ -5,7 +5,12 @@ jQuery( document ).ready( function( $ ) {
     $( '#wp-admin-bar-hostname' ).click( clearCache );
 
     function clearCache() {
-        this.innerHTML = 'Clearing cache...';
+		var nText = 'One moment, please...	  ';
+		$(this).text(nText);
+		
+		$('.hover').children().css('display', 'block');
+		$('#wp-admin-bar-nerdpress-menu').off('hover');
+		
         $.ajax({
             url: np_cf_ei.endpoint,
             type: 'POST',

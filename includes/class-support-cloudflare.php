@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) )
  * @since 0.0.1
  */
 if ( ! defined( 'NP_CF_EI_VERSION' ) )
-	define( 'NP_CF_EI_VERSION', '0.2.3' );
+	define( 'NP_CF_EI_VERSION', '0.7.0' );
 
 class NerdPress_Cloudflare_Client {
 	/**

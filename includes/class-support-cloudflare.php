@@ -376,11 +376,12 @@ class NerdPress_Cloudflare_Client {
 
 		$html = '<style>.nerdpress-notice { border-left: 4px solid green }'
 			  . ' .nerdpress-notice.error { border-left: 4px solid red } </style>';
-		$html .= '<div class="notice nerdpress-notice' . ( ! empty( $response['success'] ) ? '' : ' error' ) . '">';
-		$html .= '<h2>NerdPress Cloudflare Enterprise Integration</h2>';
+		$html .= '<div class="notice nerdpress-notice' . ( ! empty( $response['success'] ) ? '' : ' error' ) . '" style="display: flex; align-items: center;">';
+	  $html .= '<p><img src=' . esc_url( site_url() ) . '/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"></p>';
+    $html .= '<div><h2>NerdPress Notice:</h2>';
 
 		if ( ! empty( $response['success'] ) && empty( $response['messages'] ) )
-			$response['messages'] = [ 'Cloudflare cache has been successfully cleared!' ];
+			$response['messages'] = [ 'Cloudflare Enterprise cache has been successfully cleared!' ];
 		// If there's an error response, messages are within the error object
 		elseif ( empty( $response['success'] ) ) {
 			$response['messages'] = [];
@@ -390,7 +391,7 @@ class NerdPress_Cloudflare_Client {
 
 		foreach( $response['messages'] as $message )
 			$html .= '<p>' . $message . '</p>';
-		$html .= '</div>';
+		$html .= '</div></div>';
 
 		delete_option( $notice_name );
 		echo $html;

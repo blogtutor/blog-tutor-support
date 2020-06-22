@@ -7,9 +7,6 @@ if ( ! defined( 'ABSPATH' ) )
  * 
  * @since 0.0.1
  */
-if ( ! defined( 'NP_CF_EI_VERSION' ) )
-	define( 'NP_CF_EI_VERSION', '0.7.0' );
-
 class NerdPress_Cloudflare_Client {
 	/**
 	 * @var string. NerdPress CF API Key
@@ -159,7 +156,7 @@ class NerdPress_Cloudflare_Client {
 		if ( ! current_user_can( 'edit_posts' ) )
 			return;
 
-		wp_register_script( 'np_cf_js', plugins_url( 'includes/js/np-cf.js', dirname( __FILE__ ) ), array( 'jquery' ), NP_CF_EI_VERSION );
+		wp_register_script( 'np_cf_js', plugins_url( 'includes/js/np-cf.js', dirname( __FILE__ ) ), array( 'jquery' ), BT_PLUGIN_VERSION );
 		wp_localize_script( 'np_cf_js', 'np_cf_ei', array(
 			'endpoint' => admin_url( 'admin-ajax.php' ),
 			'nonce' => wp_create_nonce( 'np_cf_ei_secure_me' )

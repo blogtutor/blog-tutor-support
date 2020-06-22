@@ -93,15 +93,15 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 <article>
 	<h2>Server Information:</h2>
 	<p><strong>PHP VERSION:</strong> <?php echo phpversion(); ?></p>
-	<p><strong>SERVER_SOFTWARE:</strong> <?php echo $_SERVER['SERVER_SOFTWARE']; ?></p>
-	<p><strong>SERVER_PROTOCOL:</strong> <?php echo $_SERVER['SERVER_PROTOCOL']; ?></p>
-	<p><strong>DOCUMENT_ROOT:</strong> <?php echo $_SERVER['DOCUMENT_ROOT']; ?></p>
-	<p><strong>REMOTE_ADDR:</strong> <?php echo $_SERVER['REMOTE_ADDR']; ?></p>
-	<p><strong>HTTP_UPGRADE_INSECURE_REQUESTS:</strong> <?php echo $_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS']; ?></p>
+	<p><strong>SERVER_SOFTWARE:</strong> <?php if ( ! empty( $_SERVER['SERVER_SOFTWARE'] ) ) { echo $_SERVER['SERVER_SOFTWARE']; } ?></p>
+	<p><strong>SERVER_PROTOCOL:</strong> <?php if ( ! empty( $_SERVER['SERVER_PROTOCOL'] ) ) { echo $_SERVER['SERVER_PROTOCOL']; } ?></p>
+	<p><strong>DOCUMENT_ROOT:</strong> <?php if ( ! empty( $_SERVER['DOCUMENT_ROOT'] ) ) { echo $_SERVER['DOCUMENT_ROOT']; } ?></p>
+	<p><strong>REMOTE_ADDR:</strong> <?php if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) { echo $_SERVER['REMOTE_ADDR']; } ?></p>
+	<p><strong>HTTP_UPGRADE_INSECURE_REQUESTS:</strong> <?php if ( ! empty( $_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS'] ) ) { echo $_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS']; } ?></p>
 	<P><strong>HTTP_CLIENT_IP:</strong> <?php if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) { echo $_SERVER['HTTP_CLIENT_IP']; } else { echo '(not set)'; } ?></p>
 	<p><strong>HTTP_X_SUCURI_CLIENTIP:</strong> <?php if ( !empty( $_SERVER['HTTP_X_SUCURI_CLIENTIP'] ) ) { echo $_SERVER['HTTP_X_SUCURI_CLIENTIP']; } ?></p>
-	<p><strong>HTTP_X_FORWARDED_FOR:</strong> <?php echo $_SERVER['HTTP_X_FORWARDED_FOR']; ?></p>
-	<p><strong>HTTP_X_REAL_IP:</strong> <?php echo $_SERVER['HTTP_X_REAL_IP']; ?></p>
+	<p><strong>HTTP_X_FORWARDED_FOR:</strong> <?php if ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) { echo $_SERVER['HTTP_X_FORWARDED_FOR']; } ?></p>
+	<p><strong>HTTP_X_REAL_IP:</strong> <?php if ( !empty( $_SERVER['HTTP_X_REAL_IP'] ) ) { echo $_SERVER['HTTP_X_REAL_IP']; } ?></p>
 </article>
 
 <br>

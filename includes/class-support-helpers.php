@@ -64,9 +64,9 @@ class Blog_Tutor_Support_Helpers {
 	public static function get_disk_info() {
 		// Credit to: http://www.thecave.info/display-disk-free-space-percentage-in-php/
 		/* Get disk space free (in bytes). */
-		$disk_free                    = disk_free_space( __FILE__ );
+		$disk_free                    = disk_free_space( __DIR__ );
 		/* And get disk space total (in bytes).  */
-		$disk_total                   = disk_total_space( __FILE__ );
+		$disk_total                   = disk_total_space( __DIR__ );
 		/* Now we calculate the disk space used (in bytes). */
 		$disk_used                    = $disk_total - $disk_free;
 		/* Percentage of disk used - this will be used to also set the width % of the progress bar. */

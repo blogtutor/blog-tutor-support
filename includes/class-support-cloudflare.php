@@ -133,18 +133,23 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 */
-	public function __construct() {
-		$this->cfNotices = ['np_cf_cc_notice']; 
+	public function __construct() {		
+		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
+		$firewall_choice   = $nerdpress_options['firewall_choice'];
+		if ( $firewall_choice === 'cloudflare') {		
+			
+			$this->cfNotices = ['np_cf_cc_notice']; 
 
-		add_action( 'init', array( $this, 'injectScripts' ), 20 );
-		add_action( 'deleted_post', array( $this, 'handleDeletionCache' ), 10, 1 );
-		add_action( 'delete_attachment', array( $this, 'handleDeletionCache' ), 10, 1 );
-		add_action( 'transition_post_status', array( $this, 'handlePostCacheTransition' ), 10, 3 );
-		add_action( 'transition_comment_status', array( $this, 'handleCommentCacheTransition' ), 9, 3 );
-		add_action( 'comment_post', array( $this, 'handleCommentCache' ), 9, 3 );
-		add_action( 'edit_comment', array( $this, 'handleCommentCacheEdit' ), 9, 2 );
-		add_action( 'admin_notices', array( $this, 'cloudflare_notices' ) );
-		add_action( 'wp_ajax_purgeCacheAjaxWrapper', array( $this, 'purgeCacheAjaxWrapper' ) );
+			add_action( 'init', array( $this, 'injectScripts' ), 20 );
+			add_action( 'deleted_post', array( $this, 'handleDeletionCache' ), 10, 1 );
+			add_action( 'delete_attachment', array( $this, 'handleDeletionCache' ), 10, 1 );
+			add_action( 'transition_post_status', array( $this, 'handlePostCacheTransition' ), 10, 3 );
+			add_action( 'transition_comment_status', array( $this, 'handleCommentCacheTransition' ), 9, 3 );
+			add_action( 'comment_post', array( $this, 'handleCommentCache' ), 9, 3 );
+			add_action( 'edit_comment', array( $this, 'handleCommentCacheEdit' ), 9, 2 );
+			add_action( 'admin_notices', array( $this, 'cloudflare_notices' ) );
+			add_action( 'wp_ajax_purgeCacheAjaxWrapper', array( $this, 'purgeCacheAjaxWrapper' ) );
+		}
 	}
 
 	/**

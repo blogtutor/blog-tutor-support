@@ -136,7 +136,7 @@ class NerdPress_Cloudflare_Client {
 	public function __construct() {		
 		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
 		$firewall_choice   = $nerdpress_options['firewall_choice'];
-		if ( $firewall_choice === 'cloudflare') {		
+		if ( ( $firewall_choice === 'cloudflare' ) && isset( $nerdpress_options['cloudflare_token'] ) ) {		
 			
 			$this->cfNotices = ['np_cf_cc_notice']; 
 

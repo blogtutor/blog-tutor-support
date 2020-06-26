@@ -106,12 +106,10 @@ class NerdPress_Cloudflare_Client {
 	 * @since 0.0.1
 	 */
 	public static function init() {
-		if ( self::$_hCloudflare )
+		if ( self::$_hCloudflare ) {
 			return;
-// 		@self::$_cfTargetHost = get_option( 'np_cf_ei' )['hostname'];
-// 		if ( empty ( self::$_cfTargetHost ) ) {
-			self::$_cfTargetHost = preg_replace( '#https?://#i', '', home_url() );
-//		}
+		}
+		self::$_cfTargetHost = preg_replace( '#https?://#i', '', home_url() );
 
 		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
 		if ( isset( $nerdpress_options['cloudflare_token'] ) ) {
@@ -134,17 +132,24 @@ class NerdPress_Cloudflare_Client {
 	 * @since 0.0.1
 	 */
 	public function __construct() {
-		$this->cfNotices = ['np_cf_cc_notice']; 
+		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
+		$firewall_choice   = $nerdpress_options['firewall_choice'];
+		if ( ( $firewall_choice === 'cloudflare' ) && isset( $nerdpress_options['cloudflare_token'] ) ) {
+	
+			$this->cfNotices = ['np_cf_cc_notice']; 
 
-		add_action( 'init', array( $this, 'injectScripts' ), 20 );
-		add_action( 'deleted_post', array( $this, 'handleDeletionCache' ), 10, 1 );
-		add_action( 'delete_attachment', array( $this, 'handleDeletionCache' ), 10, 1 );
-		add_action( 'transition_post_status', array( $this, 'handlePostCacheTransition' ), 10, 3 );
-		add_action( 'transition_comment_status', array( $this, 'handleCommentCacheTransition' ), 9, 3 );
-		add_action( 'comment_post', array( $this, 'handleCommentCache' ), 9, 3 );
-		add_action( 'edit_comment', array( $this, 'handleCommentCacheEdit' ), 9, 2 );
-		add_action( 'admin_notices', array( $this, 'cloudflare_notices' ) );
-		add_action( 'wp_ajax_purgeCacheAjaxWrapper', array( $this, 'purgeCacheAjaxWrapper' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'injectScripts' ), 20 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'injectScripts' ), 20 );
+			add_action( 'deleted_post', array( $this, 'handleDeletionCache' ), 10, 1 );
+			add_action( 'delete_attachment', array( $this, 'handleDeletionCache' ), 10, 1 );
+			add_action( 'transition_post_status', array( $this, 'handlePostCacheTransition' ), 10, 3 );
+			add_action( 'transition_comment_status', array( $this, 'handleCommentCacheTransition' ), 9, 3 );
+			add_action( 'comment_post', array( $this, 'handleCommentCache' ), 9, 3 );
+			add_action( 'edit_comment', array( $this, 'handleCommentCacheEdit' ), 9, 2 );
+			add_action( 'admin_notices', array( $this, 'cloudflare_notices' ) );
+			add_action( 'wp_ajax_purge_cloudflare_full', array( $this, 'purge_cloudflare_full' ) );
+			add_action( 'wp_ajax_purge_cloudflare_url', array( $this, 'purge_cloudflare_url' ) );
+		}
 	}
 
 	/**
@@ -153,15 +158,17 @@ class NerdPress_Cloudflare_Client {
 	 * @since 0.0.1
 	 */
 	public function injectScripts() {
-		if ( ! current_user_can( 'edit_posts' ) )
+		if ( ! current_user_can( 'edit_posts' ) ) {
 			return;
-
-		wp_register_script( 'np_cf_js', plugins_url( 'includes/js/np-cf.js', dirname( __FILE__ ) ), array( 'jquery' ), BT_PLUGIN_VERSION );
-		wp_localize_script( 'np_cf_js', 'np_cf_ei', array(
-			'endpoint' => admin_url( 'admin-ajax.php' ),
-			'nonce' => wp_create_nonce( 'np_cf_ei_secure_me' )
-		));
+		}
+  	global $wp;
+  	wp_register_script( 'np_cf_js', plugins_url( 'includes/js/np-cf.js', dirname( __FILE__ ) ), array( 'jquery' ), BT_PLUGIN_VERSION );
 		wp_enqueue_script( 'np_cf_js' );  
+		wp_localize_script( 'np_cf_js', 'np_cf_ei', array(
+			'endpoint'     => admin_url( 'admin-ajax.php' ),
+  		'nonce'        => wp_create_nonce( 'np_cf_ei_secure_me' ),
+  		'url_to_purge' => home_url( add_query_arg( array(), $wp->request ) ),
+		));
 	}
 
 	/**
@@ -180,7 +187,7 @@ class NerdPress_Cloudflare_Client {
 		foreach( $options as $option ) 
 			if ( isset ( $input[$option] ) )
 				$input[$option] = sanitize_text_field( $input[$option] ); 
-	   
+ 
 		return $input; 
 	}
 	
@@ -286,7 +293,6 @@ class NerdPress_Cloudflare_Client {
 			);
 		}
 
-// 		self::sendAlert( $result['body'] );
 		self::sendAlert( $result );
 	
 		if ( ! defined( 'NP_SUPPRESS_NOTIFICATION' ) )
@@ -342,7 +348,7 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 */
-	public static function purgeCacheAjaxWrapper() {
+	public static function purge_cloudflare_full() {
 		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
 
 		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
@@ -374,11 +380,10 @@ class NerdPress_Cloudflare_Client {
 			$response['messages'] = [ 'Broken JSON response from Cloudflare' ];
 		}
 
-		$html = '<style>.nerdpress-notice { border-left: 4px solid green }'
-			  . ' .nerdpress-notice.error { border-left: 4px solid red } </style>';
+		$html  = '<style>.nerdpress-notice { border-left: 4px solid green } .nerdpress-notice.error { border-left: 4px solid red } </style>';
 		$html .= '<div class="notice nerdpress-notice' . ( ! empty( $response['success'] ) ? '' : ' error' ) . '" style="display: flex; align-items: center;">';
-	  $html .= '<p><img src=' . esc_url( site_url() ) . '/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"></p>';
-    $html .= '<div><h2>NerdPress Notice:</h2>';
+		$html .= '<p><img src="' . esc_url( site_url() ) . '/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"></p>';
+  	$html .= '<div><h2>NerdPress Notice:</h2>';
 
 		if ( ! empty( $response['success'] ) && empty( $response['messages'] ) )
 			$response['messages'] = [ 'Cloudflare Enterprise cache has been successfully cleared!' ];
@@ -406,6 +411,27 @@ class NerdPress_Cloudflare_Client {
 		foreach( $this->cfNotices as $notice ) {
 			$this->noticeHtml( $notice );
 		}
+	}
+
+  /**
+   * Clear current URL from front end admin menu.
+   *
+   * @since 0.7.2:
+   */
+  public function purge_cloudflare_url() {
+		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
+		
+		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
+		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
+		
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			echo 'Current user cannot clear the Cloudflare cache';
+			die();
+		}
+		
+		$url_clear = esc_url( $_POST['url'] );
+		echo self::purgeCache( array( '"' . $url_clear . '"' ) );
+		die();
 	}
 
 	/**

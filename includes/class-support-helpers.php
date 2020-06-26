@@ -232,5 +232,5 @@ class Blog_Tutor_Support_Helpers {
 			<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg['msg']; ?></strong></p>
 			</div>
 			<?php
-	}
+  }
 }

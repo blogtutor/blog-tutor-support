@@ -13,63 +13,63 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 */
-	private static $xAuthKey = '';
+	private static $cloudflare_api_key = '';
 
 	/**
 	 * @var string. NerdPress CF email address
 	 *
 	 * @since 0.0.1
 	 */
-	private static $xAuthEmail = 'support@nerdpress.net';
+	private static $cloudflare_email = 'support@nerdpress.net';
 
 	/**
 	 * @var string. Cloudflare API base endpoint
 	 *
 	 * @since 0.0.1
 	 */
-	private static $baseUrl = 'https://api.cloudflare.com/client/';
+	private static $cloudflare_api_url = 'https://api.cloudflare.com/client/';
 
 	/**
 	 * @var string. Cloudflare API version
 	 *
 	 * @since 0.0.1
 	 */
-	private static $apiVersion = 'v4/';
+	private static $cloudflare_api_version = 'v4/';
 
 	/**
 	 * @var string. Zones subdir string
 	 *
 	 * @since 0.0.1
 	 */
-	private static $zonesSubdir = 'zones/';
+	private static $cloudflare_zones_directory = 'zones/';
 
 	/**
 	 * @var array. Content type header
 	 *
 	 * @since 0.0.1
 	 */
-	private static $_hContentType = NULL;
+	private static $header_content_type = NULL;
 
 	/**
 	 * @var string. Cloudflare zone
 	 *
 	 * @since 0.0.1
 	 */
-	private static $_cfZone = '';
+	private static $cloudflare_zone = '';
 
 	/**
 	 * @var array. Cloudflare specific headers
 	 *
 	 * @since 0.0.1
 	 */
-	private static $_hCloudflare = NULL;
+	private static $header_cloudflare = NULL;
 
 	/**
 	 * @var string. Target host 
 	 * 
 	 * @since 0.0.1
 	 */
-	private static $_cfTargetHost = '';
+	private static $host_url = '';
 
 	/**
 	 * @var string. Cache Clear type
@@ -77,28 +77,28 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.2.0
 	 */
-	private static $cacheType = '';
+	private static $cache_clear_type = '';
 
 	/**
 	 * @var string. Post status before
 	 *
 	 * @since 0.2.1
 	 */
-	private static $beforeStatus = '';
+	private static $status_before = '';
 
 	/**
 	 * @var string. Post status after
 	 *
 	 * @since 0.2.1
 	 */
-	private static $afterStatus = '';
+	private static $status_after = '';
 
 	/**
 	 * @var string. URL where the cache was triggered from
 	 *
 	 * @since 0.2.1
 	 */
-	private static $triggerUrl = '';
+	private static $cache_trigger_url = '';
 
 	/**
 	 * NerdPress_Cloudflare_Client static initializizer
@@ -106,19 +106,19 @@ class NerdPress_Cloudflare_Client {
 	 * @since 0.0.1
 	 */
 	public static function init() {
-		if ( self::$_hCloudflare ) {
+		if ( self::$header_cloudflare ) {
 			return;
 		}
-		self::$_cfTargetHost = preg_replace( '#https?://#i', '', home_url() );
+		self::$host_url = preg_replace( '#https?://#i', '', home_url() );
 
 		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
 		if ( isset( $nerdpress_options['cloudflare_token'] ) ) {
-			self::$xAuthKey = $nerdpress_options['cloudflare_token'];
+			self::$cloudflare_api_key = $nerdpress_options['cloudflare_token'];
 		}
-		self::$_hCloudflare = [
-			'Authorization' => 'Bearer ' . self::$xAuthKey,
+		self::$header_cloudflare = [
+			'Authorization' => 'Bearer ' . self::$cloudflare_api_key,
 		];
-		self::$_hContentType = [
+		self::$header_content_type = [
 			'Content-Type' => 'application/json' 
 		];
 
@@ -136,16 +136,16 @@ class NerdPress_Cloudflare_Client {
 		$firewall_choice   = $nerdpress_options['firewall_choice'];
 		if ( ( $firewall_choice === 'cloudflare' ) && isset( $nerdpress_options['cloudflare_token'] ) ) {
 	
-			$this->cfNotices = ['np_cf_cc_notice']; 
+			$this->cloudflare_notices = ['nerdpress_cloudflare_notice']; 
 
-			add_action( 'wp_enqueue_scripts', array( $this, 'injectScripts' ), 20 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'injectScripts' ), 20 );
-			add_action( 'deleted_post', array( $this, 'handleDeletionCache' ), 10, 1 );
-			add_action( 'delete_attachment', array( $this, 'handleDeletionCache' ), 10, 1 );
-			add_action( 'transition_post_status', array( $this, 'handlePostCacheTransition' ), 10, 3 );
-			add_action( 'transition_comment_status', array( $this, 'handleCommentCacheTransition' ), 9, 3 );
-			add_action( 'comment_post', array( $this, 'handleCommentCache' ), 9, 3 );
-			add_action( 'edit_comment', array( $this, 'handleCommentCacheEdit' ), 9, 2 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'inject_scripts' ), 20 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'inject_scripts' ), 20 );
+			add_action( 'deleted_post', array( $this, 'handle_deletion_cache' ), 10, 1 );
+			add_action( 'delete_attachment', array( $this, 'handle_deletion_cache' ), 10, 1 );
+			add_action( 'transition_post_status', array( $this, 'handle_post_cache_transition' ), 10, 3 );
+			add_action( 'transition_comment_status', array( $this, 'handle_comment_cache_transition' ), 9, 3 );
+			add_action( 'comment_post', array( $this, 'handle_comment_cache' ), 9, 3 );
+			add_action( 'edit_comment', array( $this, 'handle_comment_cache_edit' ), 9, 2 );
 			add_action( 'admin_notices', array( $this, 'cloudflare_notices' ) );
 			add_action( 'wp_ajax_purge_cloudflare_full', array( $this, 'purge_cloudflare_full' ) );
 			add_action( 'wp_ajax_purge_cloudflare_url', array( $this, 'purge_cloudflare_url' ) );
@@ -157,12 +157,12 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 */
-	public function injectScripts() {
+	public function inject_scripts() {
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			return;
 		}
   	global $wp;
-  	wp_register_script( 'np_cf_js', plugins_url( 'includes/js/np-cf.js', dirname( __FILE__ ) ), array( 'jquery' ), BT_PLUGIN_VERSION );
+  	wp_register_script( 'np_cf_js', plugins_url( 'includes/js/np-cloudflare.js', dirname( __FILE__ ) ), array( 'jquery' ), BT_PLUGIN_VERSION );
 		wp_enqueue_script( 'np_cf_js' );  
 		wp_localize_script( 'np_cf_js', 'np_cf_ei', array(
 			'endpoint'     => admin_url( 'admin-ajax.php' ),
@@ -179,14 +179,16 @@ class NerdPress_Cloudflare_Client {
 	 * @param string input. Option value
 	 * @return string input. Sanitzed input
 	 */
-	public function santizeOption( $input ) {
+	public function sanitize_option( $input ) {
 		$options = array(
 			'hostname'
 		);
 
-		foreach( $options as $option ) 
-			if ( isset ( $input[$option] ) )
-				$input[$option] = sanitize_text_field( $input[$option] ); 
+		foreach ( $options as $option ) {
+			if ( isset ( $input[$option] ) ) {
+				$input[$option] = sanitize_text_field( $input[$option] );
+			}
+		}
  
 		return $input; 
 	}
@@ -196,19 +198,19 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 */
-	private static function assembleUrl() {
+	private static function assemble_url() {
 		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
 		$cloudflare_zone   = $nerdpress_options['cloudflare_zone'];
 		if ( $cloudflare_zone === 'dns1') {
-			self::$_cfZone = 'cc0e675a7bd4f65889c85ec3134dd6f3';
+			self::$cloudflare_zone = 'cc0e675a7bd4f65889c85ec3134dd6f3';
 		} elseif ( $cloudflare_zone === 'dns2' ){
-			self::$_cfZone = 'c14d1ac2b0e38a6d49d466ae32b1a6d7';
+			self::$cloudflare_zone = 'c14d1ac2b0e38a6d49d466ae32b1a6d7';
 		} elseif ( $cloudflare_zone === 'dns3' ){
-			self::$_cfZone = '2f9485f19471fe4fa78fb51590513297';
+			self::$cloudflare_zone = '2f9485f19471fe4fa78fb51590513297';
 		} else {
 			return;
 		}
-		return self::$baseUrl . self::$apiVersion . self::$zonesSubdir . self::$_cfZone . '/';
+		return self::$cloudflare_api_url . self::$cloudflare_api_version . self::$cloudflare_zones_directory . self::$cloudflare_zone . '/';
 	}
 
 	/**
@@ -234,21 +236,21 @@ class NerdPress_Cloudflare_Client {
 	 * @param WP_ERROR result. WP_ERROR object
 	 * @param string methodname. Name of the method that sent the originating request
 	 */
-	private static function sendAlert( $result, $methodName = '' ) {
+	private static function send_alert( $result, $methodName = '' ) {
 		$hookUrl = 'https://hooks.zapier.com/hooks/catch/332669/o1lpmis/';
 
 		if ( defined( 'NP_CALLING_CACHE_METHOD' ) ) {
 			$method = NP_CALLING_CACHE_METHOD;
 		}
 		$error = array(
-			'host'    => array( self::$_cfTargetHost ),
+			'host'    => array( self::$host_url ),
 			'payload' => stripslashes( str_replace( array( '\n', '\r' ), '', json_encode( $result['body'] ) ) ),
 			'cf-ray'  => json_encode( $result['headers']['CF-Ray'] ),
-			'cleared' => self::$cacheType,
+			'cleared' => self::$cache_clear_type,
 			'method'  => $method,
-			'url'     => self::$triggerUrl,
-			'before'  => self::$beforeStatus,
-			'after'   => self::$afterStatus
+			'url'     => self::$cache_trigger_url,
+			'before'  => self::$status_before,
+			'after'   => self::$status_after
 		);
 
 		$res = wp_remote_post( $hookUrl, array(
@@ -268,8 +270,8 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 */
-	private static function storeResult( $result ) {
-		update_option( 'np_cf_cc_notice', $result );
+	private static function store_result( $result ) {
+		update_option( 'nerdpress_cloudflare_notice', $result );
 	}
 
 	/**
@@ -277,12 +279,12 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param string methodName. Name f the method calling processResponse
+	 * @param string methodName. Name f the method calling process_response
 	 * @param WP_Error|array. Response/error
 	 *
 	 * @return bool. wp_mail status
 	 */
-	private static function processResponse( $methodName, $result ) {
+	private static function process_response( $methodName, $result ) {
 		if ( is_wp_error( $result ) ) {
 			$result = array(
 				'body' => json_encode( array(
@@ -293,10 +295,11 @@ class NerdPress_Cloudflare_Client {
 			);
 		}
 
-		self::sendAlert( $result );
+		self::send_alert( $result );
 	
-		if ( ! defined( 'NP_SUPPRESS_NOTIFICATION' ) )
-			self::storeResult( $result['body'] );
+		if ( ! defined( 'NP_SUPPRESS_NOTIFICATION' ) ) {
+			self::store_result( $result['body'] );
+		}
 		return 'success';
 	}
 
@@ -308,39 +311,39 @@ class NerdPress_Cloudflare_Client {
 	 * @param array= files. Files to purge. Purge full site cache if no files passed
 	 * @return string. Cloudflare result id
 	 */
-	public static function purgeCache( $files = array() ) {
-		if ( ! self::$_cfTargetHost ) {
+	public static function purge_cloudflare_cache( $files = array() ) {
+		if ( ! self::$host_url ) {
 			return 'error';
 		} 
 
-		self::$cacheType = ( empty( $files ) ? 'full' : implode(',', $files ) );
+		self::$cache_clear_type = ( empty( $files ) ? 'full' : implode(',', $files ) );
 
-		$url = self::assembleUrl() . 'purge_cache';
-
+		$url  = self::assemble_url() . 'purge_cache';
 		$opts = array(
 			'headers' => array_merge(
-				self::$_hContentType,
-				self::$_hCloudflare
+				self::$header_content_type,
+				self::$header_cloudflare
 			),
-			'body' => ( empty( $files ) ? '{ "hosts": ["' . self::$_cfTargetHost . '"] }' : '{ "files": [' . implode( ',', $files ) . '] }' )
+			'body' => ( empty( $files ) ? '{ "hosts": ["' . self::$host_url . '"] }' : '{ "files": [' . implode( ',', $files ) . '] }' )
 		);
 
 		$result = self::post( $url, $opts );
-		return self::processResponse( __METHOD__, $result );
+		return self::process_response( __METHOD__, $result );
 	}
 
-	public function handlePostCacheTransition( $new_status, $old_status, $post ) {
-		if ( ( $old_status != 'publish' && $new_status != 'publish' ) || defined ( 'NP_DOING_COMMENT_CACHE' ) )
+	public function handle_post_cache_transition( $new_status, $old_status, $post ) {
+		if ( ( $old_status != 'publish' && $new_status != 'publish' ) || defined ( 'NP_DOING_COMMENT_CACHE' ) ) {
 			return;
+		}
 		
 		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
 		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
 
-		self::$triggerUrl   = get_permalink( $post );
-		self::$beforeStatus = $old_status;
-		self::$afterStatus  = $new_status;
+		self::$cache_trigger_url = get_permalink( $post );
+		self::$status_before     = $old_status;
+		self::$status_after      = $new_status;
 
-		self::purgeCache();
+		self::purge_cloudflare_cache();
 	} 
 
 	/**
@@ -358,7 +361,7 @@ class NerdPress_Cloudflare_Client {
 			die();
 		} 
 
-		echo self::purgeCache();
+		echo self::purge_cloudflare_cache();
 		die(); 
 	}
 
@@ -367,10 +370,11 @@ class NerdPress_Cloudflare_Client {
 	 * 
 	 * @since 0.0.1
 	 */
-	public function noticeHtml( $notice_name ) {
+	public function cloudflare_admin_notice( $notice_name ) {
 		$_response = get_option( $notice_name );
-		if ( ! $_response )
+		if ( ! $_response ) {
 			return;
+		}
 
 		try {
 			$response = json_decode( $_response, TRUE );
@@ -385,17 +389,19 @@ class NerdPress_Cloudflare_Client {
 		$html .= '<p><img src="' . esc_url( site_url() ) . '/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"></p>';
   	$html .= '<div><h2>NerdPress Notice:</h2>';
 
-		if ( ! empty( $response['success'] ) && empty( $response['messages'] ) )
+		if ( ! empty( $response['success'] ) && empty( $response['messages'] ) ) {
 			$response['messages'] = [ 'Cloudflare Enterprise cache has been successfully cleared!' ];
 		// If there's an error response, messages are within the error object
-		elseif ( empty( $response['success'] ) ) {
+		} elseif ( empty( $response['success'] ) ) {
 			$response['messages'] = [];
-			foreach( $response['errors'] as $error )
+			foreach ( $response['errors'] as $error ) {
 				$response['messages'][] = $error['message'];
+			}
 		}
 
-		foreach( $response['messages'] as $message )
+		foreach ( $response['messages'] as $message ) {
 			$html .= '<p>' . $message . '</p>';
+		}
 		$html .= '</div></div>';
 
 		delete_option( $notice_name );
@@ -408,8 +414,8 @@ class NerdPress_Cloudflare_Client {
 	 * @since 0.0.1
 	 */
 	public function cloudflare_notices() {
-		foreach( $this->cfNotices as $notice ) {
-			$this->noticeHtml( $notice );
+		foreach ( $this->cloudflare_notices as $notice ) {
+			$this->cloudflare_admin_notice( $notice );
 		}
 	}
 
@@ -430,7 +436,7 @@ class NerdPress_Cloudflare_Client {
 		}
 		
 		$url_clear = esc_url( $_POST['url'] );
-		echo self::purgeCache( array( '"' . $url_clear . '"' ) );
+		echo self::purge_cloudflare_cache( array( '"' . $url_clear . '"' ) );
 		die();
 	}
 
@@ -443,7 +449,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param string $old_status. Prev value of the comment
 	 * @param object $comment. WP_Comment object
 	 */
-	public function handleCommentCacheTransition( $new_status, $old_status, $comment ) {
+	public function handle_comment_cache_transition( $new_status, $old_status, $comment ) {
 		define( 'NP_DOING_COMMENT_CACHE', TRUE );
 		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
 		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
@@ -454,18 +460,20 @@ class NerdPress_Cloudflare_Client {
 			|| ( $new_status == 'spam' && $old_status == 'trash' )
 			|| ( $new_status == 'trash' && $old_status == 'spam' )
 			|| ( $new_status == 'delete' && ( $old_status == 'trash' || $old_status == 'spam') )
-			|| ( $new_status != 'approved' && $old_status == 'post-trashed' ) )
+			|| ( $new_status != 'approved' && $old_status == 'post-trashed' ) ) {
 			return;
+		}
 
 		$post_id = $comment->comment_post_ID;
-		if ( ! $post_id )
+		if ( ! $post_id ) {
 			return;
+		}
 
-		self::$triggerUrl   = get_permalink( $post_id );
-		self::$beforeStatus = $old_status;
-		self::$afterStatus  = $new_status;
+		self::$cache_trigger_url = get_permalink( $post_id );
+		self::$status_before     = $old_status;
+		self::$status_after      = $new_status;
 
-		self::purgeCache( array( '"' . get_permalink( $post_id ) . '"' ) );
+		self::purge_cloudflare_cache( array( '"' . get_permalink( $post_id ) . '"' ) );
 	}
 
 	/**
@@ -477,23 +485,25 @@ class NerdPress_Cloudflare_Client {
 	 * @param mixed $comment_approved. If the comment approved or not, also may carry "spam" status.
 	 * @param array $comment_data. Associative array with comment data
 	 */
-	public function handleCommentCache( $comment_id, $comment_approved, $comment_data ) {
+	public function handle_comment_cache( $comment_id, $comment_approved, $comment_data ) {
 		define( 'NP_DOING_COMMENT_CACHE', TRUE );
 		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
 		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
 
-		if ( ! $comment_approved || $comment_approved == 'spam' )
+		if ( ! $comment_approved || $comment_approved == 'spam' ) {
 			return;
+		}
 
 		$post_id = $comment_data['comment_post_ID'];
-		if ( ! $post_id )
+		if ( ! $post_id ) {
 			return;
+		}
 		
-		self::$triggerUrl   = get_permalink( $post_id );
-		self::$beforeStatus = 'new comment';
-		self::$afterStatus  = 'approved';
+		self::$cache_trigger_url = get_permalink( $post_id );
+		self::$status_before     = 'new comment';
+		self::$status_after      = 'approved';
 
-		self::purgeCache( array( '"' . get_permalink( $post_id ) . '"' ) );
+		self::purge_cloudflare_cache( array( '"' . get_permalink( $post_id ) . '"' ) );
 	}
 
 	/**
@@ -504,23 +514,25 @@ class NerdPress_Cloudflare_Client {
 	 * @param integer $comment_id. WP_Comment ID
 	 * @param array $data. Associative array with the comment's data
 	 */
-	public function handleCommentCacheEdit( $comment_id, $data ) {
+	public function handle_comment_cache_edit( $comment_id, $data ) {
 		define( 'NP_DOING_COMMENT_CACHE', TRUE );
 		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
 		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
 
-		if ( ! $data['comment_approved'] )
+		if ( ! $data['comment_approved'] ) {
 			return;
+		}
 
 		$post_id = $data['comment_post_ID'];
-		if ( ! $post_id )
-			return; 
+		if ( ! $post_id ) {
+			return;
+		}
 		
-		self::$triggerUrl   = get_permalink( $post_id );
-		self::$beforeStatus = 'approved';
-		self::$afterStatus  = ( $data['comment_approved'] ? $data['comment_approved'] : 'pending' );
+		self::$cache_trigger_url = get_permalink( $post_id );
+		self::$status_before     = 'approved';
+		self::$status_after      = ( $data['comment_approved'] ? $data['comment_approved'] : 'pending' );
  
-		self::purgeCache( array( '"' . get_permalink( $post_id ) . '"' ) );
+		self::purge_cloudflare_cache( array( '"' . get_permalink( $post_id ) . '"' ) );
    }
 
 	/**
@@ -530,18 +542,19 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @param integer $post_id. Id of the post
 	 */
-	public function handleDeletionCache( $post_id ) {
-		if ( get_post_status( $post_id ) != 'publish' )
+	public function handle_deletion_cache( $post_id ) {
+		if ( get_post_status( $post_id ) != 'publish' ) {
 			return;
+		}
 
-		self::$triggerUrl   = get_permalink( $post_id );
-		self::$beforeStatus = 'publish';
-		self::$afterStatus  = 'delete';
+		self::$cache_trigger_url = get_permalink( $post_id );
+		self::$status_before     = 'publish';
+		self::$status_after      = 'delete';
 
 		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
 		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
 
-		self::purgeCache();
+		self::purge_cloudflare_cache();
 	}
 }
 

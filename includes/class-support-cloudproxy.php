@@ -1,5 +1,5 @@
 <?php
-if( !defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -27,8 +27,9 @@ class Blog_Tutor_Support_Cloudproxy {
 			add_action( 'wp_ajax_whitelist_ip', array( $this, 'whitelist_cloudproxy_ip' ) );
 			add_action( 'wp_ajax_clear_whitelist', array( $this, 'clear_whitelist' ) );
 			add_action( 'admin_footer', array( $this, 'bt_enqueue_scripts' ) );
-			if( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) )
+			if ( !wp_next_scheduled( 'bt_remove_whitelist_cron' ) ) {
 				wp_schedule_event( time(), 'twicedaily', 'bt_remove_whitelist_cron' );
+			}
 		}
 	}
 
@@ -50,7 +51,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		check_ajax_referer('sucuri_whitelist_secure_me', 'sucuri_whitelist_nonce');
 
 		// Terminate the operation, if the user is a nerdpress admin
-		if( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 			echo 'np_no_message';
 			die();
 		}
@@ -70,21 +71,21 @@ class Blog_Tutor_Support_Cloudproxy {
 			if ( ( $whitelisted_ips = get_option( $this->whitelist_option_name, array() ) ) === 0 ) {
 				$whitelisted_ips = array();
 			}
-		   
+ 
 			$return_str = 'IP is already whitelisted';
 			// Whitelist if not in the whitelist list
 			if ( ! in_array( $client_ip, $whitelisted_ips ) ) {
 				// Get the Sucuri's Cloudproxy endpoint
 				$sucuri_api_call     = implode( $sucuri_api_call_array );
-				$cloudproxy_endpoint = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . (24 * 3600);
+				$cloudproxy_endpoint = $sucuri_api_call . '&ip=' . $client_ip . '&a=whitelist&duration=' . ( 24 * 3600 );
 				$args                = array( 'timeout' => 15 );
 				$response            = wp_remote_get( $cloudproxy_endpoint, $args );
-				if( is_wp_error( $response ) ) {
+				if ( is_wp_error( $response ) ) {
 					/**
 					 * Start storing the errors, once the error count for the same
 					 * IP exceeds 3, send an alert
 					 */
-					$this->processWLError( $response, $client_ip, 'Timeout exceeded for Sucuri whitelisting endpoint' );
+					$this->process_whitelist_error( $response, $client_ip, 'Timeout exceeded for Sucuri whitelisting endpoint' );
 					echo 'Error';
 					die();
 				}
@@ -94,15 +95,14 @@ class Blog_Tutor_Support_Cloudproxy {
 					$message    = json_decode( $body, TRUE );
 					$return_str = $message['messages'][0];
 					$this->save_whitelist_meta( $body, $whitelisted_ips );
-					if( $return_str == 'Invalid domain' ) {
-						$this->processWLError( $message, $client_ip, 'Invalid Sucuri API Key' );
+					if ( $return_str == 'Invalid domain' ) {
+						$this->process_whitelist_error( $message, $client_ip, 'Invalid Sucuri API Key' );
 					}
 				} catch( Exception $e ) {
 					echo 'Error parsing JSON response from Sucuri';
 					die();
 				}
 			}
-
 		}
 		echo $return_str . $npSuffix;
 		die();
@@ -126,7 +126,7 @@ class Blog_Tutor_Support_Cloudproxy {
 	 * @since 
 	 */
 	public function clear_whitelist() {
-		check_ajax_referer('clear_whitelist_secure_me', 'clear_whitelist_nonce');
+		check_ajax_referer( 'clear_whitelist_secure_me', 'clear_whitelist_nonce' );
 		$this->remove_whitelist_cron();
 	}
 
@@ -141,7 +141,9 @@ class Blog_Tutor_Support_Cloudproxy {
 	 */ 
 	private function save_whitelist_meta( $body, $whitelisted_ips ) {
 		$ip_address = filter_var( json_decode( $body, true )['output'][0], FILTER_VALIDATE_IP );
-		if( ! $ip_address ) return;
+		if ( ! $ip_address ) {
+			return;
+		}
 
 		$whitelisted_ips[] = $ip_address;
 		update_option( $this->whitelist_option_name, $whitelisted_ips );
@@ -180,7 +182,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		) ); 
 	}
 
-	private function processWLError( $response, $client_ip, $msg ) {
+	private function process_whitelist_error( $response, $client_ip, $msg ) {
 		$errors = get_option( $this->err_counter_option, array() );
 		if ( isset( $errors[$client_ip] ) && 3 > ++$errors[$client_ip] ) {
 			// ignore

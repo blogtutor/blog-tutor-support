@@ -1,6 +1,7 @@
 <?php
-if ( !defined('ABSPATH') )
+if ( !defined('ABSPATH') ) {
 	die();
+}
 
 	/**
 	 * Blog_Tutor_Support Clear Cache
@@ -19,15 +20,17 @@ class Blog_Tutor_Support_Clearcache {
 	}
 
 	public function blog_tutor_clearcache_message() {
-		if( ! array_key_exists( 'np_clear_sucuri', $_GET ) ) return;
+		if ( ! array_key_exists( 'np_clear_sucuri', $_GET ) ) {
+			return;
+		}
 
-		$clearcache_msg = get_option('clear_cache_msg');
-		delete_option('clear_cache_msg');
+		$clearcache_msg = get_option( 'clear_cache_msg' );
+		delete_option( 'clear_cache_msg' );
 		Blog_Tutor_Support_Helpers::display_notification( $clearcache_msg );
 	}
 
 	public function sucuri_clearcache() {
-		check_ajax_referer('sucuri_clearcache_secure_me', 'sucuri_clearcache_nonce');
+		check_ajax_referer( 'sucuri_clearcache_secure_me', 'sucuri_clearcache_nonce' );
 
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		if ( is_array( $sucuri_api_call_array ) ) {
@@ -35,7 +38,7 @@ class Blog_Tutor_Support_Clearcache {
 			$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
 			$args             = array( 'timeout' => 30 );
 			$response         = wp_remote_get( $cloudproxy_clear, $args );
-			if( is_wp_error( $response ) ) {
+			if ( is_wp_error( $response ) ) {
 				echo false;
 				die();
 			}
@@ -69,13 +72,13 @@ class Blog_Tutor_Support_Clearcache {
 	}
 
 	public function bt_enqueue_scripts() {
-		if( user_can( get_current_user_id(), 'edit_posts' ) ) {
-			wp_enqueue_script('jquery'); 
+		if ( user_can( get_current_user_id(), 'edit_posts' ) ) {
+			wp_enqueue_script( 'jquery' ); 
 			wp_register_script( 'clearcache_js', plugins_url( 'js/bt-clearcache.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
 			wp_localize_script( 'clearcache_js', 'sucuri_clearcache', array(
 				'endpoint' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'sucuri_clearcache_secure_me' ),
-			));
+			) );
 			wp_enqueue_script( 'clearcache_js' );
 		}
 	}

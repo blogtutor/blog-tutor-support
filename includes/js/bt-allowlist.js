@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
 			url: sucuri_allowlist.endpoint,
 			type: 'post',
 			data: {
-				action: 'whitelist_ip',
+				action: 'allowlist_ip',
 				sucuri_allowlist_nonce: sucuri_allowlist.nonce,
 			}
 		}).done(function(data) {
@@ -19,13 +19,13 @@ jQuery(document).ready(function($) {
 				try {
 					ip = data.match(/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/)[0];
 				} catch(err) {
-					npMsgString = '<strong>⚠  Heads up!</strong><br />Automatically adding your IP address to the Sucuri Firewall allowlist didn\'t work.<br />'
+					npMsgString = '<strong>⚠  Heads up!</strong><br />Automatically adding your IP address to the Sucuri Firewall\'s allowlist didn\'t work.<br />'
 						    + 'If the problem persists, please contact us at <a '
 						    + ' style="text-decoration:none;color:#0F145B;" href="mailto:support@nerdpress.net">support@nerdpress.net</a>.';
 				}
 				
 				if(npMsgString === null)
-					npMsgString = 'Your IP (' + ip +  ') has been automatically<br />added to the Sucuri Firewall allowlist for the next 24 hours';
+					npMsgString = 'Your IP (' + ip +  ') has been automatically<br />added to the Sucuri Firewall\'s allowlist for the next 24 hours';
 
 				allowlistNotify(npMsgString);
 			}

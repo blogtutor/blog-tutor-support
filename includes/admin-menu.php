@@ -91,7 +91,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			// If is array then the api key exists.
 			$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 			if ( is_array( $sucuri_api_call_array ) ) {
-				// Build the Clear Cache & Whitelist links (Cloudproxy API v1) and add it to the admin bar.
+				// Build the Clear Cache & Allowlist links (Cloudproxy API v1) and add it to the admin bar.
 				$sucuri_api_call  = implode( $sucuri_api_call_array );
 				$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
 				$args             = array(
@@ -129,20 +129,20 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				}
 				
 				if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
-					$cloudproxy_whitelist = $sucuri_api_call . '&a=whitelist&duration=3600';
-					$wl_args              = array(
-						'id'     => 'bt-whitelist-cloudproxy',
-						'title'  => 'Whitelist Your IP Address',
-						'href'   => $cloudproxy_whitelist,
+					$cloudproxy_allowlist = $sucuri_api_call . '&a=whitelist&duration=3600';
+					$allowlist_args              = array(
+						'id'     => 'bt-allowlist-cloudproxy',
+						'title'  => 'Add Your IP Address to the Allowlist',
+						'href'   => $cloudproxy_allowlist,
 						'parent' => 'nerdpress-menu',
 						'meta'   => array(
 							'class'  => 'btButton',
 							'target' => 'Blank',
-							'title'  => 'Whitelist your current IP address, in case Cloudproxy is blocking you.',
+							'title'  => 'Add your current IP address to the allowlist, in case Cloudproxy is blocking you.',
 							'parent' => 'nerdpress-menu',
 						),
 					);
-					$wp_admin_bar->add_node( $wl_args );
+					$wp_admin_bar->add_node( $allowlist_args );
 				}
 
 			} else  {

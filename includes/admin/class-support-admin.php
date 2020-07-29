@@ -18,8 +18,8 @@ class Blog_Tutor_Support_Admin {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'settings_menu' ), 59 );
-    add_action( 'admin_init', array( $this, 'settings_tabs' ) );
-    add_action( 'current_screen', array( $this, 'hide_wp_rocket_beacon' ) );
+   		add_action( 'admin_init', array( $this, 'settings_tabs' ) );
+    		add_action( 'admin_head', array( $this, 'hide_wp_rocket_beacon' ) );
   }
 
   /**

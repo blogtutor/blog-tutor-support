@@ -27,7 +27,7 @@ class Blog_Tutor_Support_Admin {
    */
   function hide_wp_rocket_beacon () {
 		$current_screen = get_current_screen();
-		if ( $current_screen->id === 'settings_page_wprocket' ) {
+		if ( $current_screen->id === 'settings_page_wprocket' && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 			echo '<style type="text/css">div#beacon-container {display: none;}</style>';
 		}
   }

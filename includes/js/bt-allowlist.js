@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
 			}
 		}).done(function(data) {
 			if(data.includes('np_no_message')) return;
-			if(data && !data.includes('already in the allowlist')) {
+			if(data && !data.includes('already on the allowlist')) {
 				var ip;
 				var npMsgString = null;
 				try {

@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
 				}
 				
 				if(npMsgString === null)
-					npMsgString = 'Your IP (' + ip +  ') has been automatically<br />added to the Sucuri Firewall\'s allowlist for the next 24 hours';
+					npMsgString = 'Your IP (' + ip +  ') has been automatically<br />added to the Sucuri Firewall allowlist for the next 24 hours';
 
 				allowlistNotify(npMsgString);
 			}

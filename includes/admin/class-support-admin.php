@@ -85,20 +85,35 @@ class Blog_Tutor_Support_Admin {
 			$settings_option
 		);
 
-		//   'test_mode',
-		// add_settings_field(
-		//   __( 'Test mode', 'nerdpress-support' ),
-		//   array( $this, 'checkbox_element_callback' ),
-		//   $settings_option,
-		//   'options_section',
-		//   array(
-		//     'menu'  => $settings_option,
-		//     'id'    => 'test_mode',
-		//     'label' => __( 'If checked show the widget to admins only.', 'nerdpress-support' ),
-		//   )
-		// );
+		// Add option to disable/enable plugin auto updates. 
+		add_settings_field(
+			'auto_update_plugins',
+			__( 'Show Auto-Updates for Plugins', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_plugins_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_plugins',
+				'label' => __( 'Restore the auto-update user interface for plugins.', 'nerdpress-support' ),
+			)
+		);
 
-		// Add admin notice text area
+		// Add option to disable/enable theme auto updates. 
+		add_settings_field(
+			'auto_update_themes',
+			__( 'Show Auto-Updates for Themes', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_themes_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_themes',
+				'label' => __( 'Restore the auto-update user interface for themes.', 'nerdpress-support' ),
+			)
+		);
+
+	// Add admin notice text area
 		add_settings_field(
 			'admin_notice',
 			__( 'NerdPress Support Notice', 'nerdpress-support' ),
@@ -269,6 +284,45 @@ class Blog_Tutor_Support_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
 	}
+
+	/**
+	 * Checkbox auto update plugins element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_auto_update_plugins_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+
+		include dirname( __FILE__ ) . '/views/html-auto-update-plugins-field.php';
+	}
+
+	/**
+	 * Checkbox auto update themes element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_auto_update_themes_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+
+		include dirname( __FILE__ ) . '/views/html-auto-update-themes-field.php';
+	}
+
 
 	/**
 	 * Radio Button area callback

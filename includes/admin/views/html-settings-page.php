@@ -31,13 +31,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php
 	if ( 'nerdpress_settings' == $active_tab ) {
 		?>
-	<form method="post" action="options.php">
+		<form method="post" action="options.php">
 		<?php
 			settings_fields( 'blog_tutor_support_settings' );
 			do_settings_sections( 'blog_tutor_support_settings' );
 			submit_button();
 		?>
-	</form>
+		</form>
 
 		<?php
 	} elseif ( 'server_information' == $active_tab ) {

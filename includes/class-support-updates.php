@@ -24,10 +24,12 @@ class NerdPress_Support_Updates {
  		
 		if ( ! isset( $options['auto_update_plugins'] ) && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 			add_filter( 'plugins_auto_update_enabled', '__return_false' );
+			add_filter( 'auto_update_plugin', '__return_false' );
   	}
 		
 		if ( ! isset( $options['auto_update_themes'] ) && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
 			add_filter( 'themes_auto_update_enabled', '__return_false' );
+			add_filter( 'auto_update_plugin', '__return_false' );
   	}
 	}
 }

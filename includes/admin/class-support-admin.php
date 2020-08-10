@@ -88,28 +88,28 @@ class Blog_Tutor_Support_Admin {
 		// Add option to disable/enable plugin auto updates. 
 		add_settings_field(
 			'auto_update_plugins',
-			__( 'Show Auto-Updates for Plugins', 'nerdpress-support' ),
+			__( 'Plugin Auto-Updates', 'nerdpress-support' ),
 			array( $this, 'checkbox_auto_update_plugins_element_callback' ),
 			$settings_option,
 			'options_section',
 			array(
 				'menu'  => $settings_option,
 				'id'    => 'auto_update_plugins',
-				'label' => __( 'Restore the auto-update user interface for plugins.', 'nerdpress-support' ),
+				'label' => __( 'Enable core auto-update functionality for plugins.', 'nerdpress-support' ),
 			)
 		);
 
 		// Add option to disable/enable theme auto updates. 
 		add_settings_field(
 			'auto_update_themes',
-			__( 'Show Auto-Updates for Themes', 'nerdpress-support' ),
+			__( 'Theme Auto-Updates', 'nerdpress-support' ),
 			array( $this, 'checkbox_auto_update_themes_element_callback' ),
 			$settings_option,
 			'options_section',
 			array(
 				'menu'  => $settings_option,
 				'id'    => 'auto_update_themes',
-				'label' => __( 'Restore the auto-update user interface for themes.', 'nerdpress-support' ),
+				'label' => __( 'Enable core auto-update functionality for themes.', 'nerdpress-support' ),
 			)
 		);
 

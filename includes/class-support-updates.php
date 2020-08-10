@@ -15,7 +15,7 @@ class NerdPress_Support_Updates {
 	 * Initialize the settings.
 	 */
 	public function __construct() {
-		add_action( 'admin_init', array( $this, 'is_auto_update_set' ) );
+		add_action( 'init', array( $this, 'is_auto_update_set' ) );
   }
 
 	public function is_auto_update_set() {

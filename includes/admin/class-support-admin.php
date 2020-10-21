@@ -19,7 +19,18 @@ class Blog_Tutor_Support_Admin {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'settings_menu' ), 59 );
 		add_action( 'admin_init', array( $this, 'settings_tabs' ) );
-	}
+		add_action( 'admin_head', array( $this, 'hide_wp_rocket_beacon' ) );
+  }
+
+  /**
+   * Hide WP Rocket's help beacon.
+   */
+  function hide_wp_rocket_beacon () {
+		$current_screen = get_current_screen();
+		if ( $current_screen->id === 'settings_page_wprocket' && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+			echo '<style type="text/css">div#beacon-container {display: none;}</style>';
+		}
+  }
 
 	/**
 	 * Add the settings page.
@@ -74,20 +85,35 @@ class Blog_Tutor_Support_Admin {
 			$settings_option
 		);
 
-		//   'test_mode',
-		// add_settings_field(
-		//   __( 'Test mode', 'nerdpress-support' ),
-		//   array( $this, 'checkbox_element_callback' ),
-		//   $settings_option,
-		//   'options_section',
-		//   array(
-		//     'menu'  => $settings_option,
-		//     'id'    => 'test_mode',
-		//     'label' => __( 'If checked show the widget to admins only.', 'nerdpress-support' ),
-		//   )
-		// );
+		// Add option to disable/enable plugin auto updates. 
+		add_settings_field(
+			'auto_update_plugins',
+			__( 'Plugin Auto-Updates', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_plugins_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_plugins',
+				'label' => __( 'Enable core auto-update functionality for plugins.', 'nerdpress-support' ),
+			)
+		);
 
-		// Add admin notice text area
+		// Add option to disable/enable theme auto updates. 
+		add_settings_field(
+			'auto_update_themes',
+			__( 'Theme Auto-Updates', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_themes_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_themes',
+				'label' => __( 'Enable core auto-update functionality for themes.', 'nerdpress-support' ),
+			)
+		);
+
+	// Add admin notice text area
 		add_settings_field(
 			'admin_notice',
 			__( 'NerdPress Support Notice', 'nerdpress-support' ),
@@ -258,6 +284,45 @@ class Blog_Tutor_Support_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
 	}
+
+	/**
+	 * Checkbox auto update plugins element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_auto_update_plugins_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+
+		include dirname( __FILE__ ) . '/views/html-auto-update-plugins-field.php';
+	}
+
+	/**
+	 * Checkbox auto update themes element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_auto_update_themes_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+
+		include dirname( __FILE__ ) . '/views/html-auto-update-themes-field.php';
+	}
+
 
 	/**
 	 * Radio Button area callback

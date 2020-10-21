@@ -1,8 +1,8 @@
 'use strict';
 
 jQuery(document).ready(function($) {
-	$('#clearwhitelist').click(function() {
-		makeAjaxCall(this, 'clear_whitelist');
+	$('#clearallowlist').click(function() {
+		makeAjaxCall(this, 'clear_allowlist');
 	});
 
 	function makeAjaxCall(thisCtx, action) {
@@ -10,11 +10,11 @@ jQuery(document).ready(function($) {
 		$(thisCtx).val(nText);
 
 		$.ajax({
-			url: clear_whitelist.endpoint,
+			url: clear_allowlist.endpoint,
 			type: 'post',
 			data: {
 				action: action,
-				clear_whitelist_nonce: clear_whitelist.nonce,
+				clear_allowlist_nonce: clear_allowlist.nonce,
 			}
 		}).done(function(data) {
 			if(!data) $(thisCtx).text('Error!');

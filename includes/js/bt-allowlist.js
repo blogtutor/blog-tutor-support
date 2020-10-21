@@ -5,34 +5,40 @@ jQuery(document).ready(function($) {
 
 	function makeAjaxCall() {
 		$.ajax({
-			url: sucuri_whitelist.endpoint,
+			url: sucuri_allowlist.endpoint,
 			type: 'post',
 			data: {
-				action: 'whitelist_ip',
-				sucuri_whitelist_nonce: sucuri_whitelist.nonce,
+				action: 'allowlist_ip',
+				sucuri_allowlist_nonce: sucuri_allowlist.nonce,
 			}
 		}).done(function(data) {
 			if(data.includes('np_no_message')) return;
-			if(data && !data.includes('already whitelisted')) {
+			if(data && !data.includes('already on the allowlist')) {
 				var ip;
 				var npMsgString = null;
 				try {
 					ip = data.match(/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/)[0];
 				} catch(err) {
+<<<<<<< HEAD:includes/js/bt-whitelist.js
 					npMsgString = '<strong>⚠  Heads up!</strong><br />Automatically whitelisting your IP address on the Sucuri Firewall didn\'t work.<br />'
 						+ 'If the problem persists, please contact us at <a '
 						+ ' style="text-decoration:none;color:#0F145B;" href="mailto:support@nerdpress.net">support@nerdpress.net</a>.';
+=======
+					npMsgString = '<strong>⚠  Heads up!</strong><br />Automatically adding your IP address to the Sucuri Firewall allowlist didn\'t work.<br />'
+						    + 'If the problem persists, please contact us at <a '
+						    + ' style="text-decoration:none;color:#0F145B;" href="mailto:support@nerdpress.net">support@nerdpress.net</a>.';
+>>>>>>> master:includes/js/bt-allowlist.js
 				}
 				
 				if(npMsgString === null)
-					npMsgString = 'Your IP (' + ip +  ') has been automatically<br />whitelisted on the Sucuri Firewall for the next 24 hours';
+					npMsgString = 'Your IP (' + ip +  ') has been automatically<br />added to the Sucuri Firewall allowlist for the next 24 hours';
 
-				wlNotify(npMsgString);
+				allowlistNotify(npMsgString);
 			}
 		});
 	}
 
-	function wlNotify(message) {
+	function allowlistNotify(message) {
 		window.crNerdPressNotification(message);
 	} 
 });

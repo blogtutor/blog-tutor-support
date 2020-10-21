@@ -118,6 +118,7 @@ class Blog_Tutor_Support {
 		include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
+		include_once dirname( __FILE__ ) . '/includes/class-support-updates.php';
 	}
 }
 

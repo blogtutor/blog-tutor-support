@@ -48,7 +48,8 @@ class Blog_Tutor_Support {
 		// Load plugin text domain.
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'init', array( $this, 'check_options' ) );
-
+		add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
+	
 		// Include classes.
 		$this->includes();
 
@@ -119,6 +120,7 @@ class Blog_Tutor_Support {
 		include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-updates.php';
+		include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
 	}
 }
 

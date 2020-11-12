@@ -20,7 +20,7 @@ class Blog_Tutor_Support_Admin {
 		add_action( 'admin_menu', array( $this, 'settings_menu' ), 59 );
 		add_action( 'admin_init', array( $this, 'settings_tabs' ) );
 		add_action( 'admin_head', array( $this, 'hide_wp_rocket_beacon' ) );
-  }
+}
 
   /**
    * Hide WP Rocket's help beacon.
@@ -113,7 +113,21 @@ class Blog_Tutor_Support_Admin {
 			)
 		);
 
-	// Add admin notice text area
+		// Add option to disable/enable ShortPixel bulk optimization. 
+		add_settings_field(
+			'shortpixel_bulk_optimize',
+			__( 'ShortPixel Bulk Optimize', 'nerdpress-support' ),
+			array( $this, 'checkbox_shortpixel_bulk_optimize_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'shortpixel_bulk_optimize',
+				'label' => __( 'Hide ShortPixel Bulk Optimization from non-NerdPress users.', 'nerdpress-support' ),
+			)
+		);
+
+		// Add admin notice text area
 		add_settings_field(
 			'admin_notice',
 			__( 'NerdPress Support Notice', 'nerdpress-support' ),
@@ -321,6 +335,25 @@ class Blog_Tutor_Support_Admin {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-auto-update-themes-field.php';
+	}
+	
+	/**
+	 * Checkbox ShortPixel Bulk Optimize element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_shortpixel_bulk_optimize_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+		include dirname( __FILE__ ) . '/views/html-shortpixel-bulk-optimize-field.php';
+
 	}
 
 

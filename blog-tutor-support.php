@@ -82,7 +82,7 @@ class Blog_Tutor_Support {
 
 		$option_array = 'blog_tutor_support_settings';
 		$default_opts = array(
-			'firewall_choice' => 'cloudflare',
+			'firewall_choice' => 'none',
 			'cloudflare_zone' => 'dns1',
 		); 
 

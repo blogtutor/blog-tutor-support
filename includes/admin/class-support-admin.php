@@ -371,13 +371,13 @@ class Blog_Tutor_Support_Admin {
 		if ( isset( $options[ $id ] ) ) {
 			$current = $options[ $id ];
 		} else {
-			$current = isset( $args['default'] ) ? $args['default'] : 'cloudflare';
+			$current = isset( $args['default'] ) ? $args['default'] : 'none';
 		}
 
 		if( isset( $options['firewall_choice'] ) ) { 
 			$firewall = $options['firewall_choice'];
 		} else {
-			$firewall = 'cloudflare';
+			$firewall = 'none';
 			$options['firewall_choice'] = $firewall;
 			update_option( 'blog_tutor_support_settings', $options );
 		}

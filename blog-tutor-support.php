@@ -3,7 +3,7 @@
 /**
  * Plugin Name: NerdPress Support
  * Description: Helps your site work with our custom Cloudflare Enterprise setup or the Sucuri Firewall, and adds the NerdPress "Need Help?" support tab to your dashboard.
- * Version:     0.8.0-beta1
+ * Version:     0.8.0
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support
@@ -22,7 +22,7 @@ include( dirname( __FILE__ ) . '/github-updater.php' );
 include( dirname( __FILE__ ) . '/includes/admin-menu.php' );
 
 if ( ! defined( 'BT_PLUGIN_VERSION' ) ) {
-	define( 'BT_PLUGIN_VERSION', '0.8.0-beta1' );
+	define( 'BT_PLUGIN_VERSION', '0.8.0' );
 }
 
 if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
@@ -48,7 +48,9 @@ class Blog_Tutor_Support {
 		// Load plugin text domain.
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'init', array( $this, 'check_options' ) );
-		add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
+		if ( class_exists( 'WooCommerce' ) ) {
+			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
+		}
 	
 		// Include classes.
 		$this->includes();

@@ -237,7 +237,8 @@ class NerdPress_Cloudflare_Client {
 	 * @param string methodname. Name of the method that sent the originating request
 	 */
 	private static function send_alert( $result, $methodName = '' ) {
-		$hookUrl = 'https://hooks.zapier.com/hooks/catch/332669/o1lpmis/';
+		$hookUrl      = 'https://hooks.zapier.com/hooks/catch/332669/o1lpmis/';
+		$current_user = wp_get_current_user();
 
 		if ( defined( 'NP_CALLING_CACHE_METHOD' ) ) {
 			$method = NP_CALLING_CACHE_METHOD;
@@ -246,6 +247,7 @@ class NerdPress_Cloudflare_Client {
 			'host'    => array( self::$host_url ),
 			'payload' => stripslashes( str_replace( array( '\n', '\r' ), '', json_encode( $result['body'] ) ) ),
 			'cf-ray'  => json_encode( $result['headers']['CF-Ray'] ),
+			'user'    => "$current_user->user_login ($current_user->display_name)",
 			'cleared' => self::$cache_clear_type,
 			'method'  => $method,
 			'url'     => self::$cache_trigger_url,

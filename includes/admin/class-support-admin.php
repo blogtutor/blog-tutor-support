@@ -123,7 +123,8 @@ class Blog_Tutor_Support_Admin {
 			array(
 				'menu'  => $settings_option,
 				'id'    => 'shortpixel_bulk_optimize',
-				'label' => __( 'Hide ShortPixel Bulk Optimization from non-NerdPress users.', 'nerdpress-support' ),
+				'label' => __( 'Un-hide ShortPixel Bulk Optimization options for users.', 'nerdpress-support' ),
+				'description' => __( 'SHORTPIXEL_HIDE_API_KEY constant ' ),
 			)
 		);
 
@@ -242,7 +243,7 @@ class Blog_Tutor_Support_Admin {
 		register_setting( $information_option, $information_option, array( $this, 'validate_options' ) );
 
 
-		// Check if Securi's enabled to skip this branch since it would still execute even if the SFW tab is absent
+		// Check if Sucuri's enabled to skip this branch since it would still execute even if the SFW tab is absent
 		$has_sucuri = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 

@@ -23,7 +23,7 @@ class NerdPress_Support_ShortPixel {
  		
 		$options = get_option( 'blog_tutor_support_settings', array() );
 
-		if ( isset( $options['shortpixel_bulk_optimize'] ) && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( ! isset( $options['shortpixel_bulk_optimize'] ) && ! Blog_Tutor_Support_Helpers::is_nerdpress() && @constant( 'SHORTPIXEL_HIDE_API_KEY' ) ) {
 			add_action( 'admin_menu', function () {
 				remove_submenu_page( 'upload.php', 'wp-short-pixel-bulk' );
 			}, 20 );
@@ -35,7 +35,7 @@ class NerdPress_Support_ShortPixel {
 		$current_screen = get_current_screen();
 		$options = get_option( 'blog_tutor_support_settings', array() );
 		
-		if ( isset( $options['shortpixel_bulk_optimize'] ) && $current_screen->id === 'settings_page_wp-shortpixel-settings' && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( ! isset( $options['shortpixel_bulk_optimize'] ) && $current_screen->id === 'settings_page_wp-shortpixel-settings' && ! Blog_Tutor_Support_Helpers::is_nerdpress()  && @constant( 'SHORTPIXEL_HIDE_API_KEY' ) ) {
 			echo '<style type="text/css">.wp-shortpixel-options #bulk {display: none;}</style>';
 		}
 	}

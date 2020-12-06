@@ -19,15 +19,9 @@ jQuery(document).ready(function($) {
 				try {
 					ip = data.match(/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/)[0];
 				} catch(err) {
-<<<<<<< HEAD:includes/js/bt-whitelist.js
-					npMsgString = '<strong>⚠  Heads up!</strong><br />Automatically whitelisting your IP address on the Sucuri Firewall didn\'t work.<br />'
-						+ 'If the problem persists, please contact us at <a '
-						+ ' style="text-decoration:none;color:#0F145B;" href="mailto:support@nerdpress.net">support@nerdpress.net</a>.';
-=======
 					npMsgString = '<strong>⚠  Heads up!</strong><br />Automatically adding your IP address to the Sucuri Firewall allowlist didn\'t work.<br />'
 						    + 'If the problem persists, please contact us at <a '
 						    + ' style="text-decoration:none;color:#0F145B;" href="mailto:support@nerdpress.net">support@nerdpress.net</a>.';
->>>>>>> master:includes/js/bt-allowlist.js
 				}
 				
 				if(npMsgString === null)

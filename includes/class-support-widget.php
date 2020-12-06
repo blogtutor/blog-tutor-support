@@ -33,7 +33,7 @@ class Blog_Tutor_Support_Widget {
 			$ajw_current_user = wp_get_current_user();
 			?>
 			<script type="text/javascript">
-			jQuery( window ).on( 'load', function( $ ) ) {
+			jQuery( window ).on( 'load', function( $ ) {
 				if ( window.supportHeroWidget != undefined ) {
 					var properties = {
 						articleParameters: {  // These can be embedded in articles with {variable}

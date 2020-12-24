@@ -198,7 +198,20 @@ class Blog_Tutor_Support_Admin {
 					'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
 				)
 			);
-// 		}
+			// 		}
+		// Add field Relay Server Key option
+		add_settings_field(
+			'relay_key',
+			__( 'Relay Server API Key', 'nerdpress-support' ),
+			array( $this, 'relay_key_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'relay_key',
+				'label' => __( 'Relay Server API Key', 'nerdpress-support' ),
+			)
+		);
 
 		// add_settings_field(
 		//   'identify_users',
@@ -488,6 +501,30 @@ class Blog_Tutor_Support_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-cloudflare-token-field.php';
 	}
+
+	/**
+	 *  Relay Server Key  element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function relay_key_element_callback( $args ) {
+// 		print_r( $args );
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$token   = '';
+		
+		if( isset( $options['relay_key'] ) ) { 
+			$token = $options['relay_key'];
+		} else {
+			$token = '';
+			$options['relay_key'] = $token;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-relay-key-field.php';
+	}
+
 
 	/**
 	 * Valid options.

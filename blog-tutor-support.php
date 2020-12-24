@@ -123,6 +123,7 @@ class Blog_Tutor_Support {
 		include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-updates.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
+		include_once dirname( __FILE__ ) . '/includes/class-support-relay.php';
 	}
 }
 

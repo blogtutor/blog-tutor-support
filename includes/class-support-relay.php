@@ -31,7 +31,7 @@ class NerdPress_Support_Relay {
 	public function ping_relay() {
 		$relay_url = 'https://relay.nerdpress.net/wp-json/wp/v2/posts';
 		$user      = parse_url( get_bloginfo( 'wpurl' ) )['host'];
-		$password  = get_option( 'blog_tutor_support_settings' )['relay_key'];
+		$password  = isset( get_option( 'blog_tutor_support_settings' )['relay_key'] );
 		$dump      = $_SERVER; 
 
 		if ( isset( $_GET['ping'] ) ) {

@@ -33,12 +33,12 @@ class NerdPress_Support_Relay {
 			$relay_url = 'https://relay.nerdpress.net/wp-json/wp/v2/site_snapshot';
 			$relay_key = get_option( 'blog_tutor_support_settings' )['relay_key'];
 			$user      = parse_url( get_bloginfo( 'wpurl' ) )['host'];
-			$dump      = $_SERVER; 
+			$dump      = $_SERVER;
 
 			if ( isset( $_GET['ping'] ) ) {
 				// Make request
 				$api_response = wp_remote_post( $relay_url, array(
-					'headers' => array( 
+					'headers' => array(
 						'Authorization' => 'Basic ' . base64_encode( "$user:$relay_key" ),
 					),
 					'body' => array(

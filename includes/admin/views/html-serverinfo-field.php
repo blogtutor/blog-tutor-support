@@ -102,6 +102,7 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 	<p><strong>HTTP_X_SUCURI_CLIENTIP:</strong> <?php if ( !empty( $_SERVER['HTTP_X_SUCURI_CLIENTIP'] ) ) { echo $_SERVER['HTTP_X_SUCURI_CLIENTIP']; } ?></p>
 	<p><strong>HTTP_X_FORWARDED_FOR:</strong> <?php if ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) { echo $_SERVER['HTTP_X_FORWARDED_FOR']; } ?></p>
 	<p><strong>HTTP_X_REAL_IP:</strong> <?php if ( !empty( $_SERVER['HTTP_X_REAL_IP'] ) ) { echo $_SERVER['HTTP_X_REAL_IP']; } ?></p>
+	<p><strong>SERVER_ADDR:</strong> <?php if ( !empty( $_SERVER['SERVER_ADDR'] ) ) { echo $_SERVER['SERVER_ADDR']; } ?></p>
 </article>
 
 <br>

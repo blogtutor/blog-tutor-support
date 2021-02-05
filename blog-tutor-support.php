@@ -118,8 +118,10 @@ class Blog_Tutor_Support {
 	protected function includes() {
 		include_once dirname( __FILE__ ) . '/includes/class-support-helpers.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
+		if ( Blog_Tutor_Support_Helpers::is_sucuri_header_set() || Blog_Tutor_Support_Helpers::is_cloudflare_firewall_selected() ) {
+			include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
+			include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
+		}
 		include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-updates.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';

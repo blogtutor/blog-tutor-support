@@ -101,6 +101,13 @@ class NerdPress_Cloudflare_Client {
 	private static $cache_trigger_url = '';
 
 	/**
+ 	 * @var strin. Gets what method your are in so we can pass to other methods and eventually Slack through Zapier.
+ 	 *
+ 	 * @since 0.2.2
+ 	 */
+	private static $which_cloudflare_method = '';
+
+	/**
 	 * NerdPress_Cloudflare_Client static initializizer
 	 *
 	 * @since 0.0.1
@@ -236,20 +243,17 @@ class NerdPress_Cloudflare_Client {
 	 * @param WP_ERROR result. WP_ERROR object
 	 * @param string methodname. Name of the method that sent the originating request
 	 */
-	private static function send_alert( $result, $methodName = '' ) {
+	private static function send_alert( $result ) {
 		$hookUrl      = 'https://hooks.zapier.com/hooks/catch/332669/o1lpmis/';
 		$current_user = wp_get_current_user();
 
-		if ( defined( 'NP_CALLING_CACHE_METHOD' ) ) {
-			$method = NP_CALLING_CACHE_METHOD;
-		}
 		$error = array(
 			'host'    => array( self::$host_url ),
 			'payload' => stripslashes( str_replace( array( '\n', '\r' ), '', json_encode( $result['body'] ) ) ),
 			'cf-ray'  => json_encode( $result['headers']['CF-Ray'] ),
 			'user'    => "$current_user->user_login ($current_user->display_name)",
 			'cleared' => self::$cache_clear_type,
-			'method'  => $method,
+			'method'  => self::$which_cloudflare_method,
 			'url'     => self::$cache_trigger_url,
 			'before'  => self::$status_before,
 			'after'   => self::$status_after
@@ -286,7 +290,7 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @return bool. wp_mail status
 	 */
-	private static function process_response( $methodName, $result ) {
+	private static function process_response( $result ) {
 		if ( is_wp_error( $result ) ) {
 			$result = array(
 				'body' => json_encode( array(
@@ -329,17 +333,21 @@ class NerdPress_Cloudflare_Client {
 			'body' => ( empty( $files ) ? '{ "hosts": ["' . self::$host_url . '"] }' : '{ "files": [' . implode( ',', $files ) . '] }' )
 		);
 
+		if ( strpos( $opts['body'], 'sl-insta-media' ) !== false ) {
+			return;
+		}
+
 		$result = self::post( $url, $opts );
-		return self::process_response( __METHOD__, $result );
+		return self::process_response( $result );
 	}
 
 	public function handle_post_cache_transition( $new_status, $old_status, $post ) {
-		if ( ( $old_status != 'publish' && $new_status != 'publish' ) || defined ( 'NP_DOING_COMMENT_CACHE' ) ) {
+		if ( ( $old_status != 'publish' && $new_status != 'publish' ) ) {
 			return;
 		}
 		
 		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
-		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
+		self::$which_cloudflare_method = __METHOD__;
 
 		self::$cache_trigger_url = get_permalink( $post );
 		self::$status_before     = $old_status;
@@ -356,7 +364,7 @@ class NerdPress_Cloudflare_Client {
 	public static function purge_cloudflare_full() {
 		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
 
-		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
+		self::$which_cloudflare_method = __METHOD__;
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			echo 'Current user cannot clear the Cloudflare cache';
@@ -430,7 +438,7 @@ class NerdPress_Cloudflare_Client {
 		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
 		
 		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
-		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
+		self::$which_cloudflare_method = __METHOD__;
 		
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			echo 'Current user cannot clear the Cloudflare cache';
@@ -452,9 +460,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param object $comment. WP_Comment object
 	 */
 	public function handle_comment_cache_transition( $new_status, $old_status, $comment ) {
-		define( 'NP_DOING_COMMENT_CACHE', TRUE );
-		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
-		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
+		self::$which_cloudflare_method = __METHOD__;
 
 		// Some of these could be combined but let's leave these for clarity
 		if ( ( $old_status == 'unapproved' && ( $new_status == 'trash' || $new_status == 'spam' ) )
@@ -488,9 +494,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param array $comment_data. Associative array with comment data
 	 */
 	public function handle_comment_cache( $comment_id, $comment_approved, $comment_data ) {
-		define( 'NP_DOING_COMMENT_CACHE', TRUE );
-		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
-		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
+		self::$which_cloudflare_method = __METHOD__;
 
 		if ( ! $comment_approved || $comment_approved == 'spam' ) {
 			return;
@@ -517,9 +521,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param array $data. Associative array with the comment's data
 	 */
 	public function handle_comment_cache_edit( $comment_id, $data ) {
-		define( 'NP_DOING_COMMENT_CACHE', TRUE );
-		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
-		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
+		self::$which_cloudflare_method = __METHOD__;
 
 		if ( ! $data['comment_approved'] ) {
 			return;
@@ -554,7 +556,7 @@ class NerdPress_Cloudflare_Client {
 		self::$status_after      = 'delete';
 
 		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
-		define( 'NP_CALLING_CACHE_METHOD', __METHOD__ );
+		self::$which_cloudflare_method = __METHOD__;
 
 		self::purge_cloudflare_cache();
 	}

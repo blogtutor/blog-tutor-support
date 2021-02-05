@@ -333,10 +333,6 @@ class NerdPress_Cloudflare_Client {
 			'body' => ( empty( $files ) ? '{ "hosts": ["' . self::$host_url . '"] }' : '{ "files": [' . implode( ',', $files ) . '] }' )
 		);
 
-		if ( strpos( $opts['body'], 'sl-insta-media' ) !== false ) {
-			return;
-		}
-
 		$result = self::post( $url, $opts );
 		return self::process_response( $result );
 	}

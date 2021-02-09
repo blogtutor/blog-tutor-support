@@ -30,10 +30,13 @@ class NerdPress_Support_Relay {
 	 */
 	public function ping_relay() {
 		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) ) {
-			$relay_url = 'https://relay.nerdpress.net/wp-json/wp/v2/site_snapshot';
-			$relay_key = get_option( 'blog_tutor_support_settings' )['relay_key'];
-			$user      = parse_url( get_bloginfo( 'wpurl' ) )['host'];
-			$dump      = $_SERVER;
+			$relay_url                    = 'https://relay.nerdpress.net/wp-json/wp/v2/site_snapshot';
+			$relay_key                    = get_option( 'blog_tutor_support_settings' )['relay_key'];
+			$user                         = parse_url( get_bloginfo( 'wpurl' ) )['host'];
+			$options                      = get_option( 'blog_tutor_support_settings', array() );
+			$dump                         = array();
+			$dump['disk_percentage_used'] = Blog_Tutor_Support_Helpers::get_disk_info()['disk_percentage'];
+			$dump['firewall_choice']      = $options['firewall_choice'];
 
 			if ( isset( $_GET['ping'] ) ) {
 				// Make request
@@ -47,7 +50,7 @@ class NerdPress_Support_Relay {
 						'status'      => 'publish',
 					)
 				) );
-				// var_dump( $api_response );
+
 				if ( $api_response['response']['code'] === 201 ) {
 					nocache_headers();
 					wp_safe_redirect( $_SERVER['HTTP_REFERER'] );

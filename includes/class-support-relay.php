@@ -35,8 +35,10 @@ class NerdPress_Support_Relay {
 			$user                         = parse_url( get_bloginfo( 'wpurl' ) )['host'];
 			$options                      = get_option( 'blog_tutor_support_settings', array() );
 			$dump                         = array();
-			$dump['disk_percentage_used'] = Blog_Tutor_Support_Helpers::get_disk_info()['disk_percentage'];
-			$dump['firewall_choice']      = $options['firewall_choice'];
+			$dump['Free Disk Space']      = round(Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] );
+			//TODO Move capitalization, rounding, bytes to GB logic to the relay plugin
+			$dump['Firewall Setting']     = ucfirst($options['firewall_choice']);
+			$dump['Domain']               = $user;
 
 			if ( isset( $_GET['ping'] ) ) {
 				// Make request

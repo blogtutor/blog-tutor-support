@@ -36,8 +36,8 @@ class NerdPress_Support_Relay {
 			$options                      = get_option( 'blog_tutor_support_settings', array() );
 			$dump                         = array();
 			$dump['Free Disk Space']      = round(Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] );
-			//TODO Move capitalization, rounding, bytes to GB logic to the relay plugin
-			$dump['Firewall Setting']     = ucfirst($options['firewall_choice']);
+			//TODO rounding, bytes to GB logic to the relay plugin
+			$dump['Firewall Setting']     = $options['firewall_choice'];
 			$dump['Domain']               = $user;
 
 			if ( isset( $_GET['ping'] ) ) {

@@ -29,16 +29,24 @@ class NerdPress_Support_Relay {
 	 *
 	 */
 	public function ping_relay() {
+
+		// Check if get_plugins() function exists. This is required on the front end of the
+		// site, since it is in a file that is normally only loaded in the admin.
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
 		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) ) {
-			$relay_url                    = 'https://relay.nerdpress.net/wp-json/wp/v2/site_snapshot';
-			$relay_key                    = get_option( 'blog_tutor_support_settings' )['relay_key'];
-			$user                         = parse_url( get_bloginfo( 'wpurl' ) )['host'];
-			$options                      = get_option( 'blog_tutor_support_settings', array() );
-			$dump                         = array();
-			$dump['Free Disk Space']      = round(Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] );
-			//TODO rounding, bytes to GB logic to the relay plugin
-			$dump['Firewall Setting']     = $options['firewall_choice'];
-			$dump['Domain']               = $user;
+			$relay_url                        = 'https://relay.nerdpress.net/wp-json/wp/v2/site_snapshot';
+			$relay_key                        = get_option( 'blog_tutor_support_settings' )['relay_key'];
+			$user                             = parse_url( get_bloginfo( 'wpurl' ) )['host'];
+			$options                          = get_option( 'blog_tutor_support_settings', array() );
+			$dump                             = array();
+			$dump['Free Disk Space']          = Blog_Tutor_Support_Helpers::format_size(Blog_Tutor_Support_Helpers::get_disk_info()['disk_free']);
+			$dump['Firewall Setting']         = $options['firewall_choice'];
+			$dump['Domain']                   = $user;
+			$dump['All Plugins']              = get_plugins();
+			$dump['Currently Active Plugins'] = get_option('active_plugins');
 
 			if ( isset( $_GET['ping'] ) ) {
 				// Make request

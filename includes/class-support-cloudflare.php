@@ -108,6 +108,13 @@ class NerdPress_Cloudflare_Client {
 	private static $which_cloudflare_method = '';
 
 	/**
+ 	 * @var bool. Suppress NerdPress Notification or not.
+ 	 *
+ 	 * @since 0.8.3
+ 	 */
+ 	private static $suppress_notification = false;
+
+	/**
 	 * NerdPress_Cloudflare_Client static initializizer
 	 *
 	 * @since 0.0.1
@@ -175,7 +182,7 @@ class NerdPress_Cloudflare_Client {
 			'endpoint'     => admin_url( 'admin-ajax.php' ),
   		'nonce'        => wp_create_nonce( 'np_cf_ei_secure_me' ),
   		'url_to_purge' => home_url( add_query_arg( array(), $wp->request ) ),
-		));
+		) );
 	}
 
 	/**
@@ -303,7 +310,7 @@ class NerdPress_Cloudflare_Client {
 
 		self::send_alert( $result );
 	
-		if ( ! defined( 'NP_SUPPRESS_NOTIFICATION' ) ) {
+		if ( ! self::$suppress_notification ) {
 			self::store_result( $result['body'] );
 		}
 		return 'success';
@@ -342,12 +349,11 @@ class NerdPress_Cloudflare_Client {
 			return;
 		}
 		
-		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
+		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
-
-		self::$cache_trigger_url = get_permalink( $post );
-		self::$status_before     = $old_status;
-		self::$status_after      = $new_status;
+		self::$cache_trigger_url       = get_permalink( $post );
+		self::$status_before           = $old_status;
+		self::$status_after            = $new_status;
 
 		self::purge_cloudflare_cache();
 	} 
@@ -433,7 +439,7 @@ class NerdPress_Cloudflare_Client {
   public function purge_cloudflare_url() {
 		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
 		
-		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
+		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 		
 		if ( ! current_user_can( 'edit_posts' ) ) {
@@ -456,6 +462,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param object $comment. WP_Comment object
 	 */
 	public function handle_comment_cache_transition( $new_status, $old_status, $comment ) {
+		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
 		// Some of these could be combined but let's leave these for clarity
@@ -490,6 +497,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param array $comment_data. Associative array with comment data
 	 */
 	public function handle_comment_cache( $comment_id, $comment_approved, $comment_data ) {
+		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
 		if ( ! $comment_approved || $comment_approved == 'spam' ) {
@@ -517,6 +525,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param array $data. Associative array with the comment's data
 	 */
 	public function handle_comment_cache_edit( $comment_id, $data ) {
+		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
 		if ( ! $data['comment_approved'] ) {
@@ -547,11 +556,10 @@ class NerdPress_Cloudflare_Client {
 			return;
 		}
 
-		self::$cache_trigger_url = get_permalink( $post_id );
-		self::$status_before     = 'publish';
-		self::$status_after      = 'delete';
-
-		define( 'NP_SUPPRESS_NOTIFICATION', TRUE );
+		self::$cache_trigger_url       = get_permalink( $post_id );
+		self::$status_before           = 'publish';
+		self::$status_after            = 'delete';
+		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
 		self::purge_cloudflare_cache();

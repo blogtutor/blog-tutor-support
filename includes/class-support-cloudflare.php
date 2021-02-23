@@ -103,7 +103,7 @@ class NerdPress_Cloudflare_Client {
 	/**
  	 * @var strin. Gets what method your are in so we can pass to other methods and eventually Slack through Zapier.
  	 *
- 	 * @since 0.2.2
+ 	 * @since 0.8.2
  	 */
 	private static $which_cloudflare_method = '';
 
@@ -113,6 +113,13 @@ class NerdPress_Cloudflare_Client {
  	 * @since 0.8.3
  	 */
  	private static $suppress_notification = false;
+
+	/**
+ 	 * @var bool. Are we already clearing any comment cache?
+ 	 *
+ 	 * @since 0.9.0
+ 	 */
+	private static $clearing_comment_cache = false;
 
 	/**
 	 * NerdPress_Cloudflare_Client static initializizer
@@ -345,7 +352,7 @@ class NerdPress_Cloudflare_Client {
 	}
 
 	public function handle_post_cache_transition( $new_status, $old_status, $post ) {
-		if ( ( $old_status != 'publish' && $new_status != 'publish' ) ) {
+		if ( ( $old_status != 'publish' && $new_status != 'publish' ) || self::$clearing_comment_cache ) {
 			return;
 		}
 		
@@ -462,6 +469,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param object $comment. WP_Comment object
 	 */
 	public function handle_comment_cache_transition( $new_status, $old_status, $comment ) {
+		self::$clearing_comment_cache  = true;
 		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
@@ -497,6 +505,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param array $comment_data. Associative array with comment data
 	 */
 	public function handle_comment_cache( $comment_id, $comment_approved, $comment_data ) {
+		self::$clearing_comment_cache  = true;
 		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
@@ -525,6 +534,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param array $data. Associative array with the comment's data
 	 */
 	public function handle_comment_cache_edit( $comment_id, $data ) {
+		self::$clearing_comment_cache  = true;
 		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 

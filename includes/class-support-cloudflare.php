@@ -509,7 +509,7 @@ class NerdPress_Cloudflare_Client {
 		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
-		if ( ! $comment_approved || $comment_approved == 'spam' ) {
+		if ( ! $comment_approved || $comment_approved == 'spam' || $comment_approved == 'trash' ) {
 			return;
 		}
 

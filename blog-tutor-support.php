@@ -3,7 +3,7 @@
 /**
  * Plugin Name: NerdPress Support
  * Description: Helps your site work with our custom Cloudflare Enterprise setup or the Sucuri Firewall, and adds the NerdPress "Need Help?" support tab to your dashboard.
- * Version:     0.9.0
+ * Version:     1.0
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support
@@ -22,7 +22,7 @@ include( dirname( __FILE__ ) . '/github-updater.php' );
 include( dirname( __FILE__ ) . '/includes/admin-menu.php' );
 
 if ( ! defined( 'BT_PLUGIN_VERSION' ) ) {
-	define( 'BT_PLUGIN_VERSION', '0.9.0' );
+	define( 'BT_PLUGIN_VERSION', '1.0' );
 }
 
 if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
@@ -58,6 +58,27 @@ class Blog_Tutor_Support {
 		if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 			$this->admin_includes();
 		}
+
+		// Exclude scripts from WP Rocket JS delay.
+		function np_wp_rocket__exclude_from_delay_js( $excluded_strings = array() ) {
+			// MUST ESCAPE PERIODS AND PARENTHESES!
+			$excluded_strings[] = 'google-analytics\.com/analytics\.js';
+			$excluded_strings[] = "/gtag/";
+			$excluded_strings[] = "/gtm\.js";
+			$excluded_strings[] = "/gtm-";
+			$excluded_strings[] = "ga\( '";
+			$excluded_strings[] = "ga\('";
+			$excluded_strings[] = "gtag\(";
+			$excluded_strings[] = "scripts\.mediavine\.com";
+			$excluded_strings[] = "ads\.adthrive\.com";
+			$excluded_strings[] = "nutrifox";
+			$excluded_strings[] = "flodesk";
+			$excluded_strings[] = "cp-popup\.js";
+			$excluded_strings[] = "wp-recipe-maker";
+			$excluded_strings[] = "slickstream";
+			return $excluded_strings;
+		}
+		add_filter( 'rocket_delay_js_exclusions', 'np_wp_rocket__exclude_from_delay_js' );
   }
 
 	/**

@@ -59,27 +59,7 @@ class Blog_Tutor_Support {
 			$this->admin_includes();
 		}
 
-		// Exclude scripts from WP Rocket JS delay.
-		function np_wp_rocket__exclude_from_delay_js( $excluded_strings = array() ) {
-			// MUST ESCAPE PERIODS AND PARENTHESES!
-			$excluded_strings[] = 'google-analytics\.com/analytics\.js';
-			$excluded_strings[] = "/gtag/";
-			$excluded_strings[] = "/gtm\.js";
-			$excluded_strings[] = "/gtm-";
-			$excluded_strings[] = "ga\( '";
-			$excluded_strings[] = "ga\('";
-			$excluded_strings[] = "gtag\(";
-			$excluded_strings[] = "scripts\.mediavine\.com";
-			$excluded_strings[] = "ads\.adthrive\.com";
-			$excluded_strings[] = "nutrifox";
-			$excluded_strings[] = "flodesk";
-			$excluded_strings[] = "cp-popup\.js";
-			$excluded_strings[] = "wp-recipe-maker";
-			$excluded_strings[] = "slickstream";
-			return $excluded_strings;
-		}
-		add_filter( 'rocket_delay_js_exclusions', 'np_wp_rocket__exclude_from_delay_js' );
-  }
+	}
 
 	/**
 	 * Return an instance of this class.
@@ -98,18 +78,42 @@ class Blog_Tutor_Support {
 	 * Check mandatory options, set to default if not present
 	 */
 	public function check_options() {
+		$option_array = 'blog_tutor_support_settings';
+		$bt_opts      = get_option( $option_array, array() );
+
 		// Perform the check only if logged in
 		if( !is_admin() ) {
+			if( !isset( $bt_opts['exclude_wp_rocket_delay_js'] ) ) {
+				// Exclude scripts from WP Rocket JS delay.
+				function np_wp_rocket__exclude_from_delay_js( $excluded_strings = array() ) {
+					// MUST ESCAPE PERIODS AND PARENTHESES!
+					$excluded_strings[] = 'google-analytics\.com/analytics\.js';
+					$excluded_strings[] = "/gtag/";
+					$excluded_strings[] = "/gtm\.js";
+					$excluded_strings[] = "/gtm-";
+					$excluded_strings[] = "ga\( '";
+					$excluded_strings[] = "ga\('";
+					$excluded_strings[] = "gtag\(";
+					$excluded_strings[] = "scripts\.mediavine\.com";
+					$excluded_strings[] = "ads\.adthrive\.com";
+					$excluded_strings[] = "nutrifox";
+					$excluded_strings[] = "flodesk";
+					$excluded_strings[] = "cp-popup\.js";
+					$excluded_strings[] = "wp-recipe-maker";
+					$excluded_strings[] = "slickstream";
+					return $excluded_strings;
+				}
+
+				add_filter( 'rocket_delay_js_exclusions', 'np_wp_rocket__exclude_from_delay_js' );
+  		}
+
 			return;
 		}
 
-		$option_array = 'blog_tutor_support_settings';
 		$default_opts = array(
 			'firewall_choice' => 'none',
 			'cloudflare_zone' => 'dns1',
 		); 
-
-		$bt_opts = get_option( $option_array, array() );
 
 		foreach( $default_opts as $key => $val ) {
 			if( !array_key_exists( $key, $bt_opts ) || !isset( $bt_opts[$key] ) )

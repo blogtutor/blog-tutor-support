@@ -68,7 +68,7 @@ class Blog_Tutor_Support_Helpers {
 		$disk_info['disk_free']       = 'Unavailable';
 		$disk_info['disk_percentage'] = 'Unavailable';
 			
-		if ( is_callable( array( 'disk_free_space', 'disk_total_space' ) ) ) {
+		if ( disk_free_space( __DIR__ ) != false ) {
 			/* Get disk space free (in bytes). */
 			$disk_free                    = disk_free_space( __DIR__ );
 			/* And get disk space total (in bytes).  */
@@ -94,7 +94,7 @@ class Blog_Tutor_Support_Helpers {
 	 * @return array size from bytes to larger ammount.
 	 */
 	public static function format_size( $bytes ) {
-		if ( $bytes = 'Unavailable' ) {
+		if ( $bytes == 'Unavailable' ) {
 			return $bytes;
 		}
 

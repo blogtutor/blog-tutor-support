@@ -3,7 +3,7 @@
 /**
  * Plugin Name: NerdPress Support
  * Description: Helps your site work with our custom Cloudflare Enterprise setup or the Sucuri Firewall, and adds the NerdPress "Need Help?" support tab to your dashboard.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support
@@ -22,7 +22,7 @@ include( dirname( __FILE__ ) . '/github-updater.php' );
 include( dirname( __FILE__ ) . '/includes/admin-menu.php' );
 
 if ( ! defined( 'BT_PLUGIN_VERSION' ) ) {
-	define( 'BT_PLUGIN_VERSION', '1.0.1' );
+	define( 'BT_PLUGIN_VERSION', '1.0.2' );
 }
 
 if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
@@ -102,6 +102,7 @@ class Blog_Tutor_Support {
 					$excluded_strings[] = "cp-popup\.js"; // ConvertPro
 					$excluded_strings[] = "wp-recipe-maker";
 					$excluded_strings[] = "slickstream";
+					$excluded_strings[] = "social-pug";
 					return $excluded_strings;
 				}
 

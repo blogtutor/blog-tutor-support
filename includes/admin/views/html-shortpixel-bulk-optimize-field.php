@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php endif; ?>
 <?php if ( isset( $args['description'] ) ) : ?>
 	<p class="description"><?php echo esc_html( $args['description'] );
-	if ( @constant( 'SHORTPIXEL_HIDE_API_KEY' ) ) {
+	if ( defined( 'SHORTPIXEL_HIDE_API_KEY' ) ) {
 		echo 'is set.';
 	} else {
 		echo 'is not set.';

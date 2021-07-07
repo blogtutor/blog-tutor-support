@@ -68,7 +68,7 @@ class Blog_Tutor_Support_Helpers {
 		$disk_info['disk_free']       = 'Unavailable';
 		$disk_info['disk_percentage'] = 'Unavailable';
 			
-		if ( disk_free_space( __DIR__ ) != false ) {
+		if ( function_exists( 'disk_free_space' ) && ( disk_free_space( __DIR__ ) != false ) ) {
 			/* Get disk space free (in bytes). */
 			$disk_free                    = disk_free_space( __DIR__ );
 			/* And get disk space total (in bytes).  */

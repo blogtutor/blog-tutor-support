@@ -53,7 +53,7 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 		</article>
 		<?php
 	}
-} 
+}
 
 ?>
 

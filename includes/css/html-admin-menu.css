@@ -1,0 +1,26 @@
+@media screen and (max-width: 782px) {
+	#wpadminbar li#wp-admin-bar-nerdpress-menu {
+		display: block;
+		position: static;
+	}
+	#wpadminbar #wp-toolbar #wp-admin-bar-root-default li#wp-admin-bar-nerdpress-menu .ab-icon {
+		width: 30px;
+		height: 30px;
+		margin: 8px;
+		background-size: 30px;
+	}
+}
+
+#wpadminbar #wp-admin-bar-root-default li#wp-admin-bar-nerdpress-menu .ab-icon {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAEl0lEQVRo3u2bXWgcVRTHfzv9EESrEWoqAa2tpISWgkoKJlIRzYMfFaFkMN6Kl4IoShWMIBRffLAiJvgQBX0J8+BNdPKg0GCV+qD4hYn1JcG0oXmQEGxTbDFIH2JSfZizZbLdr7kzO7tm9g8Ly+7ee85/z73nfpz/5KgBPONvBvYBHcABoB3YVaHZGWAWOA7MABNauctJ+5ZLmOjTQC/QCbTF7G4BmATGtHJHGoawZ/wtwBGgH2ihNrgEDAJDWrlLdSHsGf964KiQ3UI6WAKGgGNauZdTI+wZ/3FgGNhKfXABOKyVO15Twp7xW4EBoA/YQH2xCowCr2nlnk+csGf8W4EfgZ00FuaALq3cxWp+7FRJtgeYbkCyiE/T4mP8CHvGfxg4AWyksbECPKKV+7V1hOVf+z+QRXw8USnSuQpzdjqFTLwA5OffncDNCWTwPaXmdK5MNv7BYs4+CEyV+O4KcFHenwc+AEaA+fwWUtb2DuBlWQk2xUhk3cWyd6mhOmCZoP7Syv2zzKgB+Ap4Tit3vvB72UycAp71jD8AfGbpx07h8EzFOSybir4aDd9fgCeKkS1CfgrolgOFDfqES2nCMqSGa7ipeDXKCUiG5OuWtjYAw8KpZISP1jJJaeV+Z9Hmc2Dc0uRW4XQt4dCppxHxaYy2R4TbNRFO89QTORnGaLsmkOEs3Z+G557xtwFvALcLkXe0cqcrNPs5ptl+4K2rEZabipYUyF4n6/tLcvVzCPjJM357hXm8GNN0i3C8OqR7UxqarwA7Cj67ISX7vQCOXLh1pkT4/hKf35GC7U7P+JsdgtvFNtY/2oB9juxds4IOR5JHVnDAIbgkzwraHSpXBNYTdjlkDE3CTcJNwk3CTcIW+DctQznP+KcTXIs/As6V+f6pErb+AD4sE4BW4IUE/DuzkeBWMCnCz1u2uw14M4UAzzoEmoqs4LhDICDJCmYcYIKgvrPesQBMOHIxPpkBwpNaucv5rDiWAcJjEKoeesa/SAo3l3XCJa3cWwo3HoMxO10GTtfI4d+Af2K0Hyy20xoi0EHZ4G/gPmA3MJ8w2VNaubuBx+RPjYq8tmstYVG4DVk6ZbRyf9XKvUJQFF9MiOycEEUr9yRw0qKPNeq9wq3cMQLJQOQdlmf8g+LYHNBFUOWPS7YrX8X3jP9innwEXBBOxQ8PUoE/TCD6ior3PePfFSK9H/jWkuw4gWRhUcjeC7wdsY9VArXe5bKnJZHzjVo4uQ343jP+DulnFugBDgJnq+xjSto8GYrsPcA3RK9sjhaTJiYtasnjEPCJVu5qqM+9BPWdVuBuAsXOjLx+J5AJz4Z+v4mg6Pae5XQoKmqppWxpHOgPk6gWnvE7gXeBByzsRpcthQz3AF9gL0xbAb6UXc6IVu5KGVs3ynm5F3jI8nJiBXhUMjqRCYsjSUoPJ+WC4Jy83w/cRFA93Buz76qkh7kqh1gPYKifPrqaYazKRTYS4dCczoZ8WJaZRQKh2MeW63TSWBVfuqNIIjL3CIDVNa0Y2k6gjFlKkeiS2NxuQ9Y6wgXRzsZjPCXIr/8HtUoQb9hH8f4DcaCIEnXvQAYAAAAASUVORK5CYII=) !important;
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: 6px 8px 8px 8px;
+  background-repeat: no-repeat;
+  background-size: 20px;
+}
+
+#wpadminbar #wp-admin-bar-root-default li#wp-admin-bar-nerdpress-menu:hover .ab-icon {
+	filter: invert(67%) sepia(22%) saturate(892%) hue-rotate(170deg) brightness(96%) contrast(87%) !important;
+}

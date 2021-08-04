@@ -13,11 +13,15 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		if ( ! is_admin() ) {
 			include_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}		
+
+		?>
+			<link rel="stylesheet" href="<?php echo plugins_url(); ?>/blog-tutor-support/includes/css/html-admin-menu.css" type="text/css" media="all">
+		<?php
 		
 		// Add "NerdPress" parent menu items.
 		$args = array(
 			'id'     => 'nerdpress-menu',
-			'title'  => 'NerdPress',
+			'title'  => '<span class="ab-icon"></span><span class="ab-label">' . __( 'NerdPress', 'nerdpress-support' ) . '</span>',
 			'parent' => false,
 		);
 		$wp_admin_bar->add_node( $args );

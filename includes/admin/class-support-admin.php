@@ -113,6 +113,19 @@ class Blog_Tutor_Support_Admin {
 			)
 		);
 
+		// Add option to disable/enable excluding WP Rocket delay js list. 
+		add_settings_field(
+			'exclude_wp_rocket_delay_js',
+			__( 'WP Rocket Delay JS', 'nerdpress-support' ),
+			array( $this, 'checkbox_exclude_wp_rocket_delay_js_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'exclude_wp_rocket_delay_js',
+				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
+			)
+		);
 		// Add option to disable/enable ShortPixel bulk optimization. 
 		add_settings_field(
 			'shortpixel_bulk_optimize',
@@ -350,7 +363,25 @@ class Blog_Tutor_Support_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-auto-update-themes-field.php';
 	}
-	
+		
+	/**
+	 * Checkbox Exclude WP Rocket Delay JS element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_exclude_wp_rocket_delay_js_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+		include dirname( __FILE__ ) . '/views/html-exclude-wp-rocket-delay-js-field.php';
+
+	}
 	/**
 	 * Checkbox ShortPixel Bulk Optimize element callback.
 	 *

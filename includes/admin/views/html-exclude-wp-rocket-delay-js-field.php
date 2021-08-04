@@ -13,14 +13,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php if ( isset( $args['label'] ) ) : ?>
 	<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $args['label'] ); ?></label>
 <?php endif; ?>
-<?php if ( isset( $args['description'] ) ) : ?>
-	<p class="description"><?php echo esc_html( $args['description'] );
-	if ( defined( 'SHORTPIXEL_HIDE_API_KEY' ) ) {
-		echo 'is set.';
-	} else {
-		echo 'is not set.';
-	}
-	?>
-	</p>
-<?php endif;
 

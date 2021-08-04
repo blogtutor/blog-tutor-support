@@ -61,7 +61,12 @@ class Blog_Tutor_Support_Cloudproxy {
 		$client_ip             = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
 		$errors                = get_option( $this->err_counter_option ); 
-		if ( $client_ip && is_array( $sucuri_api_call_array ) && $errors[$client_ip] < 3 ) {
+		if ( $errors == false ) {
+			$error_count = 0;
+		} else {
+			$error_count = $errors[$client_ip];
+		}
+		if ( $client_ip && is_array( $sucuri_api_call_array ) && $error_count < 3 ) {
 			// Make sure the option isn't cached
 			if ( wp_cache_get ( $this->allowlist_option_name, 'options' ) ) {
 				wp_cache_delete ( $this->allowlist_option_name, 'options' );

@@ -3,7 +3,7 @@
 /**
  * Plugin Name: NerdPress Support
  * Description: Helps your site work with our custom Cloudflare Enterprise setup or the Sucuri Firewall, and adds the NerdPress "Need Help?" support tab to your dashboard.
- * Version:     0.8.2
+ * Version:     1.0.4
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support
@@ -22,7 +22,7 @@ include( dirname( __FILE__ ) . '/github-updater.php' );
 include( dirname( __FILE__ ) . '/includes/admin-menu.php' );
 
 if ( ! defined( 'BT_PLUGIN_VERSION' ) ) {
-	define( 'BT_PLUGIN_VERSION', '0.8.2' );
+	define( 'BT_PLUGIN_VERSION', '1.0.4' );
 }
 
 if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
@@ -58,7 +58,8 @@ class Blog_Tutor_Support {
 		if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 			$this->admin_includes();
 		}
-  }
+
+	}
 
 	/**
 	 * Return an instance of this class.
@@ -77,18 +78,44 @@ class Blog_Tutor_Support {
 	 * Check mandatory options, set to default if not present
 	 */
 	public function check_options() {
+		$option_array = 'blog_tutor_support_settings';
+		$bt_opts      = get_option( $option_array, array() );
+
 		// Perform the check only if logged in
 		if( !is_admin() ) {
+			if( !isset( $bt_opts['exclude_wp_rocket_delay_js'] ) ) {
+				// Exclude scripts from WP Rocket JS delay.
+				function np_wp_rocket__exclude_from_delay_js( $excluded_strings = array() ) {
+					// MUST ESCAPE PERIODS AND PARENTHESES!
+					$excluded_strings[] = 'google-analytics\.com/analytics\.js';
+					$excluded_strings[] = "/gtag/";
+					$excluded_strings[] = "/gtm\.js";
+					$excluded_strings[] = "/gtm-";
+					$excluded_strings[] = "ga\( '";
+					$excluded_strings[] = "ga\('";
+					$excluded_strings[] = "gtag\(";
+					$excluded_strings[] = 'gtagTracker'; // Monster Insights
+					$excluded_strings[] = "mediavine";
+					$excluded_strings[] = "adthrive";
+					$excluded_strings[] = "nutrifox";
+					$excluded_strings[] = "flodesk";
+					$excluded_strings[] = "cp-popup\.js"; // ConvertPro
+					$excluded_strings[] = "wp-recipe-maker";
+					$excluded_strings[] = "slickstream";
+					$excluded_strings[] = "social-pug";
+					return $excluded_strings;
+				}
+
+				add_filter( 'rocket_delay_js_exclusions', 'np_wp_rocket__exclude_from_delay_js' );
+  		}
+
 			return;
 		}
 
-		$option_array = 'blog_tutor_support_settings';
 		$default_opts = array(
 			'firewall_choice' => 'none',
 			'cloudflare_zone' => 'dns1',
 		); 
-
-		$bt_opts = get_option( $option_array, array() );
 
 		foreach( $default_opts as $key => $val ) {
 			if( !array_key_exists( $key, $bt_opts ) || !isset( $bt_opts[$key] ) )
@@ -118,9 +145,13 @@ class Blog_Tutor_Support {
 	protected function includes() {
 		include_once dirname( __FILE__ ) . '/includes/class-support-helpers.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
+		if ( Blog_Tutor_Support_Helpers::is_sucuri_header_set() || Blog_Tutor_Support_Helpers::is_sucuri_firewall_selected() ) {
+			include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
+			include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
+		}
+		if ( Blog_Tutor_Support_Helpers::is_cloudflare_firewall_selected() ) {
+			include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
+		}
 		include_once dirname( __FILE__ ) . '/includes/class-support-updates.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-relay.php';

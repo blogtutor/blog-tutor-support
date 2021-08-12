@@ -30,7 +30,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$nerdpress_settings = get_option( 'blog_tutor_support_settings', array() );
 			if ( isset( $nerdpress_settings['cloudflare_zone'] ) && isset( $nerdpress_settings['cloudflare_token'] ) ) {
 				$args = array(
-					'id'     => 'purge-full',
+					'id'     => 'np-purge-full',
 					'title'  => 'Clear Cloudflare Cache',
 					'href'   => '#',
 					'parent' => 'nerdpress-menu',
@@ -45,7 +45,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			
 				if ( ! is_admin() ) {
 					$args = array(
-						'id'     => 'purge-url',
+						'id'     => 'np-purge-url',
 						'title'  => 'Purge this URL from Cloudflare',
 						'href'   => '#',
 						'parent' => 'nerdpress-menu',

@@ -253,8 +253,8 @@ class Blog_Tutor_Support_Helpers {
 		$domain_bypass_strings = array(
 			'development',
 			'staging',
-			'local',
-			'localhost',
+			// 'local',
+			// 'localhost',
 			'yawargenii',
 			'iwillfixthat',
 			'wpstagecoach',

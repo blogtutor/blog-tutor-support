@@ -1,7 +1,7 @@
 jQuery( document ).ready( function( $ ) {
   'use strict';
 
-  $( '#wp-admin-bar-purge-full a' ).click( function () {
+  $( '#wp-admin-bar-np-purge-full a' ).click( function () {
 		var nText = 'One moment, please...	  ';
 		$(this).text(nText);
 		
@@ -24,7 +24,7 @@ jQuery( document ).ready( function( $ ) {
 		});
   });
   	
-  $( '#wp-admin-bar-purge-url a' ).click( function () {
+  $( '#wp-admin-bar-np-purge-url a' ).click( function () {
 		var nText = 'One moment, please...	  ';
 		$(this).text(nText);
 			

@@ -335,22 +335,22 @@ class NerdPress_Cloudflare_Client {
 	 */
 	public static function purge_cloudflare_cache( $files = array() ) {
 		if ( ! self::$custom_hostname ) {
-			return 'error';
+			return 'non_production';
 		} 
 
 		if ( empty( $files ) ) {
 			if ( Blog_Tutor_Support_Helpers::cache_clear_bypass_custom_hostname( self::$custom_hostname ) ) {
-				return 'skip_cache_clearing';
+				return 'non_production';
 			}
 
 			self::$cache_clear_type = 'full';
 			$body = '{ "hosts": ["' . self::$custom_hostname . '"] }';
 		} else {
 			if ( Blog_Tutor_Support_Helpers::cache_clear_bypass_files( $files ) ) {
-				return 'skip_cache_clearing';
+				return 'non_production';
 			}
 
-			self::$cache_clear_type = implode( ',', $files );
+			self::$cache_clear_type = implode(',', $files );
 			$body = '{ "files": [' . implode( ',', $files ) . '] }';
 		}
 
@@ -462,7 +462,7 @@ class NerdPress_Cloudflare_Client {
   public function purge_cloudflare_url() {
 		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
 		
-		// self::$suppress_notification   = true;
+		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 		
 		if ( ! current_user_can( 'edit_posts' ) ) {

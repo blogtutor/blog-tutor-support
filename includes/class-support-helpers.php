@@ -224,10 +224,10 @@ class Blog_Tutor_Support_Helpers {
 	}
 
 	/**
-	* Display NerdPress Notification
-	* @param string $msg. String to display on the notification
-	* @return void
-	*/
+	 * Display NerdPress Notification
+	 * @param string $msg. String to display on the notification
+	 * @return void
+	 */
 	public static function display_notification( $msg ) {
 		if ( ! is_array( $msg ) )
 			$msg = array( 'status' => 1, 'msg' => $msg );
@@ -243,4 +243,64 @@ class Blog_Tutor_Support_Helpers {
 			</div>
 			<?php
   }
+	
+	/**
+ 	 * Bypass clearing Cloudflare cache for non-production domains.
+ 	 * @param string $domain. URL to be cleared
+ 	 * @return boolean. TRUE if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
+ 	 */
+	public static function cache_clear_bypass_custom_hostname( $domain ) {
+		$domain_bypass_strings = array(
+			'development',
+			'staging',
+			'local',
+			'localhost',
+			'yawargenii',
+			'iwillfixthat',
+			'wpstagecoach',
+		);
+
+		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
+			return TRUE;
+		}
+
+		foreach ( $domain_bypass_strings as $string ) {
+			if ( strpos( $domain, $string ) !== FALSE ) {
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
+
+	/**
+ 	 * Bypass clearing Cloudflare cache for non-production domains and NERDPRESS_CACHE_CLEAR_BYPASS constant.
+ 	 * @param array $files. URL(S) to be cleared
+ 	 * @return boolean. TRUE if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
+ 	 */
+	public static function cache_clear_bypass_files( $files ) {
+		preg_match( '#https?://([^/]*)#i', $files[0], $base_url );
+		if ( self::cache_clear_bypass_custom_hostname( $base_url[1] ) ) {
+			return TRUE;
+		}
+
+		$url_bypass_strings = array(
+			'/development/',
+			'/staging/',
+			'wpstagecoach',
+		);
+
+		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
+			$url_bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS; 
+		}
+
+		var_dump( $url_bypass_strings );
+		foreach ( $url_bypass_strings as $string ) {
+			if ( strpos( $files[0], $string ) !== FALSE ) {
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
 }

@@ -16,8 +16,10 @@ jQuery( document ).ready( function( $ ) {
 				np_cf_ei_nonce: np_cf_ei.nonce,
 			}
 		}).done( function( data ) {
+			if( data == 'skip_cache_clearing' )
+				alert( 'Looks like this is not a production version of your website. If it is, please reach out to NerdPress support for help.' );
 			if( data == 'error' )
-				alert( 'Please enter the host name in the Nerdpress Cloudflare Enterprise Integration Plugin\'s settings!' );
+				alert( 'Please enter the host name in the NerdPress Cloudflare Enterprise Integration Plugin\'s settings!' );
 			window.location.reload();
 		});
   });
@@ -38,8 +40,10 @@ jQuery( document ).ready( function( $ ) {
 				np_cf_ei_nonce: np_cf_ei.nonce, 
 			}
 		}).done( function( data ) { 
+			if( data == 'skip_cache_clearing' )
+				alert( 'Looks like this is not a production version of your website. If it is, please reach out to NerdPress support for help.' );
 			if( data == 'error' )
-				alert( 'Please enter the host name in the Nerdpress Cloudflare Enterprise Integration Plugin\'s settings!' );
+				alert( 'Please enter the host name in the NerdPress Cloudflare Enterprise Integration Plugin\'s settings!' );
 			window.location.reload(); 
 		});
   });    

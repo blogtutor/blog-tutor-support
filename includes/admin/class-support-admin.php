@@ -213,19 +213,6 @@ class Blog_Tutor_Support_Admin {
 			);
 // 		}
 
-		// add_settings_field(
-		//   'identify_users',
-		//   __( 'Identify Users', 'nerdpress-support' ),
-		//   array( $this, 'checkbox_element_callback' ),
-		//   $settings_option,
-		//   'options_section',
-		//   array(
-		//     'menu'  => $settings_option,
-		//     'id'    => 'identify_users',
-		//     'label' => __( 'If checked Blog Tutor Support widget will identify the user ID, email and display name from logged users.', 'nerdpress-support' ),
-		//   )
-		// );
-
 		// Register settings.
 		register_setting( $settings_option, $settings_option, array( $this, 'validate_options' ) );
 

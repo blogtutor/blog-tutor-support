@@ -253,8 +253,8 @@ class Blog_Tutor_Support_Helpers {
 		$domain_bypass_strings = array(
 			'development',
 			'staging',
-			// 'local',
-			// 'localhost',
+			'local',
+			'localhost',
 			'yawargenii',
 			'iwillfixthat',
 			'wpstagecoach',
@@ -294,7 +294,6 @@ class Blog_Tutor_Support_Helpers {
 			$url_bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS; 
 		}
 
-		var_dump( $url_bypass_strings );
 		foreach ( $url_bypass_strings as $string ) {
 			if ( strpos( $files[0], $string ) !== FALSE ) {
 				return TRUE;

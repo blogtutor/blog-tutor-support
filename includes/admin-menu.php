@@ -29,31 +29,46 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		if ( Blog_Tutor_Support_Helpers::is_cloudflare_firewall_selected() ) {
 			$nerdpress_settings = get_option( 'blog_tutor_support_settings', array() );
 			if ( isset( $nerdpress_settings['cloudflare_zone'] ) && isset( $nerdpress_settings['cloudflare_token'] ) ) {
-				$args = array(
-					'id'     => 'np-purge-full',
-					'title'  => 'Clear Cloudflare Cache',
-					'href'   => '#',
-					'parent' => 'nerdpress-menu',
-					'meta'   => array(
-						'tabindex' => 9999,
-						'id'   => 'cfClearcache',
-						'class'  => 'btButton',
-						'title'  => 'Clear everything from the Cloudflare cache',
-					) 
-				);
-				$wp_admin_bar->add_node( $args );
-			
-				if ( ! is_admin() ) {
+				if ( Blog_Tutor_Support_Helpers::is_production( home_url( '/' ) ) ) {
 					$args = array(
-						'id'     => 'np-purge-url',
-						'title'  => 'Purge this URL from Cloudflare',
+						'id'     => 'nerdpress-purge-full',
+						'title'  => 'Clear Cloudflare Cache',
 						'href'   => '#',
 						'parent' => 'nerdpress-menu',
 						'meta'   => array(
 							'tabindex' => 9999,
-							'id'   => 'cfClearurl',
+							'id'   => 'cfClearcache',
 							'class'  => 'btButton',
-							'title'  => 'Purge just this URL from Cloudflare',
+							'title'  => 'Clear everything from the Cloudflare cache',
+						) 
+					);
+					$wp_admin_bar->add_node( $args );
+					if ( ! is_admin() && ! Blog_Tutor_Support_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== FALSE ) {
+						$args = array(
+							'id'     => 'nerdpress-purge-url',
+							'title'  => 'Purge this URL from Cloudflare',
+							'href'   => '#',
+							'parent' => 'nerdpress-menu',
+							'meta'   => array(
+								'tabindex' => 9999,
+								'id'   => 'cfClearurl',
+								'class'  => 'btButton',
+								'title'  => 'Purge just this URL from Cloudflare',
+							) 
+						);
+						$wp_admin_bar->add_node( $args );
+					}
+				} else {
+					$args = array(
+						'id'     => 'nerdpress-is-not-production',
+						'title'  => 'Cloudflare Cache Clearing Unavailable',
+						'href'   => '#',
+						'parent' => 'nerdpress-menu',
+						'meta'   => array(
+							'tabindex' => 9999,
+							'class'    => 'btButton',
+							'title'    => "This appears to be a non-production site, so we've disabled cache clearing. Please contact us with any questions.",
+							'onclick'  => 'window.supportHeroWidget.show("contact")();'
 						) 
 					);
 					$wp_admin_bar->add_node( $args );
@@ -86,7 +101,6 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					'title'   => 'The Sucuri Plugin is not installed! Please contact us.',
 					'onclick' => 'window.supportHeroWidget.show("contact")();'
 				)
-				
 			);
 			$wp_admin_bar->add_node( $args );
 

@@ -1,12 +1,12 @@
 jQuery( document ).ready( function( $ ) {
   'use strict';
 
-  $( '#wp-admin-bar-np-purge-full a' ).click( function () {
+  $( '#wp-admin-bar-nerdpress-purge-full a' ).on( 'click', function () {
 		var nText = 'One moment, please...	  ';
-		$(this).text(nText);
+		$( this ).text( nText );
 		
-		$('.hover').children().css('display', 'block');
-		$('#wp-admin-bar-nerdpress-menu').off('hover');
+		$( '.hover' ).children().css( 'display', 'block' );
+		$( '#wp-admin-bar-nerdpress-menu' ).off( 'hover' );
 		
 		$.ajax({
 			url: np_cf_ei.endpoint,
@@ -24,12 +24,12 @@ jQuery( document ).ready( function( $ ) {
 		});
   });
   	
-  $( '#wp-admin-bar-np-purge-url a' ).click( function () {
+  $( '#wp-admin-bar-nerdpress-purge-url a' ).on( 'click', function () {
 		var nText = 'One moment, please...	  ';
-		$(this).text(nText);
+		$( this ).text( nText );
 			
-		$('.hover').children().css('display', 'block');
-		$('#wp-admin-bar-nerdpress-menu').off('hover');
+		$( '.hover' ).children().css( 'display', 'block' );
+		$( '#wp-admin-bar-nerdpress-menu' ).off( 'hover' );
 			
 		$.ajax({
 			url: np_cf_ei.endpoint,

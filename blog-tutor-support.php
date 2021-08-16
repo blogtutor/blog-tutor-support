@@ -87,7 +87,7 @@ class Blog_Tutor_Support {
 				// Exclude scripts from WP Rocket JS delay.
 				function np_wp_rocket__exclude_from_delay_js( $excluded_strings = array() ) {
 					// MUST ESCAPE PERIODS AND PARENTHESES!
-					$excluded_strings[] = 'google-analytics\.com/analytics\.js';
+					$excluded_strings[] = 'google-analytics';
 					$excluded_strings[] = "/gtag/";
 					$excluded_strings[] = "/gtm\.js";
 					$excluded_strings[] = "/gtm-";

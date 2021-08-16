@@ -249,7 +249,7 @@ class Blog_Tutor_Support_Helpers {
  	 * @param string $domain. URL to be cleared
  	 * @return boolean. TRUE if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
  	 */
-	public static function cache_clear_bypass_custom_hostname( $domain ) {
+	public static function is_production( $home_url ) {
 		$domain_bypass_strings = array(
 			'development',
 			'staging',
@@ -258,19 +258,21 @@ class Blog_Tutor_Support_Helpers {
 			'yawargenii',
 			'iwillfixthat',
 			'wpstagecoach',
+			'bigscoots-staging',
 		);
 
 		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
-			return TRUE;
+			return FALSE;
 		}
 
 		foreach ( $domain_bypass_strings as $string ) {
-			if ( strpos( $domain, $string ) !== FALSE ) {
-				return TRUE;
+			// Is $string prepended and appended by a / or . in $home_url
+			if ( preg_match( '#([/.]' . $string . '[/.])#m', $home_url ) ) {
+				return FALSE;
 			}
 		}
 
-		return FALSE;
+		return TRUE;
 	}
 
 	/**
@@ -278,24 +280,13 @@ class Blog_Tutor_Support_Helpers {
  	 * @param array $files. URL(S) to be cleared
  	 * @return boolean. TRUE if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
  	 */
-	public static function cache_clear_bypass_files( $files ) {
-		preg_match( '#https?://([^/]*)#i', $files[0], $base_url );
-		if ( self::cache_clear_bypass_custom_hostname( $base_url[1] ) ) {
-			return TRUE;
-		}
-
-		$url_bypass_strings = array(
-			'/development/',
-			'/staging/',
-			'wpstagecoach',
-		);
-
+	public static function cache_clear_bypass_on_string( $files ) {
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
-			$url_bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS; 
+			$bypass_string = NERDPRESS_CACHE_CLEAR_BYPASS; 
 		}
 
-		foreach ( $url_bypass_strings as $string ) {
-			if ( strpos( $files[0], $string ) !== FALSE ) {
+		foreach ( $files as $file ) {
+			if ( strpos( $file, $bypass_string ) !== FALSE ) {
 				return TRUE;
 			}
 		}

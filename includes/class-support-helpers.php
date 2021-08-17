@@ -282,12 +282,12 @@ class Blog_Tutor_Support_Helpers {
  	 */
 	public static function cache_clear_bypass_on_string( $files ) {
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
-			$bypass_string = NERDPRESS_CACHE_CLEAR_BYPASS; 
-		}
+			$bypass_string = NERDPRESS_CACHE_CLEAR_BYPASS; 		
 
-		foreach ( $files as $file ) {
-			if ( strpos( $file, $bypass_string ) !== FALSE ) {
-				return TRUE;
+			foreach ( $files as $file ) {
+				if ( strpos( $file, $bypass_string ) !== FALSE ) {
+					return TRUE;
+				}
 			}
 		}
 

@@ -85,6 +85,20 @@ class NerdPress_Admin {
 			$settings_option
 		);
 
+		// Add option to disable/enable Core auto updates. 
+		add_settings_field(
+			'auto_update_core',
+			__( 'Core Auto-Updates', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_core_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_core',
+				'label' => __( 'Enable core auto-update functionality for Core.', 'nerdpress-support' ),
+			)
+		);
+
 		// Add option to disable/enable plugin auto updates. 
 		add_settings_field(
 			'auto_update_plugins',
@@ -300,6 +314,25 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
 	}
 
+	/**
+	 * Checkbox auto update Core element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_auto_update_core_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+
+		include dirname( __FILE__ ) . '/views/html-auto-update-core-field.php';
+	}
+		
 	/**
 	 * Checkbox auto update plugins element callback.
 	 *

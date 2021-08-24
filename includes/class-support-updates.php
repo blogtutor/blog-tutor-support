@@ -22,6 +22,10 @@ class NerdPress_Support_Updates {
 
 		$options = get_option( 'blog_tutor_support_settings', array() );
  		
+		if ( ! isset( $options['auto_update_core'] ) ) {
+			add_filter( 'allow_major_auto_core_updates', '__return_false' );
+  	}
+		
 		if ( ! isset( $options['auto_update_plugins'] ) && ! NerdPress_Helpers::is_nerdpress() ) {
 			add_filter( 'plugins_auto_update_enabled', '__return_false' );
 			add_filter( 'auto_update_plugin', '__return_false' );

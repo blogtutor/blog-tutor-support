@@ -4,35 +4,35 @@ if ( !defined('ABSPATH') ) {
 }
 
 	/**
-	 * Blog_Tutor_Support Clear Cache
+	 * NerdPress Clear Cache
 	 *
-	 * @package  Blog_Tutor_Support
+	 * @package  NerdPress
 	 * @category Core
 	 * @author Andrey Kalashnikov
 	 */
 
-class Blog_Tutor_Support_Clearcache {
+class NerdPress_Clearcache {
 	
 	public function __construct() {
-		add_action( 'admin_notices', array( $this, 'blog_tutor_clearcache_message' ), 59 );
+		add_action( 'admin_notices', array( $this, 'nerdpress_clearcache_message' ), 59 );
 		add_action( 'wp_ajax_sucuri_clearcache', array( $this, 'sucuri_clearcache' ) );
 		add_action( 'init', array( $this, 'bt_enqueue_scripts' ) );
 	}
 
-	public function blog_tutor_clearcache_message() {
+	public function nerdpress_clearcache_message() {
 		if ( ! array_key_exists( 'np_clear_sucuri', $_GET ) ) {
 			return;
 		}
 
 		$clearcache_msg = get_option( 'clear_cache_msg' );
 		delete_option( 'clear_cache_msg' );
-		Blog_Tutor_Support_Helpers::display_notification( $clearcache_msg );
+		NerdPress_Helpers::display_notification( $clearcache_msg );
 	}
 
 	public function sucuri_clearcache() {
 		check_ajax_referer( 'sucuri_clearcache_secure_me', 'sucuri_clearcache_nonce' );
 
-		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
+		$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 		if ( is_array( $sucuri_api_call_array ) ) {
 			$sucuri_api_call  = implode( $sucuri_api_call_array );
 			$cloudproxy_clear = $sucuri_api_call . '&a=clearcache';
@@ -84,4 +84,4 @@ class Blog_Tutor_Support_Clearcache {
 	}
 }
 
-new Blog_Tutor_Support_Clearcache(); 
+new NerdPress_Clearcache(); 

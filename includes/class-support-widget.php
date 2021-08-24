@@ -4,13 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Blog Tutor Support Widget.
+ * NerdPress Widget.
  *
- * @package  Blog_Tutor_Support/Frontend
+ * @package  NerdPress/Frontend
  * @category Widget
  * @author   Fernando Acosta
  */
-class Blog_Tutor_Support_Widget {
+class NerdPress_Widget {
 	/**
 	 * Initialize the widget.
 	 */
@@ -74,4 +74,4 @@ class Blog_Tutor_Support_Widget {
 	}
 }
 
-new Blog_Tutor_Support_Widget();
+new NerdPress_Widget();

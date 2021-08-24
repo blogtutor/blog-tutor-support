@@ -8,8 +8,6 @@
  * Author URI:  https://www.nerdpress.net
  * GitHub URI: 	blogtutor/blog-tutor-support
  * License: 	  GPLv2
- * Text Domain: blog-tutor
- * Domain Path: /languages/
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -25,15 +23,15 @@ if ( ! defined( 'BT_PLUGIN_VERSION' ) ) {
 	define( 'BT_PLUGIN_VERSION', '1.1-beta1' );
 }
 
-if ( ! class_exists( 'Blog_Tutor_Support' ) ) :
+if ( ! class_exists( 'NerdPress' ) ) :
 	/**
-	 * Blog_Tutor_Support main class.
+	 * NerdPress main class.
 	 *
-	 * @package  Blog_Tutor_Support
+	 * @package  NerdPress
 	 * @category Core
 	 * @author   Fernando Acosta, Andrew Wilder, Sergio Scabuzzo
 	 */
-class Blog_Tutor_Support {
+class NerdPress {
 	/**
 	 * Instance of this class.
 	 *
@@ -46,7 +44,6 @@ class Blog_Tutor_Support {
 	 */
 	private function __construct() {
 		// Load plugin text domain.
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'init', array( $this, 'check_options' ) );
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
@@ -82,8 +79,8 @@ class Blog_Tutor_Support {
 		$bt_opts      = get_option( $option_array, array() );
 
 		// Perform the check only if logged in
-		if( !is_admin() ) {
-			if( !isset( $bt_opts['exclude_wp_rocket_delay_js'] ) ) {
+		if ( ! is_admin() ) {
+			if ( ! isset( $bt_opts['exclude_wp_rocket_delay_js'] ) ) {
 				// Exclude scripts from WP Rocket JS delay.
 				function np_wp_rocket__exclude_from_delay_js( $excluded_strings = array() ) {
 					// MUST ESCAPE PERIODS AND PARENTHESES!
@@ -117,20 +114,13 @@ class Blog_Tutor_Support {
 			'cloudflare_zone' => 'dns1',
 		); 
 
-		foreach( $default_opts as $key => $val ) {
-			if( !array_key_exists( $key, $bt_opts ) || !isset( $bt_opts[$key] ) )
+		foreach ( $default_opts as $key => $val ) {
+			if ( !array_key_exists( $key, $bt_opts ) || !isset( $bt_opts[$key] ) )
 				$bt_opts[$key] = $val; 
 		}
 
 		update_option( $option_array, $bt_opts );
 	} 
-
-	/**
-	 * Load the plugin text domain for translation.
-	 */
-	public function load_plugin_textdomain() {
-		load_plugin_textdomain( 'blog-tutor-support', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-	}
 
 	/**
 	 * Include admin actions.
@@ -145,11 +135,11 @@ class Blog_Tutor_Support {
 	protected function includes() {
 		include_once dirname( __FILE__ ) . '/includes/class-support-helpers.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
-		if ( Blog_Tutor_Support_Helpers::is_sucuri_header_set() || Blog_Tutor_Support_Helpers::is_sucuri_firewall_selected() ) {
+		if ( NerdPress_Helpers::is_sucuri_header_set() || NerdPress_Helpers::is_sucuri_firewall_selected() ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
 			include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
 		}
-		if ( Blog_Tutor_Support_Helpers::is_cloudflare_firewall_selected() ) {
+		if ( NerdPress_Helpers::is_cloudflare_firewall_selected() ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
 		}
 		include_once dirname( __FILE__ ) . '/includes/class-support-updates.php';
@@ -160,6 +150,6 @@ class Blog_Tutor_Support {
 /**
  * Init the plugin.
  */
-add_action( 'plugins_loaded', array( 'Blog_Tutor_Support', 'get_instance' ) );
+add_action( 'plugins_loaded', array( 'NerdPress', 'get_instance' ) );
 
 endif;

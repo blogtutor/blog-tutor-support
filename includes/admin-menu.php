@@ -26,10 +26,10 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		);
 		$wp_admin_bar->add_node( $args );
 
-		if ( Blog_Tutor_Support_Helpers::is_cloudflare_firewall_selected() ) {
+		if ( NerdPress_Helpers::is_cloudflare_firewall_selected() ) {
 			$nerdpress_settings = get_option( 'blog_tutor_support_settings', array() );
 			if ( isset( $nerdpress_settings['cloudflare_zone'] ) && isset( $nerdpress_settings['cloudflare_token'] ) ) {
-				if ( Blog_Tutor_Support_Helpers::is_production( home_url( '/' ) ) ) {
+				if ( NerdPress_Helpers::is_production( home_url( '/' ) ) ) {
 					$args = array(
 						'id'     => 'nerdpress-purge-full',
 						'title'  => 'Clear Cloudflare Cache',
@@ -43,7 +43,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						) 
 					);
 					$wp_admin_bar->add_node( $args );
-					if ( ! is_admin() && ! Blog_Tutor_Support_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== FALSE ) {
+					if ( ! is_admin() && ! NerdPress_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== FALSE ) {
 						$args = array(
 							'id'     => 'nerdpress-purge-url',
 							'title'  => 'Purge this URL from Cloudflare',
@@ -90,7 +90,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			}
 		}
 
-		if ( ! Blog_Tutor_Support_Helpers::is_sucuri_plugin_installed() ) {
+		if ( ! NerdPress_Helpers::is_sucuri_plugin_installed() ) {
 			$args = array(
 				'id'     => 'bt-sucuri-not-installed',
 				'title'  => 'The Sucuri Plugin is not installed! Please contact us.',
@@ -119,11 +119,11 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$wp_admin_bar->add_node( $args );
 		}
 
-		if ( Blog_Tutor_Support_Helpers::is_sucuri_header_set() ||
-			Blog_Tutor_Support_Helpers::is_sucuri_firewall_selected() ) {
+		if ( NerdPress_Helpers::is_sucuri_header_set() ||
+			NerdPress_Helpers::is_sucuri_firewall_selected() ) {
 
 			// If is array then the api key exists.
-			$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
+			$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 			if ( is_array( $sucuri_api_call_array ) ) {
 				// Build the Clear Cache & Allowlist links (Cloudproxy API v1) and add it to the admin bar.
 				$sucuri_api_call  = implode( $sucuri_api_call_array );
@@ -162,7 +162,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					$wp_admin_bar->add_node( $args );
 				}
 				
-				if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+				if ( NerdPress_Helpers::is_nerdpress() ) {
 					$cloudproxy_allowlist = $sucuri_api_call . '&a=whitelist&duration=3600';
 					$allowlist_args              = array(
 						'id'     => 'bt-allowlist-cloudproxy',
@@ -208,7 +208,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		);
 		$wp_admin_bar->add_node( $args );
 
-		if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( NerdPress_Helpers::is_nerdpress() ) {
 
 			// "Plugin Settings" link to open the NerdPress Support settings page.
 			$args = array(
@@ -224,7 +224,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$wp_admin_bar->add_node( $args );
 		}
 
-		if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( NerdPress_Helpers::is_nerdpress() ) {
 			// add cpu load to admin menu.
 			function serverinfo_admin_menu_item( $wp_admin_bar ) {
 				
@@ -237,7 +237,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					}
  				}
 				
-				$disk_space_info = 'Free Disk: ' . Blog_Tutor_Support_Helpers::format_size( Blog_Tutor_Support_Helpers::get_disk_info()['disk_free'] ) . '</span>';
+				$disk_space_info = 'Free Disk: ' . NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] ) . '</span>';
 				$cpu_disk_info   = $cpu_load_info . $disk_space_info;
 				$args            = array(
 					'id'    => 'cpu-disk-info',

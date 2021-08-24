@@ -5,7 +5,7 @@ if ( !defined('ABSPATH') )
 	/**
 	 * NerdPress_Support_Updates
 	 *
-	 * @package  Blog_Tutor_Support
+	 * @package  NerdPress
 	 * @category Core
 	 * @author Sergio Scabuzzo
 	 */
@@ -22,12 +22,12 @@ class NerdPress_Support_Updates {
 
 		$options = get_option( 'blog_tutor_support_settings', array() );
  		
-		if ( ! isset( $options['auto_update_plugins'] ) && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( ! isset( $options['auto_update_plugins'] ) && ! NerdPress_Helpers::is_nerdpress() ) {
 			add_filter( 'plugins_auto_update_enabled', '__return_false' );
 			add_filter( 'auto_update_plugin', '__return_false' );
   	}
 		
-		if ( ! isset( $options['auto_update_themes'] ) && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( ! isset( $options['auto_update_themes'] ) && ! NerdPress_Helpers::is_nerdpress() ) {
 			add_filter( 'themes_auto_update_enabled', '__return_false' );
 			add_filter( 'auto_update_theme', '__return_false' );
   	}

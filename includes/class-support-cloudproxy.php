@@ -4,14 +4,14 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 	/**
-	 * Blog_Tutor_Support helper class
+	 * NerdPress helper class
 	 *
-	 * @package  Blog_Tutor_Support
+	 * @package  NerdPress
 	 * @category Core
 	 * @author Andrey Kalashnikov
 	 */
 
-class Blog_Tutor_Support_Cloudproxy {
+class NerdPress_Cloudproxy {
 	private $allowlist_option_name = 'cloudproxy_allowlist_ips';
 	private $err_counter_option    = 'nerdpress_allowlist_errors'; 
 
@@ -51,7 +51,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		check_ajax_referer('sucuri_allowlist_secure_me', 'sucuri_allowlist_nonce');
 
 		// Terminate the operation, if the user is a nerdpress admin
-		if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( NerdPress_Helpers::is_nerdpress() ) {
 			echo 'np_no_message';
 			die();
 		}
@@ -59,7 +59,7 @@ class Blog_Tutor_Support_Cloudproxy {
 		$return_str            = FALSE;
 		$npSuffix              = '';
 		$client_ip             = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
-		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
+		$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 		$errors                = get_option( $this->err_counter_option ); 
 		if ( $errors == false ) {
 			$error_count = 0;
@@ -202,4 +202,4 @@ class Blog_Tutor_Support_Cloudproxy {
 	}
 }
 
-add_action( 'init', array( 'Blog_Tutor_Support_Cloudproxy', 'init' ) );
+add_action( 'init', array( 'NerdPress_Cloudproxy', 'init' ) );

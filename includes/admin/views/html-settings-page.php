@@ -2,7 +2,7 @@
 /**
  * Settings page view.
  *
- * @package Support_Hero/Admin/View
+ * @package NerdPress/Admin/View
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,11 +41,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<?php
 	} elseif ( 'server_information' == $active_tab ) {
-		settings_fields( 'blog_tutor_server_information' );
-		do_settings_sections( 'blog_tutor_server_information' );
+		settings_fields( 'nerdpress_server_information' );
+		do_settings_sections( 'nerdpress_server_information' );
 	} elseif ( 'sucuri_settings' == $active_tab ) {
-		settings_fields( 'blog_tutor_sucuri_settings' );
-		do_settings_sections( 'blog_tutor_sucuri_settings' );
+		settings_fields( 'nerdpress_sucuri_settings' );
+		do_settings_sections( 'nerdpress_sucuri_settings' );
 	}
 	?>
 

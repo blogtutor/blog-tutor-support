@@ -4,13 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 	/**
-	 * Blog_Tutor_Support helper class.
+	 * NerdPress helper class.
 	 *
-	 * @package  Blog_Tutor_Support
+	 * @package  NerdPress
 	 * @category Core
 	 * @author  Andrew Wilder, Sergio Scabuzzo
 	 */
-class Blog_Tutor_Support_Helpers {
+class NerdPress_Helpers {
 	private static $sucuri_api_key = FALSE;
 	private static $sucuri_buttons_flag = NULL;
 	

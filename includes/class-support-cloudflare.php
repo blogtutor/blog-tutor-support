@@ -338,7 +338,7 @@ class NerdPress_Cloudflare_Client {
 			return 'error';
 		} 
 		
-		if ( ! Blog_Tutor_Support_Helpers::is_production( home_url( '/' ) ) ) {
+		if ( ! NerdPress_Helpers::is_production( home_url( '/' ) ) ) {
 				return 'skip_cache_clearing';
 			}
 		
@@ -346,7 +346,7 @@ class NerdPress_Cloudflare_Client {
 			self::$cache_clear_type = 'full';
 			$body = '{ "hosts": ["' . self::$custom_hostname . '"] }';
 		} else {
-			if ( Blog_Tutor_Support_Helpers::cache_clear_bypass_on_string( $files ) ) {
+			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $files ) ) {
 				return 'skip_cache_clearing';
 			}
 

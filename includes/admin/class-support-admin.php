@@ -7,11 +7,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * NerdPress Support Admin.
  *
- * @package  Blog_Tutor_Support/Admin
+ * @package  NerdPress/Admin
  * @category Admin
  * @author   Fernando Acosta
  */
-class Blog_Tutor_Support_Admin {
+class NerdPress_Admin {
 
 	/**
 	 * Initialize the settings.
@@ -27,7 +27,7 @@ class Blog_Tutor_Support_Admin {
    */
   function hide_wp_rocket_beacon () {
 		$current_screen = get_current_screen();
-		if ( $current_screen->id === 'settings_page_wprocket' && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( $current_screen->id === 'settings_page_wprocket' && ! NerdPress_Helpers::is_nerdpress() ) {
 			echo '<style type="text/css">div#beacon-container {display: none;}</style>';
 		}
   }
@@ -36,8 +36,8 @@ class Blog_Tutor_Support_Admin {
 	 * Add the settings page.
 	 */
 	public function settings_menu() {
-		if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
-			add_action( 'admin_notices', array( $this, 'blog_tutor_support_message' ), 59 );
+		if ( NerdPress_Helpers::is_nerdpress() ) {
+			add_action( 'admin_notices', array( $this, 'nerdpress_message' ), 59 );
 			add_options_page(
 				'NerdPress Support',
 				'NerdPress Support',
@@ -48,7 +48,7 @@ class Blog_Tutor_Support_Admin {
 		}
 	}
 
-	public function blog_tutor_support_message() {
+	public function nerdpress_message() {
 		$option = get_option( 'blog_tutor_support_settings' );
 		if ( ! empty( $option['admin_notice'] ) ) {
 			$site_url = get_site_url();
@@ -219,7 +219,7 @@ class Blog_Tutor_Support_Admin {
 		/**
 		* Server Information form fields.
 		*/
-		$information_option = 'blog_tutor_server_information';
+		$information_option = 'nerdpress_server_information';
 		// Set Custom Fields section.
 		add_settings_section(
 			'information_section',
@@ -245,13 +245,13 @@ class Blog_Tutor_Support_Admin {
 
 		// Check if Sucuri's enabled to skip this branch since it would still execute even if the SFW tab is absent
 		$has_sucuri = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
-		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
+		$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 
 		if ( $has_sucuri ) {
 			/**
 			* Sucuri form fields.
 			*/
-			$sucuri_option = 'blog_tutor_sucuri_settings';
+			$sucuri_option = 'nerdpress_sucuri_settings';
 			// Set Custom Fields cection.
 			add_settings_section(
 				'information_section',
@@ -530,4 +530,4 @@ class Blog_Tutor_Support_Admin {
 
 }
 
-new Blog_Tutor_Support_Admin();
+new NerdPress_Admin();

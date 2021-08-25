@@ -52,7 +52,7 @@ class NerdPress_Cloudproxy {
 
 		// Terminate the operation, if the user is a nerdpress admin
 		if ( NerdPress_Helpers::is_nerdpress() ) {
-			echo 'np_no_message';
+			echo esc_textarea( 'np_no_message' );
 			die();
 		}
 
@@ -91,7 +91,7 @@ class NerdPress_Cloudproxy {
 					 * IP exceeds 3, send an alert
 					 */
 					$this->process_allowlist_error( $response, $client_ip, 'Timeout exceeded for Sucuri API endpoint' );
-					echo 'Error';
+					echo esc_textarea( 'Error' );
 					die();
 				}
 
@@ -104,12 +104,12 @@ class NerdPress_Cloudproxy {
 						$this->process_allowlist_error( $message, $client_ip, 'Invalid Sucuri API Key' );
 					}
 				} catch( Exception $e ) {
-					echo 'Error parsing JSON response from Sucuri';
+					echo esc_textarea( 'Error parsing JSON response from Sucuri' );
 					die();
 				}
 			}
 		}
-		echo $return_str . $npSuffix;
+		echo esc_textarea( $return_str . $npSuffix );
 		die();
 	}
 

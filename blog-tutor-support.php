@@ -82,7 +82,7 @@ class NerdPress {
 		if ( ! is_admin() ) {
 			if ( ! isset( $bt_opts['exclude_wp_rocket_delay_js'] ) ) {
 				// Exclude scripts from WP Rocket JS delay.
-				function np_wp_rocket__exclude_from_delay_js( $excluded_strings = array() ) {
+				function nerdpress_wp_rocket_exclude_from_delay_js( $excluded_strings = array() ) {
 					// MUST ESCAPE PERIODS AND PARENTHESES!
 					$excluded_strings[] = 'google-analytics';
 					$excluded_strings[] = "/gtag/";
@@ -103,7 +103,7 @@ class NerdPress {
 					return $excluded_strings;
 				}
 
-				add_filter( 'rocket_delay_js_exclusions', 'np_wp_rocket__exclude_from_delay_js' );
+				add_filter( 'rocket_delay_js_exclusions', 'nerdpress_wp_rocket_exclude_from_delay_js' );
   		}
 
 			return;
@@ -142,7 +142,7 @@ class NerdPress {
 		if ( NerdPress_Helpers::is_cloudflare_firewall_selected() ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
 		}
-		include_once dirname( __FILE__ ) . '/includes/class-support-updates.php';
+		include_once dirname( __FILE__ ) . '/includes/class-support-overrides.php';
 		include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
 	}
 }

@@ -88,7 +88,6 @@ class NerdPress {
 		if ( NerdPress_Helpers::is_cloudflare_firewall_selected() ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
 		}
-		
 	}
 }
 

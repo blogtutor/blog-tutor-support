@@ -212,6 +212,21 @@ class Blog_Tutor_Support_Admin {
 				)
 			);
 			// 		}
+
+		// Add field Relay Server URL option
+		add_settings_field(
+			'relay_url',
+			__( 'Relay Server URL', 'nerdpress-support' ),
+			array( $this, 'relay_url_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'relay_url',
+				'label' => __( 'Relay Server URL', 'nerdpress-support' ),
+			)
+		);
+
 		// Add field Relay Server Key option
 		add_settings_field(
 			'relay_key',
@@ -554,6 +569,28 @@ class Blog_Tutor_Support_Admin {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-relay-key-field.php';
+	}
+
+	/**
+	 *  Relay Server URL  element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function relay_url_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$token   = '';
+
+		if( isset( $options['relay_url'] ) ) {
+			$token = $options['relay_url'];
+		} else {
+			$token = '';
+			$options['relay_url'] = $token;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-relay-url-field.php';
 	}
 
 

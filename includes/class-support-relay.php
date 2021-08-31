@@ -37,7 +37,8 @@ class NerdPress_Support_Relay {
 		}
 
 		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) ) {
-			$relay_url                        = 'https://relay.nerdpress.net/wp-json/wp/v2/site_snapshot';
+
+			$relay_url = get_option( 'blog_tutor_support_settings' )['relay_url'] . '/wp-json/wp/v2/site_snapshot';
 			$relay_key                        = get_option( 'blog_tutor_support_settings' )['relay_key'];
 			$user                             = parse_url( get_bloginfo( 'wpurl' ) )['host'];
 			$options                          = get_option( 'blog_tutor_support_settings', array() );
@@ -58,8 +59,12 @@ class NerdPress_Support_Relay {
 						'title'       => parse_url( get_bloginfo( 'wpurl' ) )['host'],
 						'content'     => json_encode( $dump ),
 						'status'      => 'publish',
-					)
+					),
+					// Bypass SSL verification in self-signed environments
+					//'sslverify' => false
 				) );
+
+				// Need to add error handling here 
 
 				if ( $api_response['response']['code'] === 201 ) {
 					nocache_headers();

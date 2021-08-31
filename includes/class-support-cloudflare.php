@@ -346,11 +346,13 @@ class NerdPress_Cloudflare_Client {
 			self::$cache_clear_type = 'full';
 			$body = '{ "hosts": ["' . self::$custom_hostname . '"] }';
 		} else {
-			preg_match( '#https?://(.*)#i', $prefixes, $prefixes_no_protocol );
-			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes_no_protocol ) ) {
+			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes ) ) {
 				return 'skip_cache_clearing';
 			}
-
+			
+			// Removing http(s):// because Cloudflare API "prefixes" cache clear requires it
+			$prefixes_no_protocol = preg_replace('#https?://#', '', $prefixes);
+			
 			self::$cache_clear_type = implode( ',', $prefixes_no_protocol );
 			$body = '{ "prefixes": [' . implode( ',', $prefixes_no_protocol ) . '] }';
 		}
@@ -472,6 +474,7 @@ class NerdPress_Cloudflare_Client {
 		}
 		
 		$url_clear = esc_url( $_POST['url'] );
+	  	self::$cache_trigger_url = $url_clear;	  
 		echo self::purge_cloudflare_cache( array( '"' . $url_clear . '"' ) );
 		die();
 	}

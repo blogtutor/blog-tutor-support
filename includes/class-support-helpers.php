@@ -277,15 +277,15 @@ class NerdPress_Helpers {
 
 	/**
  	 * Bypass clearing Cloudflare cache for non-production domains and NERDPRESS_CACHE_CLEAR_BYPASS constant.
- 	 * @param array $files. URL(S) to be cleared
+ 	 * @param array $prefixes. URL(S) to be cleared
  	 * @return boolean. TRUE if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
  	 */
-	public static function cache_clear_bypass_on_string( $files ) {
+	public static function cache_clear_bypass_on_string( $prefixes ) {
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
 			$bypass_string = NERDPRESS_CACHE_CLEAR_BYPASS; 		
 
-			foreach ( $files as $file ) {
-				if ( strpos( $file, $bypass_string ) !== FALSE ) {
+			foreach ( $prefixes as $prefix ) {
+				if ( strpos( $prefix, $bypass_string ) !== FALSE ) {
 					return TRUE;
 				}
 			}

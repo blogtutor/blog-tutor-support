@@ -326,14 +326,14 @@ class NerdPress_Cloudflare_Client {
 	}
 
 	/**
-	 * Purge file by tag(s)
+	 * Purge URLs by tag(s)
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param array= files. Files to purge. Purge full site cache if no files passed
+	 * @param array= prefixes. URLs to purge. Purge full site cache if no prefixes passed
 	 * @return string. Cloudflare result id
 	 */
-	public static function purge_cloudflare_cache( $files = array() ) {
+	public static function purge_cloudflare_cache( $prefixes = array() ) {
 		if ( ! self::$custom_hostname ) {
 			return 'error';
 		} 
@@ -342,16 +342,17 @@ class NerdPress_Cloudflare_Client {
 				return 'skip_cache_clearing';
 			}
 		
-		if ( empty( $files ) ) {
+		if ( empty( $prefixes ) ) {
 			self::$cache_clear_type = 'full';
 			$body = '{ "hosts": ["' . self::$custom_hostname . '"] }';
 		} else {
-			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $files ) ) {
+			preg_match( '#https?://(.*)#i', $prefixes, $prefixes_no_protocol );
+			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes_no_protocol ) ) {
 				return 'skip_cache_clearing';
 			}
 
-			self::$cache_clear_type = implode( ',', $files );
-			$body = '{ "files": [' . implode( ',', $files ) . '] }';
+			self::$cache_clear_type = implode( ',', $prefixes_no_protocol );
+			$body = '{ "prefixes": [' . implode( ',', $prefixes_no_protocol ) . '] }';
 		}
 
 		$url  = self::assemble_url() . 'purge_cache';

@@ -42,7 +42,7 @@ class NerdPress_Support_Relay {
 			$user                             = parse_url( get_bloginfo( 'wpurl' ) )['host'];
 			$options                          = get_option( 'blog_tutor_support_settings', array() );
 			$dump                             = array();
-			$dump['Free Disk Space']          = Blog_Tutor_Support_Helpers::format_size(Blog_Tutor_Support_Helpers::get_disk_info()['disk_free']);
+			$dump['Free Disk Space']          = NerdPress_Helpers::format_size(NerdPress_Helpers::get_disk_info()['disk_free']);
 			$dump['Firewall Setting']         = $options['firewall_choice'];
 			$dump['Domain']                   = $user;
 			$dump['All Plugins']              = get_plugins();

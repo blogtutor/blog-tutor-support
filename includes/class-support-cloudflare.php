@@ -69,7 +69,7 @@ class NerdPress_Cloudflare_Client {
 	 * 
 	 * @since 0.0.1
 	 */
-	private static $host_url = '';
+	private static $custom_hostname = '';
 
 	/**
 	 * @var string. Cache Clear type
@@ -130,7 +130,9 @@ class NerdPress_Cloudflare_Client {
 		if ( self::$header_cloudflare ) {
 			return;
 		}
-		self::$host_url = preg_replace( '#https?://#i', '', home_url() );
+		// Strip home_url() of protocol and anything after the first /
+		preg_match( '#https?://([^/]*)#i', home_url(), $base_url );
+		self::$custom_hostname = $base_url[1];
 
 		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
 		if ( isset( $nerdpress_options['cloudflare_token'] ) ) {
@@ -262,7 +264,7 @@ class NerdPress_Cloudflare_Client {
 		$current_user = wp_get_current_user();
 
 		$error = array(
-			'host'    => array( self::$host_url ),
+			'host'    => array( self::$custom_hostname ),
 			'payload' => stripslashes( str_replace( array( '\n', '\r' ), '', json_encode( $result['body'] ) ) ),
 			'cf-ray'  => json_encode( $result['headers']['CF-Ray'] ),
 			'user'    => "$current_user->user_login ($current_user->display_name)",
@@ -324,19 +326,34 @@ class NerdPress_Cloudflare_Client {
 	}
 
 	/**
-	 * Purge file by tag(s)
+	 * Purge URLs by tag(s)
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param array= files. Files to purge. Purge full site cache if no files passed
+	 * @param array= prefixes. URLs to purge. Purge full site cache if no prefixes passed
 	 * @return string. Cloudflare result id
 	 */
-	public static function purge_cloudflare_cache( $files = array() ) {
-		if ( ! self::$host_url ) {
+	public static function purge_cloudflare_cache( $prefixes = array() ) {
+		if ( ! self::$custom_hostname ) {
 			return 'error';
 		} 
+		
+		if ( ! NerdPress_Helpers::is_production( home_url( '/' ) ) ) {
+				return 'skip_cache_clearing';
+			}
+		
+		if ( empty( $prefixes ) ) {
+			self::$cache_clear_type = 'full';
+			$body = '{ "hosts": ["' . self::$custom_hostname . '"] }';
+		} else {
+			preg_match( '#https?://(.*)#i', $prefixes, $prefixes_no_protocol );
+			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes_no_protocol ) ) {
+				return 'skip_cache_clearing';
+			}
 
-		self::$cache_clear_type = ( empty( $files ) ? 'full' : implode(',', $files ) );
+			self::$cache_clear_type = implode( ',', $prefixes_no_protocol );
+			$body = '{ "prefixes": [' . implode( ',', $prefixes_no_protocol ) . '] }';
+		}
 
 		$url  = self::assemble_url() . 'purge_cache';
 		$opts = array(
@@ -344,7 +361,7 @@ class NerdPress_Cloudflare_Client {
 				self::$header_content_type,
 				self::$header_cloudflare
 			),
-			'body' => ( empty( $files ) ? '{ "hosts": ["' . self::$host_url . '"] }' : '{ "files": [' . implode( ',', $files ) . '] }' )
+			'body' => $body, 
 		);
 
 		$result = self::post( $url, $opts );
@@ -446,7 +463,7 @@ class NerdPress_Cloudflare_Client {
   public function purge_cloudflare_url() {
 		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
 		
-		self::$suppress_notification   = true;
+		// self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 		
 		if ( ! current_user_can( 'edit_posts' ) ) {

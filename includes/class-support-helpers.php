@@ -4,13 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 	/**
-	 * Blog_Tutor_Support helper class.
+	 * NerdPress helper class.
 	 *
-	 * @package  Blog_Tutor_Support
+	 * @package  NerdPress
 	 * @category Core
 	 * @author  Andrew Wilder, Sergio Scabuzzo
 	 */
-class Blog_Tutor_Support_Helpers {
+class NerdPress_Helpers {
 	private static $sucuri_api_key = FALSE;
 	private static $sucuri_buttons_flag = NULL;
 	
@@ -224,10 +224,10 @@ class Blog_Tutor_Support_Helpers {
 	}
 
 	/**
-	* Display NerdPress Notification
-	* @param string $msg. String to display on the notification
-	* @return void
-	*/
+	 * Display NerdPress Notification
+	 * @param string $msg. String to display on the notification
+	 * @return void
+	 */
 	public static function display_notification( $msg ) {
 		if ( ! is_array( $msg ) )
 			$msg = array( 'status' => 1, 'msg' => $msg );
@@ -243,4 +243,54 @@ class Blog_Tutor_Support_Helpers {
 			</div>
 			<?php
   }
+	
+	/**
+ 	 * Bypass clearing Cloudflare cache for non-production domains.
+ 	 * @param string $domain. URL to be cleared
+ 	 * @return boolean. TRUE if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
+ 	 */
+	public static function is_production( $home_url ) {
+		$domain_bypass_strings = array(
+			'development',
+			'staging',
+			'local',
+			'localhost',
+			'yawargenii',
+			'iwillfixthat',
+			'wpstagecoach',
+			'bigscoots-staging',
+		);
+
+		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
+			return FALSE;
+		}
+
+		foreach ( $domain_bypass_strings as $string ) {
+			// Is $string prepended and appended by a / or . in $home_url
+			if ( preg_match( '#([/.]' . $string . '[/.])#m', $home_url ) ) {
+				return FALSE;
+			}
+		}
+
+		return TRUE;
+	}
+
+	/**
+ 	 * Bypass clearing Cloudflare cache for non-production domains and NERDPRESS_CACHE_CLEAR_BYPASS constant.
+ 	 * @param array $prefixes. URL(S) to be cleared
+ 	 * @return boolean. TRUE if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
+ 	 */
+	public static function cache_clear_bypass_on_string( $prefixes ) {
+		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
+			$bypass_string = NERDPRESS_CACHE_CLEAR_BYPASS; 		
+
+			foreach ( $prefixes as $prefix ) {
+				if ( strpos( $prefix, $bypass_string ) !== FALSE ) {
+					return TRUE;
+				}
+			}
+		}
+
+		return FALSE;
+	}
 }

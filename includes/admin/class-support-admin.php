@@ -7,11 +7,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * NerdPress Support Admin.
  *
- * @package  Blog_Tutor_Support/Admin
+ * @package  NerdPress/Admin
  * @category Admin
  * @author   Fernando Acosta
  */
-class Blog_Tutor_Support_Admin {
+class NerdPress_Admin {
 
 	/**
 	 * Initialize the settings.
@@ -27,7 +27,7 @@ class Blog_Tutor_Support_Admin {
    */
   function hide_wp_rocket_beacon () {
 		$current_screen = get_current_screen();
-		if ( $current_screen->id === 'settings_page_wprocket' && ! Blog_Tutor_Support_Helpers::is_nerdpress() ) {
+		if ( $current_screen->id === 'settings_page_wprocket' && ! NerdPress_Helpers::is_nerdpress() ) {
 			echo '<style type="text/css">div#beacon-container {display: none;}</style>';
 		}
   }
@@ -36,8 +36,8 @@ class Blog_Tutor_Support_Admin {
 	 * Add the settings page.
 	 */
 	public function settings_menu() {
-		if ( Blog_Tutor_Support_Helpers::is_nerdpress() ) {
-			add_action( 'admin_notices', array( $this, 'blog_tutor_support_message' ), 59 );
+		if ( NerdPress_Helpers::is_nerdpress() ) {
+			add_action( 'admin_notices', array( $this, 'nerdpress_message' ), 59 );
 			add_options_page(
 				'NerdPress Support',
 				'NerdPress Support',
@@ -48,7 +48,7 @@ class Blog_Tutor_Support_Admin {
 		}
 	}
 
-	public function blog_tutor_support_message() {
+	public function nerdpress_message() {
 		$option = get_option( 'blog_tutor_support_settings' );
 		if ( ! empty( $option['admin_notice'] ) ) {
 			$site_url = get_site_url();
@@ -83,6 +83,20 @@ class Blog_Tutor_Support_Admin {
 			__( 'NerdPress Support Section', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
 			$settings_option
+		);
+
+		// Add option to disable/enable Core auto updates. 
+		add_settings_field(
+			'auto_update_core',
+			__( 'Core Auto-Updates', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_core_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_core',
+				'label' => __( 'Enable core auto-update functionality for Core.', 'nerdpress-support' ),
+			)
 		);
 
 		// Add option to disable/enable plugin auto updates. 
@@ -241,26 +255,13 @@ class Blog_Tutor_Support_Admin {
 			)
 		);
 
-		// add_settings_field(
-		//   'identify_users',
-		//   __( 'Identify Users', 'nerdpress-support' ),
-		//   array( $this, 'checkbox_element_callback' ),
-		//   $settings_option,
-		//   'options_section',
-		//   array(
-		//     'menu'  => $settings_option,
-		//     'id'    => 'identify_users',
-		//     'label' => __( 'If checked Blog Tutor Support widget will identify the user ID, email and display name from logged users.', 'nerdpress-support' ),
-		//   )
-		// );
-
 		// Register settings.
 		register_setting( $settings_option, $settings_option, array( $this, 'validate_options' ) );
 
 		/**
 		* Server Information form fields.
 		*/
-		$information_option = 'blog_tutor_server_information';
+		$information_option = 'nerdpress_server_information';
 		// Set Custom Fields section.
 		add_settings_section(
 			'information_section',
@@ -286,13 +287,13 @@ class Blog_Tutor_Support_Admin {
 
 		// Check if Sucuri's enabled to skip this branch since it would still execute even if the SFW tab is absent
 		$has_sucuri = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
-		$sucuri_api_call_array = Blog_Tutor_Support_Helpers::get_sucuri_api_call();
+		$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 
 		if ( $has_sucuri ) {
 			/**
 			* Sucuri form fields.
 			*/
-			$sucuri_option = 'blog_tutor_sucuri_settings';
+			$sucuri_option = 'nerdpress_sucuri_settings';
 			// Set Custom Fields cection.
 			add_settings_section(
 				'information_section',
@@ -341,6 +342,25 @@ class Blog_Tutor_Support_Admin {
 		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
 	}
 
+	/**
+	 * Checkbox auto update Core element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_auto_update_core_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+
+		include dirname( __FILE__ ) . '/views/html-auto-update-core-field.php';
+	}
+		
 	/**
 	 * Checkbox auto update plugins element callback.
 	 *
@@ -617,4 +637,4 @@ class Blog_Tutor_Support_Admin {
 
 }
 
-new Blog_Tutor_Support_Admin();
+new NerdPress_Admin();

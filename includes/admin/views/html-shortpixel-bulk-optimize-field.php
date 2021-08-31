@@ -2,7 +2,7 @@
 /**
  * Checkbox field view.
  *
- * @package Support_Hero/Admin/View
+ * @package NerdPress/Admin/View
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

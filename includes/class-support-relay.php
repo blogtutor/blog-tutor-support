@@ -15,7 +15,7 @@ class NerdPress_Support_Relay {
 
 	public static function init() {
 		$class = __CLASS__;
-		new $class; 
+		new $class;
 	}
 
 	public function __construct() {
@@ -30,6 +30,10 @@ class NerdPress_Support_Relay {
 	 */
 	public function ping_relay() {
 
+		function filter(&$value) {
+			$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+		}
+
 		// Check if get_plugins() function exists. This is required on the front end of the
 		// site, since it is in a file that is normally only loaded in the admin.
 		if ( ! function_exists( 'get_plugins' ) ) {
@@ -38,16 +42,19 @@ class NerdPress_Support_Relay {
 
 		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) ) {
 
+			$current_plugins = get_plugins();
+			array_walk_recursive( $current_plugins, "filter" );
+
 			$relay_url = get_option( 'blog_tutor_support_settings' )['relay_url'] . '/wp-json/wp/v2/site_snapshot';
 			$relay_key                        = get_option( 'blog_tutor_support_settings' )['relay_key'];
 			$user                             = parse_url( get_bloginfo( 'wpurl' ) )['host'];
 			$options                          = get_option( 'blog_tutor_support_settings', array() );
 			$dump                             = array();
-			$dump['Free Disk Space']          = NerdPress_Helpers::format_size(NerdPress_Helpers::get_disk_info()['disk_free']);
+			$dump['Free Disk Space']          = NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] );
 			$dump['Firewall Setting']         = $options['firewall_choice'];
 			$dump['Domain']                   = $user;
-			$dump['All Plugins']              = get_plugins();
-			$dump['Currently Active Plugins'] = get_option('active_plugins');
+			$dump['All Plugins']              = $current_plugins;
+			$dump['Currently Active Plugins'] = get_option( 'active_plugins' );
 
 			if ( isset( $_GET['ping'] ) ) {
 				// Make request
@@ -64,12 +71,13 @@ class NerdPress_Support_Relay {
 					//'sslverify' => false
 				) );
 
-				// Need to add error handling here 
+				// Need to add error handling here
 
 				if ( $api_response['response']['code'] === 201 ) {
 					nocache_headers();
 					wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
 				}
+
 			}
 		}
 	}

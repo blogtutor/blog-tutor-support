@@ -95,7 +95,7 @@ class NerdPress_Admin {
 			array(
 				'menu'  => $settings_option,
 				'id'    => 'auto_update_core',
-				'label' => __( 'Enable core auto-update functionality for Core.', 'nerdpress-support' ),
+				'label' => __( 'Enable to allow major version auto-updates for Core.', 'nerdpress-support' ),
 			)
 		);
 

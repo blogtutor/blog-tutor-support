@@ -23,7 +23,7 @@ class NerdPress_Support_Overrides {
 		add_action( 'init', array( $this, 'check_default_options' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
-			add_filter( 'rocket_delay_js_exclusions', 'nerdpress_override_rocket_delay_js_exclusions' );
+			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ));
 		}
 
 		if ( class_exists( 'WooCommerce' ) ) {

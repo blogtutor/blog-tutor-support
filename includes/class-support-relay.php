@@ -30,7 +30,8 @@ class NerdPress_Support_Relay {
 	 */
 	public function ping_relay() {
 
-		function filter(&$value) {
+		//The HTML must be escaped to prevent JSON errors on the relay server
+		function filter_htmlspecialchars(&$value) {
 			$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 		}
 
@@ -43,7 +44,7 @@ class NerdPress_Support_Relay {
 		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) ) {
 
 			$current_plugins = get_plugins();
-			array_walk_recursive( $current_plugins, "filter" );
+			array_walk_recursive( $current_plugins, "filter_htmlspecialchars" );
 
 			$relay_url = get_option( 'blog_tutor_support_settings' )['relay_url'] . '/wp-json/wp/v2/site_snapshot';
 			$relay_key                        = get_option( 'blog_tutor_support_settings' )['relay_key'];
@@ -57,7 +58,7 @@ class NerdPress_Support_Relay {
 			$dump['Currently Active Plugins'] = get_option( 'active_plugins' );
 
 			if ( isset( $_GET['ping'] ) ) {
-				// Make request
+				// Make request to the relay server
 				$api_response = wp_remote_post( $relay_url, array(
 					'headers' => array(
 						'Authorization' => 'Basic ' . base64_encode( "$user:$relay_key" ),
@@ -71,8 +72,8 @@ class NerdPress_Support_Relay {
 					//'sslverify' => false
 				) );
 
-				// Need to add error handling here
-
+				// Need to add error handling here, there might be a redirect problem
+				// TODO investigate with Sergio
 				if ( $api_response['response']['code'] === 201 ) {
 					nocache_headers();
 					wp_safe_redirect( $_SERVER['HTTP_REFERER'] );

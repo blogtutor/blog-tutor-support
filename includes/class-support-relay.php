@@ -56,6 +56,10 @@ class NerdPress_Support_Relay {
 			$dump['Domain']                   = $user;
 			$dump['All Plugins']              = $current_plugins;
 			$dump['Currently Active Plugins'] = get_option( 'active_plugins' );
+					
+			// Create timestamp in PST for timestamp of the request
+			$datetime = new DateTime('NOW', new DateTimeZone('PST'));
+			$dump['Last Sync']				  = $datetime->format('Y-m-d H:i:s (e)');
 
 			if ( isset( $_GET['ping'] ) ) {
 				// Make request to the relay server
@@ -69,7 +73,7 @@ class NerdPress_Support_Relay {
 						'status'      => 'publish',
 					),
 					// Bypass SSL verification in self-signed environments
-					//'sslverify' => false
+					// 'sslverify' => false
 				) );
 
 				// Need to add error handling here, there might be a redirect problem
@@ -78,6 +82,8 @@ class NerdPress_Support_Relay {
 					nocache_headers();
 					wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
 				}
+
+
 
 			}
 		}

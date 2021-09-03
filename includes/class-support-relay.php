@@ -22,17 +22,16 @@ class NerdPress_Support_Relay {
 		add_action( 'wp_loaded', array( $this, 'ping_relay' ) );
 	}
 
- 	/**
+	/**
 	 * Assemble and send data dump ping to relay API endpoint
- 	 *
-	 * @since 0.8.2
 	 *
+	 * @since 0.8.2
 	 */
 	public function ping_relay() {
 
-		//The HTML must be escaped to prevent JSON errors on the relay server
-		function filter_htmlspecialchars(&$value) {
-			$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+		// The HTML must be escaped to prevent JSON errors on the relay server.
+		function filter_htmlspecialchars( &$value ) {
+			$value = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
 		}
 
 		// Check if get_plugins() function exists. This is required on the front end of the
@@ -56,8 +55,13 @@ class NerdPress_Support_Relay {
 			$dump['Domain']                   = $user;
 			$dump['All Plugins']              = $current_plugins;
 			$dump['Currently Active Plugins'] = get_option( 'active_plugins' );
-					
-			// Create timestamp in PST for timestamp of the request
+
+			// The notes field is NULL on first install, so we check if it's present.
+			if ( isset( get_option( 'blog_tutor_support_settings' )['admin_notice'] ) ) {
+				$dump['Notes'] = get_option( 'blog_tutor_support_settings' )['admin_notice'];
+			}
+
+			// Create timestamp in PST for timestamp of the request.
 			$datetime = new DateTime('NOW', new DateTimeZone('PST'));
 			$dump['Last Sync']				  = $datetime->format('Y-m-d H:i:s (e)');
 
@@ -73,18 +77,15 @@ class NerdPress_Support_Relay {
 						'status'      => 'publish',
 					),
 					// Bypass SSL verification in self-signed environments
-					// 'sslverify' => false
+					//'sslverify' => false
 				) );
 
-				// Need to add error handling here, there might be a redirect problem
-				// TODO investigate with Sergio
+				// Need to add error handling here, there might be a redirect problem.
+				// TODO investigate with Sergio.
 				if ( $api_response['response']['code'] === 201 ) {
 					nocache_headers();
 					wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
 				}
-
-
-
 			}
 		}
 	}

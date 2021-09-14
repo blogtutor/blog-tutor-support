@@ -90,6 +90,7 @@ class NerdPress {
 			include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
 		}
 		include_once dirname( __FILE__ ) . '/includes/class-support-relay.php';
+		include_once dirname( __FILE__ ) . '/includes/class-support-cron.php';
 	}
 }
 

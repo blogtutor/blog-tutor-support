@@ -183,6 +183,20 @@ class NerdPress_Admin {
 			)
 		);
 
+		// Add option to schedule cron job to send snapshot
+		add_settings_field(
+			'schedule_snapshot',
+			__( 'Schedule relay server snapshots?', 'nerdpress-support' ),
+			array( $this, 'checkbox_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'schedule_snapshot',
+				'label' => __( 'If checked, will send automatic snapshots to the relay server twice a day.', 'nerdpress-support' ),
+			)
+		);
+
 		// Add the choice of firewall option
 		add_settings_field(
 			'firewall_choice',

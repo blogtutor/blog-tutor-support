@@ -10,7 +10,6 @@ if ( !defined( 'ABSPATH' ) ) {
 	 * @category Core
 	 * @author Sergio Scabuzzo, Trevor Polischuk
 	 */
-
 class NerdPress_Support_Cron {
 
 	public static function init() {

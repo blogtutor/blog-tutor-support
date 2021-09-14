@@ -94,9 +94,15 @@ class NerdPress {
 	}
 }
 
+function blogtutor_support_deactivation() {
+	wp_clear_scheduled_hook( 'ping_relay' );
+}
+
 /**
  * Init the plugin.
  */
 add_action( 'plugins_loaded', array( 'NerdPress', 'get_instance' ) );
+
+register_deactivation_hook( __FILE__, 'blogtutor_support_deactivation' );
 
 endif;

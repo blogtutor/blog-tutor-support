@@ -115,6 +115,8 @@ class NerdPress_Support_Relay {
 			$dump['All Plugins']              = $current_plugins;
 			$dump['Currently Active Plugins'] = get_option( 'active_plugins' );
 
+			//TODO Get plugin version number
+
 			// The notes field is NULL on first install, so we check if it's present.
 			if ( isset( get_option( 'blog_tutor_support_settings' )['admin_notice'] ) ) {
 				$dump['Notes'] = get_option( 'blog_tutor_support_settings' )['admin_notice'];

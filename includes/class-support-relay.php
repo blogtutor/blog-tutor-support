@@ -77,7 +77,7 @@ class NerdPress_Support_Relay {
 					'status'      => 'publish',
 				),
 				// Bypass SSL verification in self-signed environments
-				'sslverify' => false
+				//'sslverify' => false
 			) );
 
 			return $api_response;

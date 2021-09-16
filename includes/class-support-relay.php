@@ -104,6 +104,7 @@ class NerdPress_Support_Relay {
 		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) ) {
 
 			$current_plugins = get_plugins();
+			$current_theme = wp_get_theme();
 			array_walk_recursive( $current_plugins, "filter_htmlspecialchars" );
 
 			$user                             = parse_url( get_bloginfo( 'wpurl' ) )['host'];
@@ -114,8 +115,8 @@ class NerdPress_Support_Relay {
 			$dump['Domain']                   = $user;
 			$dump['All Plugins']              = $current_plugins;
 			$dump['Currently Active Plugins'] = get_option( 'active_plugins' );
-
-			//TODO Get plugin version number
+			$dump['Active Theme']                    = $current_theme['Name'];
+			$dump['Active Theme Version']            = $current_theme['Version'];
 
 			// The notes field is NULL on first install, so we check if it's present.
 			if ( isset( get_option( 'blog_tutor_support_settings' )['admin_notice'] ) ) {

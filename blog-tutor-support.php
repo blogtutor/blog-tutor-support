@@ -94,15 +94,31 @@ class NerdPress {
 	}
 }
 
-function blogtutor_support_deactivation() {
-	wp_clear_scheduled_hook( 'ping_relay' );
-}
+	function blogtutor_support_deactivation() {
+
+		wp_clear_scheduled_hook( 'ping_relay_on_cron' );
+
+	}
 
 /**
  * Init the plugin.
  */
-add_action( 'plugins_loaded', array( 'NerdPress', 'get_instance' ) );
+	add_action( 'plugins_loaded', array( 'NerdPress', 'get_instance' ) );
 
-register_deactivation_hook( __FILE__, 'blogtutor_support_deactivation' );
+	// Register our custom action ping_relay so that it can be scheduled by cron
+	add_action( 'init', function () {
+
+		if ( ! has_action( 'ping_relay_on_cron' ) ) {
+
+			function ping_relay_on_cron() {
+				$cron_instance_relay = new NerdPress_Support_Relay;
+				$cron_instance_relay->ping_relay_headless();
+			}
+
+			add_action( 'ping_relay_on_cron', 'ping_relay_on_cron', 10, 2 );
+		}
+	} );
+
+	register_deactivation_hook( __FILE__, 'blogtutor_support_deactivation' );
 
 endif;

@@ -23,12 +23,73 @@ class NerdPress_Support_Relay {
 	}
 
 	/**
-	 * Assemble and send data dump ping to relay API endpoint
+	 * Send a request to the relay without an HTTP request
+	 *
+	 * @since 1.0.0
+	 */
+	public static function ping_relay_headless() {
+
+		$dump         = self::assemble_dump();
+		$api_response = self::send_request_to_relay( $dump );
+
+	}
+
+	/**
+	 * Ping the relay server if the PING is set in the GET request.
 	 *
 	 * @since 0.8.2
 	 */
-	public function ping_relay() {
+	public static function ping_relay() {
 
+		// If the request is a one-time call from the dashboard.
+		if ( isset( $_GET['ping'] ) ) {
+
+			$dump = self::assemble_dump();
+
+			$api_response = self::send_request_to_relay( $dump );
+
+			if ( $api_response['response']['code'] === 201 ) {
+				nocache_headers();
+				wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
+			}
+		}
+	}
+
+	/**
+	 * Send the request to the relay server useing wp_remote_post.
+	 *
+	 * @since 0.8.2
+	 */
+	public static function send_request_to_relay( $dump ) {
+
+			$relay_url = get_option( 'blog_tutor_support_settings' )['relay_url'] . '/wp-json/wp/v2/site_snapshot';
+			$relay_key = get_option( 'blog_tutor_support_settings' )['relay_key'];
+			$user      = parse_url( get_bloginfo( 'wpurl' ) )['host'];
+
+			// Make request to the relay server.
+			$api_response = wp_remote_post( $relay_url, array(
+				'headers' => array(
+					'Authorization' => 'Basic ' . base64_encode( "$user:$relay_key" ),
+				),
+				'body' => array(
+					'title'       => parse_url( get_bloginfo( 'wpurl' ) )['host'],
+					'content'     => json_encode( $dump ),
+					'status'      => 'publish',
+				),
+				// Bypass SSL verification in self-signed environments
+				'sslverify' => false
+			) );
+
+			return $api_response;
+	}
+
+
+	/**
+	 * Assemble the data to send to the relay server.
+	 *
+	 * @since 0.8.2
+	 */
+	public static function assemble_dump() {
 		// The HTML must be escaped to prevent JSON errors on the relay server.
 		function filter_htmlspecialchars( &$value ) {
 			$value = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
@@ -45,8 +106,6 @@ class NerdPress_Support_Relay {
 			$current_plugins = get_plugins();
 			array_walk_recursive( $current_plugins, "filter_htmlspecialchars" );
 
-			$relay_url = get_option( 'blog_tutor_support_settings' )['relay_url'] . '/wp-json/wp/v2/site_snapshot';
-			$relay_key                        = get_option( 'blog_tutor_support_settings' )['relay_key'];
 			$user                             = parse_url( get_bloginfo( 'wpurl' ) )['host'];
 			$options                          = get_option( 'blog_tutor_support_settings', array() );
 			$dump                             = array();
@@ -64,29 +123,7 @@ class NerdPress_Support_Relay {
 			// Create timestamp in PST for timestamp of the request.
 			$datetime = new DateTime('NOW', new DateTimeZone('PST'));
 			$dump['Last Sync']				  = $datetime->format('Y-m-d H:i:s (e)');
-
-			if ( isset( $_GET['ping'] ) ) {
-				// Make request to the relay server
-				$api_response = wp_remote_post( $relay_url, array(
-					'headers' => array(
-						'Authorization' => 'Basic ' . base64_encode( "$user:$relay_key" ),
-					),
-					'body' => array(
-						'title'       => parse_url( get_bloginfo( 'wpurl' ) )['host'],
-						'content'     => json_encode( $dump ),
-						'status'      => 'publish',
-					),
-					// Bypass SSL verification in self-signed environments
-					//'sslverify' => false
-				) );
-
-				// Need to add error handling here, there might be a redirect problem.
-				// TODO investigate with Sergio.
-				if ( $api_response['response']['code'] === 201 ) {
-					nocache_headers();
-					wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
-				}
-			}
+			return $dump;
 		}
 	}
 }

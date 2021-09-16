@@ -29,12 +29,12 @@ class NerdPress_Support_Cron {
 	public function schedule_snapshot_cron() {
 
 		if (get_option( 'blog_tutor_support_settings' )['schedule_snapshot']) {
-			if ( ! wp_next_scheduled( 'ping_relay' ) ) {
-				wp_schedule_event( time(), 'twicedaily', 'ping_relay');
+			if ( ! wp_next_scheduled( 'ping_relay_on_cron' ) ) {
+				wp_schedule_event( time(), 'twicedaily', 'ping_relay_on_cron' );
 			}
 		} else {
-			if ( wp_next_scheduled( 'ping_relay' ) ) {
-				wp_clear_scheduled_hook( 'ping_relay' );
+			if ( wp_next_scheduled( 'ping_relay_on_cron' ) ) {
+				wp_clear_scheduled_hook( 'ping_relay_on_cron' );
 			}
 		}
 	}

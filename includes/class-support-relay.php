@@ -120,6 +120,8 @@ class NerdPress_Support_Relay {
 			$dump['Active Theme Version']     = $current_theme['Version'];
 			$dump['Plugin Update Data']       = get_option( '_site_transient_update_plugins' )->response;
 			$dump['WordPress Version']        = $wp_version;
+			$dump['All Theme Data']           = wp_get_themes();
+			$dump['Current Theme Slug']       = $current_theme['Template'];
 
 			// The notes field is NULL on first install, so we check if it's present.
 			if ( isset( get_option( 'blog_tutor_support_settings' )['admin_notice'] ) ) {

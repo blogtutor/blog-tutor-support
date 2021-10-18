@@ -259,6 +259,21 @@ class NerdPress_Helpers {
 			'iwillfixthat',
 			'wpstagecoach',
 			'bigscoots-staging',
+			'dev',
+			'test',
+			'flywheelsites',
+			'closte',
+			'runcloud',
+			'kinsta',
+			'cloudwaysapp',
+			'pantheonsite',
+			'sg-host',
+			'onrocket',
+			'pressdns',
+			'wpengine',
+			'wpstage',
+			'wc_user_membershit',
+			'shop_subscription',
 		);
 
 		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
@@ -266,7 +281,7 @@ class NerdPress_Helpers {
 		}
 
 		foreach ( $domain_bypass_strings as $string ) {
-			// Is $string prepended and appended by a / or . in $home_url
+			// Is $string prepended and appended by a / or . in $home_url.
 			if ( preg_match( '#([/.]' . $string . '[/.])#m', $home_url ) ) {
 				return FALSE;
 			}

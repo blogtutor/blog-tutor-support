@@ -272,8 +272,6 @@ class NerdPress_Helpers {
 			'pressdns',
 			'wpengine',
 			'wpstage',
-			'wc_user_membershit',
-			'shop_subscription',
 		);
 
 		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
@@ -296,11 +294,18 @@ class NerdPress_Helpers {
  	 * @return boolean. TRUE if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
  	 */
 	public static function cache_clear_bypass_on_string( $prefixes ) {
+		$bypass_strings = array(
+			'wc_user_membership',
+			'shop_subscription',
+		);
+		
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
-			$bypass_string = NERDPRESS_CACHE_CLEAR_BYPASS; 		
+			$bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS; 		
+		}
 
+		foreach ( $bypass_strings as $string ) {
 			foreach ( $prefixes as $prefix ) {
-				if ( strpos( $prefix, $bypass_string ) !== FALSE ) {
+				if ( strpos( $prefix, $string ) !== FALSE ) {
 					return TRUE;
 				}
 			}

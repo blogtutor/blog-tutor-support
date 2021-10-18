@@ -229,16 +229,18 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				$query_char = '?';
 			}
 
-			$args = array(
-				'id'     => 'bt-send-snapshot',
-				'title'  => 'Send Snapshot to Relay',
-				'href'   => get_site_url() . $_SERVER['REQUEST_URI'] . $query_char . 'ping',
-				'parent' => 'nerdpress-menu',
-				'meta'   => array(
-					'class' => 'btButton',
-					'title' => 'Send Site Snapshot to NerdPress Relay Server.',
-				),
-			);
+			if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) && isset( get_option( 'blog_tutor_support_settings' )['relay_url'] ) ) {
+				$args = array(
+					'id'     => 'bt-send-snapshot',
+					'title'  => 'Send Snapshot to Relay',
+					'href'   => get_site_url() . $_SERVER['REQUEST_URI'] . $query_char . 'ping',
+					'parent' => 'nerdpress-menu',
+					'meta'   => array(
+						'class' => 'btButton',
+						'title' => 'Send Site Snapshot to NerdPress Relay Server.',
+					),
+				);
+			}
 			$wp_admin_bar->add_node( $args );
 		}
 

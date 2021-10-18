@@ -104,8 +104,8 @@ class NerdPress_Support_Relay {
 		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) ) {
 
 			$current_plugins = get_plugins();
-			$current_theme = wp_get_theme();
-			array_walk_recursive( $current_plugins, "filter_htmlspecialchars" );
+			$current_theme   = wp_get_theme();
+			array_walk_recursive( $current_plugins, 'filter_htmlspecialchars' );
 			require ABSPATH . WPINC . '/version.php';
 
 			$user                             = parse_url( get_bloginfo( 'wpurl' ) )['host'];
@@ -120,8 +120,16 @@ class NerdPress_Support_Relay {
 			$dump['Active Theme Version']     = $current_theme['Version'];
 			$dump['Plugin Update Data']       = get_option( '_site_transient_update_plugins' )->response;
 			$dump['WordPress Version']        = $wp_version;
-			$dump['All Theme Data']           = wp_get_themes();
-			$dump['Current Theme Slug']       = $current_theme['Template'];
+			$dump['Inactive Themes Data']     = wp_get_themes();
+
+			// Removing the active theme from the theme data.
+			$i = -1;
+			foreach ( $dump['Inactive Themes Data'] as $key => $value ) {
+				$i++;
+				if ( $value['Name'] == $current_theme['Name'] ) {
+					unset( $dump['Inactive Themes Data'][ $key ] );
+				}
+			}
 
 			// The notes field is NULL on first install, so we check if it's present.
 			if ( isset( get_option( 'blog_tutor_support_settings' )['admin_notice'] ) ) {

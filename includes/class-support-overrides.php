@@ -21,9 +21,9 @@ class NerdPress_Support_Overrides {
 		self::$nerdpress_options = get_option( self::$options_array, array() ); 
 		add_action( 'init', array( $this, 'is_auto_update_set' ) );
 		add_action( 'init', array( $this, 'check_default_options' ) );
-		add_filter( 'wp_mail', 'nerdpress_override_alert_email' );
-		if ( ! is_admin() && ! isset( $nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
-			add_filter( 'rocket_delay_js_exclusions', 'nerdpress_override_rocket_delay_js_exclusions' );
+		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
+		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
+			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ));
 		}
 
 		if ( class_exists( 'WooCommerce' ) ) {
@@ -66,7 +66,7 @@ class NerdPress_Support_Overrides {
 		update_option( self::$options_array, self::$nerdpress_options );
 	} 
 
-	private function nerdpress_override_alert_email( $atts ) {
+	public function nerdpress_override_alert_email( $atts ) {
 		if ( ( strpos( $atts['to'], 'alerts@nerdpress.net' ) ) || (  strpos( $atts['to'], 'alerts@blogtutor.com' ) ) ) {
 
 			$sitename = wp_parse_url( network_home_url(), PHP_URL_HOST );
@@ -83,7 +83,7 @@ class NerdPress_Support_Overrides {
 		return $atts;
 	}
 	
-	private function nerdpress_override_rocket_delay_js_exclusions( $excluded_strings = array() ) {
+	public function nerdpress_override_rocket_delay_js_exclusions( $excluded_strings = array() ) {
 		// MUST ESCAPE PERIODS AND PARENTHESES!
 		$excluded_strings[] = 'google-analytics';
 		$excluded_strings[] = "/gtag/";

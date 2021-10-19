@@ -40,6 +40,11 @@ class NerdPress {
 	protected static $instance = null;
 
 	/**
+ 	 * NerdPress plugin root URL.
+ 	 */
+	public static $plugin_dir_url = '';
+
+	/**
 	 * Initialize the plugin.
 	 */
 	private function __construct() {
@@ -50,6 +55,7 @@ class NerdPress {
 			$this->admin_includes();
 		}
 
+		self::$plugin_dir_url = plugin_dir_url( __FILE__ );
 	}
 
 	/**

@@ -185,7 +185,7 @@ class NerdPress_Cloudflare_Client {
 			return;
 		}
   	global $wp;
-  	wp_register_script( 'np_cf_js', plugins_url( 'includes/js/np-cloudflare.js', dirname( __FILE__ ) ), array( 'jquery' ), BT_PLUGIN_VERSION );
+  	wp_register_script( 'np_cf_js', esc_url( NerdPress::$plugin_dir_url . 'includes/js/np-cloudflare.js' ), array( 'jquery' ), BT_PLUGIN_VERSION );
 		wp_enqueue_script( 'np_cf_js' );  
 		wp_localize_script( 'np_cf_js', 'np_cf_ei', array(
 			'endpoint'     => admin_url( 'admin-ajax.php' ),

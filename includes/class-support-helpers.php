@@ -229,19 +229,22 @@ class NerdPress_Helpers {
 	 * @return void
 	 */
 	public static function display_notification( $msg ) {
-		if ( ! is_array( $msg ) )
+		if ( ! is_array( $msg ) ) {
 			$msg = array( 'status' => 1, 'msg' => $msg );
-	
+		}
+		
 		// Exit if message is empty
-		if ( $msg['msg'] == '') return;
+		if ( $msg['msg'] == '') {
+			return;
+		}
 
 		$msg_class = ( $msg['status'] ? 'np-notice' : 'error np-notice' );
-	?>
-		<link rel="stylesheet" href="<?php echo plugins_url(); ?>/blog-tutor-support/includes/css/html-notifications-style.css" type="text/css" media="all">
-		<div class="notice <?php echo $msg_class; ?>">
-			<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg['msg']; ?></strong></p>
+		?>
+			<link rel="stylesheet" href="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/css/html-notifications-style.css' ); ?>" type="text/css" media="all">
+			<div class="notice <?php echo $msg_class; ?>">
+				<p><img src="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/images/nerdpress-icon-250x250.png' ); ?>" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg['msg']; ?></strong></p>
 			</div>
-			<?php
+		<?php
   }
 	
 	/**

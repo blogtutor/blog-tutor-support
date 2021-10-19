@@ -34,7 +34,7 @@ class NerdPress_Cloudproxy {
 	}
 
 	public function bt_enqueue_scripts() {
-		wp_register_script( 'allowlist_js', plugins_url( 'js/bt-allowlist.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
+		wp_register_script( 'allowlist_js', esc_url( NerdPress::$plugin_dir_url . 'includes/js/bt-allowlist.js' ), array(), BT_PLUGIN_VERSION );
 		wp_localize_script( 'allowlist_js', 'sucuri_allowlist', array(
 			'endpoint' => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( 'sucuri_allowlist_secure_me' ),

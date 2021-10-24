@@ -21,6 +21,7 @@ class NerdPress_Support_Overrides {
 		self::$nerdpress_options = get_option( self::$options_array, array() ); 
 		add_action( 'init', array( $this, 'is_auto_update_set' ) );
 		add_action( 'init', array( $this, 'check_default_options' ) );
+		add_action( 'init', array( $this, 'nerdpress_debug' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ));
@@ -103,6 +104,19 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = "social-pug";
 		return $excluded_strings;
 	}
+
+	/**
+ 	 * Set debug display to on if set to on in plugin settings and is NerdPress user.
+ 	 */
+  public function nerdpress_debug() {
+		if ( ! constant( 'WP_DEBUG' ) && NerdPress_Helpers::is_nerdpress() && self::$nerdpress_options['nerdpress_debug'] === '1' ) {
+
+			// Turn on error reporting.
+			error_reporting( E_ALL );
+			// Sets to display errors on screen. Use 0 to turn off.
+			ini_set( 'display_errors', 1 );
+		}
+  }
 }
 
 new NerdPress_Support_Overrides();

@@ -140,6 +140,7 @@ class NerdPress_Admin {
 				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
 			)
 		);
+
 		// Add option to disable/enable ShortPixel bulk optimization. 
 		add_settings_field(
 			'shortpixel_bulk_optimize',
@@ -152,6 +153,21 @@ class NerdPress_Admin {
 				'id'    => 'shortpixel_bulk_optimize',
 				'label' => __( 'Un-hide ShortPixel Bulk Optimization options for users.', 'nerdpress-support' ),
 				'description' => __( 'SHORTPIXEL_HIDE_API_KEY constant ' ),
+			)
+		);
+
+		// Add option to disable/enable displaying debug messages for NerdPress users. 
+		add_settings_field(
+			'nerdpress_debug',
+			__( 'Display Debug for NerdPress', 'nerdpress-support' ),
+			array( $this, 'checkbox_nerdpress_debug_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'nerdpress_debug',
+				'label' => __( 'Enable displaying debug messages for NerdPress users.', 'nerdpress-support' ),
+				'description' => __( 'WP_DEBUG constant ' ),
 			)
 		);
 
@@ -196,36 +212,33 @@ class NerdPress_Admin {
 			)
 		);
 
-		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'cloudflare' );
+		// Add field Cloudflare Options
+		add_settings_field(
+			'cloudflare_zone',
+			__( 'Cloudflare DNS Zone', 'nerdpress-support' ),
+			array( $this, 'cloudflare_dns_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'    => $settings_option,
+				'id'      => 'cloudflare_zone',
+				'label'   => __( 'Cloudflare DNS Zone', 'nerdpress-support' ),
+				'default' => 'dns1',
+			)
+		);
 
-// 		if ( $has_cloudflare ) {
-			// Add field Cloudflare Options
-			add_settings_field(
-				'cloudflare_zone',
-				__( 'Cloudflare DNS Zone', 'nerdpress-support' ),
-				array( $this, 'cloudflare_dns_element_callback' ),
-				$settings_option,
-				'options_section',
-				array(
-					'menu'    => $settings_option,
-					'id'      => 'cloudflare_zone',
-					'label'   => __( 'Cloudflare DNS Zone', 'nerdpress-support' ),
-					'default' => 'dns1',
-				)
-			);
-			add_settings_field(
-				'cloudflare_token',
-				__( 'Cloudflare API Token', 'nerdpress-support' ),
-				array( $this, 'cloudflare_token_element_callback' ),
-				$settings_option,
-				'options_section',
-				array(
-					'menu'  => $settings_option,
-					'id'    => 'cloudflare_token',
-					'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
-				)
-			);
-// 		}
+		add_settings_field(
+			'cloudflare_token',
+			__( 'Cloudflare API Token', 'nerdpress-support' ),
+			array( $this, 'cloudflare_token_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'cloudflare_token',
+				'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
+			)
+		);
 
 		// Register settings.
 		register_setting( $settings_option, $settings_option, array( $this, 'validate_options' ) );
@@ -389,6 +402,7 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-exclude-wp-rocket-delay-js-field.php';
 
 	}
+
 	/**
 	 * Checkbox ShortPixel Bulk Optimize element callback.
 	 *
@@ -405,6 +419,25 @@ class NerdPress_Admin {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
 		include dirname( __FILE__ ) . '/views/html-shortpixel-bulk-optimize-field.php';
+
+	}
+
+	/**
+	 * Checkbox NerdPress Debug element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_nerdpress_debug_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+		include dirname( __FILE__ ) . '/views/html-nerdpress-debug-field.php';
 
 	}
 
@@ -500,7 +533,6 @@ class NerdPress_Admin {
 	 * @param array $args Callback arguments.
 	 */
 	public function cloudflare_dns_element_callback( $args ) {
-// 		print_r( $args );
 		$menu    = $args['menu'];
 		$id      = $args['id'];
 		$options = get_option( $menu );
@@ -523,7 +555,6 @@ class NerdPress_Admin {
 	 * @param array $args Callback arguments.
 	 */
 	public function cloudflare_token_element_callback( $args ) {
-// 		print_r( $args );
 		$menu    = $args['menu'];
 		$id      = $args['id'];
 		$options = get_option( $menu );

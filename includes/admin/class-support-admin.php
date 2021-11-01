@@ -48,8 +48,8 @@ class NerdPress_Admin {
 		}
 		if ( NerdPress_Helpers::hide_shortpixel_settings() ) {
 			add_options_page(
-				'ShortPixel (NerdPress)',
-				'ShortPixel (NerdPress)',
+				'ShortPixel',
+				'ShortPixel',
 				'manage_options',
 				'nerdpress-override-shortpixel',
 				array( $this, 'html_shortpixel_override_settings_page' )

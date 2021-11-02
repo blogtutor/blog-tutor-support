@@ -46,6 +46,15 @@ class NerdPress_Admin {
 				array( $this, 'html_settings_page' )
 			);
 		}
+		if ( NerdPress_Helpers::hide_shortpixel_settings() ) {
+			add_options_page(
+				'ShortPixel',
+				'ShortPixel',
+				'manage_options',
+				'nerdpress-override-shortpixel',
+				array( $this, 'html_shortpixel_override_settings_page' )
+			);
+		}
 	}
 
 	public function nerdpress_message() {
@@ -65,6 +74,13 @@ class NerdPress_Admin {
 	 */
 	public function html_settings_page() {
 		include dirname( __FILE__ ) . '/views/html-settings-page.php';
+	}
+
+	/**
+	 * Render overridden settings page for ShortPixel.
+	 */
+	public function html_shortpixel_override_settings_page() {
+		include dirname( __FILE__ ) . '/views/html-shortpixel-override-settings-page.php';
 	}
 
 	/**
@@ -143,14 +159,14 @@ class NerdPress_Admin {
 		// Add option to disable/enable ShortPixel bulk optimization. 
 		add_settings_field(
 			'shortpixel_bulk_optimize',
-			__( 'ShortPixel Bulk Optimize', 'nerdpress-support' ),
+			__( 'ShortPixel Settings', 'nerdpress-support' ),
 			array( $this, 'checkbox_shortpixel_bulk_optimize_element_callback' ),
 			$settings_option,
 			'options_section',
 			array(
 				'menu'  => $settings_option,
 				'id'    => 'shortpixel_bulk_optimize',
-				'label' => __( 'Un-hide ShortPixel Bulk Optimization options for users.', 'nerdpress-support' ),
+				'label' => __( 'Un-hide ShortPixel settings for users.', 'nerdpress-support' ),
 				'description' => __( 'SHORTPIXEL_HIDE_API_KEY constant ' ),
 			)
 		);

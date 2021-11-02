@@ -316,4 +316,14 @@ class NerdPress_Helpers {
 
 		return FALSE;
 	}
+
+	/**
+	 * Determine whether we are hiding ShortPixel settings.
+	 *
+	 * @return boolean. If the option is selected
+	 */
+	public static function hide_shortpixel_settings() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		return ( ! isset( $options['shortpixel_bulk_optimize'] ) && ! self::is_nerdpress() && defined( 'SHORTPIXEL_HIDE_API_KEY' ) );
+	}
 }

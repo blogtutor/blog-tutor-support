@@ -74,7 +74,7 @@ if ( $display_settings_summary ) {
 	
 	<p>Current compression setting is: <strong><?php echo $short_pixel_compression_level ?></strong>.</p>
 	
-  <p>Images <strong><?php echo $short_pixel_resize_images ?></strong> set to be resized, and the sizes are set to: <strong><?php echo $shortpixel_options['wp-short-pixel-resize-width'] ?></strong> x <strong><?php echo $shortpixel_options['wp-short-pixel-resize-height'] . ' (' . $short_pixel_resize_type . ')' ?></strong>.</p>
+  <p>Images <strong><?php echo $short_pixel_resize_images ?></strong> set to be resized, and the sizes are set to: <strong><?php echo $shortpixel_options['wp-short-pixel-resize-width'] ?> wide x <?php echo $shortpixel_options['wp-short-pixel-resize-height'] . ' high (' . $short_pixel_resize_type . ')' ?></strong>.</p>
 	
 	<p>Thumbnail images <strong><?php echo $short_pixel_thumbnails ?></strong> being optimized.</p>
 

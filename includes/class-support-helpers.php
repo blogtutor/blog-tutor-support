@@ -323,7 +323,7 @@ class NerdPress_Helpers {
 	 * @return boolean. If the option is selected
 	 */
 	public static function hide_shortpixel_settings() {
-		$option_list = get_option( 'blog_tutor_support_settings', array() );
+		$options = get_option( 'blog_tutor_support_settings', array() );
 		return ( ! isset( $options['shortpixel_bulk_optimize'] ) && ! self::is_nerdpress() && defined( 'SHORTPIXEL_HIDE_API_KEY' ) );
 	}
 }

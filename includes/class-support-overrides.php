@@ -95,6 +95,7 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'gtagTracker'; // Monster Insights
 		$excluded_strings[] = "mediavine";
 		$excluded_strings[] = "adthrive";
+		$excluded_strings[] = "ads.mins.js";
 		$excluded_strings[] = "nutrifox";
 		$excluded_strings[] = "flodesk";
 		$excluded_strings[] = "cp-popup\.js"; // ConvertPro

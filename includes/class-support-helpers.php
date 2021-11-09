@@ -259,6 +259,21 @@ class NerdPress_Helpers {
 			'iwillfixthat',
 			'wpstagecoach',
 			'bigscoots-staging',
+			'dev',
+			'test',
+			'flywheelsites',
+			'closte',
+			'runcloud',
+			'kinsta',
+			'cloudwaysapp',
+			'pantheonsite',
+			'sg-host',
+			'onrocket',
+			'pressdns',
+			'wpengine',
+			'wpstage',
+			'wc_user_membershit',
+			'shop_subscription',
 		);
 
 		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {

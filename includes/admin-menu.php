@@ -12,7 +12,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		// On front end, load plugin.php so we can check for Sucuri Plugin status.
 		if ( ! is_admin() ) {
 			include_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}		
+		}	
 
 		?>
 			<link rel="stylesheet" href="<?php echo plugins_url(); ?>/blog-tutor-support/includes/css/html-admin-menu.css" type="text/css" media="all">
@@ -223,13 +223,14 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			);
 			$wp_admin_bar->add_node( $args );
 
-			if ( strpos( $_SERVER['REQUEST_URI'], '?' ) ) {
-				$query_char = '&';
-			} else {
-				$query_char = '?';
-			}
-
 			if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) && isset( get_option( 'blog_tutor_support_settings' )['relay_url'] ) ) {
+
+				if ( strpos( $_SERVER['REQUEST_URI'], '?' ) ) {
+					$query_char = '&';
+				} else {
+					$query_char = '?';
+				}
+
 				$args = array(
 					'id'     => 'bt-send-snapshot',
 					'title'  => 'Send Snapshot to Relay',

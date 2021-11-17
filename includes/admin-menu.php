@@ -223,7 +223,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			);
 			$wp_admin_bar->add_node( $args );
 
-			if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) && isset( get_option( 'blog_tutor_support_settings' )['relay_url'] ) ) {
+			if ( NerdPress_Helpers::is_relay_key_and_URL_active() ) {
 
 				if ( strpos( $_SERVER['REQUEST_URI'], '?' ) ) {
 					$query_char = '&';

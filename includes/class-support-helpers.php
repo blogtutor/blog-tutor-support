@@ -308,4 +308,18 @@ class NerdPress_Helpers {
 
 		return FALSE;
 	}
+
+	/**
+	 * Check whether the Relay URL and Key are active
+	 *
+	 * @return boolean. FALSE if either value is not set
+	 */
+	public static function is_relay_key_and_URL_active() {
+		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) && isset( get_option( 'blog_tutor_support_settings' )['relay_url'] ) ) {
+			return true;
+		} else {
+			return false;
+		};
+	}
+
 }

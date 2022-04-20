@@ -28,8 +28,7 @@ class NerdPress_Support_Cron {
 	 */
 	public function schedule_snapshot_cron() {
 
-		//Change cron name to include nerdpress TODO
-		if (get_option( 'blog_tutor_support_settings' )['schedule_snapshot']) {
+		if ( isset( get_option( 'blog_tutor_support_settings' )['schedule_snapshot'] ) ) {
 			if ( ! wp_next_scheduled( 'nerdpress_ping_relay_on_cron' ) ) {
 				wp_schedule_event( time(), 'twicedaily', 'nerdpress_ping_relay_on_cron' );
 			}

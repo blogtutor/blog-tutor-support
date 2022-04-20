@@ -76,8 +76,8 @@ class NerdPress_Support_Relay {
 					'content'     => json_encode( $dump ),
 					'status'      => 'publish',
 				),
-				// Bypass SSL verification in self-signed environments
-				//'sslverify' => false
+				// Bypass SSL verification when using self signed cert. Like when in a local dev environment. 
+        // 'sslverify' => false
 			) );
 
 			return $api_response;

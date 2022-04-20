@@ -1,5 +1,5 @@
 <?php
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -28,10 +28,8 @@ class NerdPress_Support_Relay {
 	 * @since 1.0.0
 	 */
 	public static function ping_relay_headless() {
-
 		$dump         = self::assemble_dump();
 		$api_response = self::send_request_to_relay( $dump );
-
 	}
 
 	/**
@@ -41,11 +39,9 @@ class NerdPress_Support_Relay {
 	 */
 	public static function ping_relay() {
 
-		// If the request is a one-time call from the dashboard.
+    // If the request is a one-time call from the dashboard.
 		if ( isset( $_GET['ping'] ) ) {
-
-			$dump = self::assemble_dump();
-
+      $dump         = self::assemble_dump();
 			$api_response = self::send_request_to_relay( $dump );
 
 			if ( $api_response['response']['code'] === 201 ) {
@@ -72,12 +68,12 @@ class NerdPress_Support_Relay {
 					'Authorization' => 'Basic ' . base64_encode( "$user:$relay_key" ),
 				),
 				'body' => array(
-					'title'       => parse_url( get_bloginfo( 'wpurl' ) )['host'],
-					'content'     => json_encode( $dump ),
-					'status'      => 'publish',
+					'title'   => parse_url( get_bloginfo( 'wpurl' ) )['host'],
+					'content' => json_encode( $dump ),
+					'status'  => 'publish',
 				),
 				// Bypass SSL verification when using self signed cert. Like when in a local dev environment. 
-        // 'sslverify' => false
+        'sslverify' => false
 			) );
 
 			return $api_response;
@@ -137,8 +133,8 @@ class NerdPress_Support_Relay {
 			}
 
 			// Create timestamp in PST for timestamp of the request.
-			$datetime = new DateTime('NOW', new DateTimeZone('PST'));
-			$dump['Last Sync']				  = $datetime->format('Y-m-d H:i:s (e)');
+			$datetime          = new DateTime( 'NOW', new DateTimeZone( 'PST' ) );
+			$dump['Last Sync'] = $datetime->format( 'Y-m-d H:i:s (e)' );
 			return $dump;
 		}
 	}

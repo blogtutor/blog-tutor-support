@@ -38,13 +38,12 @@ class NerdPress_Support_Relay {
 	 * @since 0.8.2
 	 */
 	public static function ping_relay() {
-
-    // If the request is a one-time call from the dashboard.
+		// If the request is a one-time call from the dashboard.
 		if ( isset( $_GET['ping'] ) ) {
-      $dump         = self::assemble_dump();
+			$dump         = self::assemble_dump();
 			$api_response = self::send_request_to_relay( $dump );
 
-			if ( $api_response['response']['code'] === 201 ) {
+			if ( 201 === $api_response['response']['code'] ) {
 				nocache_headers();
 				wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
 			}
@@ -60,21 +59,22 @@ class NerdPress_Support_Relay {
 
 			$relay_url = get_option( 'blog_tutor_support_settings' )['relay_url'] . '/wp-json/wp/v2/site_snapshot';
 			$relay_key = get_option( 'blog_tutor_support_settings' )['relay_key'];
-			$user      = parse_url( get_bloginfo( 'wpurl' ) )['host'];
-
-			// Make request to the relay server.
-			$api_response = wp_remote_post( $relay_url, array(
-				'headers' => array(
+			$user      = wp_parse_url( get_bloginfo( 'wpurl' ) )['host'];
+			$args      = array(
+				'headers'   => array(
 					'Authorization' => 'Basic ' . base64_encode( "$user:$relay_key" ),
 				),
-				'body' => array(
-					'title'   => parse_url( get_bloginfo( 'wpurl' ) )['host'],
-					'content' => json_encode( $dump ),
+				'body'      => array(
+					'title'   => wp_parse_url( get_bloginfo( 'wpurl' ) )['host'],
+					'content' => wp_json_encode( $dump ),
 					'status'  => 'publish',
 				),
-				// Bypass SSL verification when using self signed cert. Like when in a local dev environment. 
-        'sslverify' => false
-			) );
+				// Bypass SSL verification when using self signed cert. Like when in a local dev environment.
+				'sslverify' => false,
+			);
+
+			// Make request to the relay server.
+			$api_response = wp_remote_post( $relay_url, $args );
 
 			return $api_response;
 	}
@@ -104,7 +104,7 @@ class NerdPress_Support_Relay {
 			array_walk_recursive( $current_plugins, 'filter_htmlspecialchars' );
 			require ABSPATH . WPINC . '/version.php';
 
-			$user                             = parse_url( get_bloginfo( 'wpurl' ) )['host'];
+			$user                             = wp_parse_url( get_bloginfo( 'wpurl' ) )['host'];
 			$options                          = get_option( 'blog_tutor_support_settings', array() );
 			$dump                             = array();
 			$dump['Free Disk Space']          = NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] );
@@ -122,7 +122,7 @@ class NerdPress_Support_Relay {
 			$i = -1;
 			foreach ( $dump['Inactive Themes Data'] as $key => $value ) {
 				$i++;
-				if ( $value['Name'] == $current_theme['Name'] ) {
+				if ( $value['Name'] === $current_theme['Name'] ) {
 					unset( $dump['Inactive Themes Data'][ $key ] );
 				}
 			}

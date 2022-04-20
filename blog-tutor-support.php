@@ -89,8 +89,11 @@ class NerdPress {
 		if ( NerdPress_Helpers::is_cloudflare_firewall_selected() ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
 		}
-		include_once dirname( __FILE__ ) . '/includes/class-support-relay.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-cron.php';
+
+		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) && isset( get_option( 'blog_tutor_support_settings' )['relay_url'] ) ) {
+			include_once dirname( __FILE__ ) . '/includes/class-support-relay.php';
+			include_once dirname( __FILE__ ) . '/includes/class-support-cron.php';
+		}
 	}
 }
 

@@ -281,7 +281,7 @@ class NerdPress_Helpers {
 		}
 
 		foreach ( $domain_bypass_strings as $string ) {
-			// Is $string prepended and appended by a / or . in $home_url
+			// Is $string prepended and appended by a / or . in $home_url.
 			if ( preg_match( '#([/.]' . $string . '[/.])#m', $home_url ) ) {
 				return FALSE;
 			}
@@ -296,11 +296,18 @@ class NerdPress_Helpers {
  	 * @return boolean. TRUE if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
  	 */
 	public static function cache_clear_bypass_on_string( $prefixes ) {
+		$bypass_strings = array(
+			'wc_user_membership',
+			'shop_subscription',
+		);
+		
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
-			$bypass_string = NERDPRESS_CACHE_CLEAR_BYPASS; 		
+			$bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS; 		
+		}
 
+		foreach ( $bypass_strings as $string ) {
 			foreach ( $prefixes as $prefix ) {
-				if ( strpos( $prefix, $bypass_string ) !== FALSE ) {
+				if ( strpos( $prefix, $string ) !== FALSE ) {
 					return TRUE;
 				}
 			}
@@ -308,4 +315,18 @@ class NerdPress_Helpers {
 
 		return FALSE;
 	}
+
+	/**
+	 * Check whether the Relay URL and Key are active
+	 *
+	 * @return boolean. FALSE if either value is not set
+	 */
+	public static function is_relay_key_and_URL_active() {
+		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) && isset( get_option( 'blog_tutor_support_settings' )['relay_url'] ) ) {
+			return true;
+		} else {
+			return false;
+		};
+	}
+
 }

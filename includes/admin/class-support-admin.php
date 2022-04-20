@@ -183,9 +183,8 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add option to schedule cron job to send snapshot
-
-		if ( isset( get_option( 'blog_tutor_support_settings' )['relay_key'] ) && isset( get_option( 'blog_tutor_support_settings' )['relay_url'] ) ) {
+		// Add option to schedule cron job to send snapshot.
+		if ( NerdPress_Helpers::is_relay_key_and_URL_active() ) {
 			add_settings_field(
 				'schedule_snapshot',
 				__( 'Schedule relay server snapshots?', 'nerdpress-support' ),
@@ -591,16 +590,14 @@ class NerdPress_Admin {
 	 * @param array $args Callback arguments.
 	 */
 	public function relay_key_element_callback( $args ) {
-// 		print_r( $args );
 		$menu    = $args['menu'];
 		$id      = $args['id'];
 		$options = get_option( $menu );
 		$token   = '';
-		
-		if( isset( $options['relay_key'] ) ) { 
+		if( isset( $options['relay_key'] ) ) {
 			$token = $options['relay_key'];
 		} else {
-			$token = '';
+			$token                = '';
 			$options['relay_key'] = $token;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
@@ -622,7 +619,7 @@ class NerdPress_Admin {
 		if( isset( $options['relay_url'] ) ) {
 			$token = $options['relay_url'];
 		} else {
-			$token = '';
+			$token                = '';
 			$options['relay_url'] = $token;
 			update_option( 'blog_tutor_support_settings', $options );
 		}

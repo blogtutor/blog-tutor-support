@@ -39,13 +39,13 @@ class NerdPress_Support_Relay {
 	 */
 	public static function ping_relay() {
 		// If the request is a one-time call from the dashboard.
-		if ( isset( $_GET['ping'] ) ) {
+		if ( isset( $_GET['np_relay_ping'] ) ) {
 			$dump         = self::assemble_dump();
 			$api_response = self::send_request_to_relay( $dump );
 
 			if ( 201 === $api_response['response']['code'] ) {
-				nocache_headers();
 				wp_safe_redirect( $_SERVER['HTTP_REFERER'] );
+				die;
 			}
 		}
 	}
@@ -62,6 +62,7 @@ class NerdPress_Support_Relay {
 			$user      = wp_parse_url( get_bloginfo( 'wpurl' ) )['host'];
 			$args      = array(
 				'headers'   => array(
+					// base64 encoding to add extra security.
 					'Authorization' => 'Basic ' . base64_encode( "$user:$relay_key" ),
 				),
 				'body'      => array(

@@ -85,7 +85,7 @@ class NerdPress_Admin {
 			$settings_option
 		);
 
-		// Add option to disable/enable Core auto updates. 
+		// Add option to disable/enable Core auto updates.
 		add_settings_field(
 			'auto_update_core',
 			__( 'Core Auto-Updates', 'nerdpress-support' ),
@@ -99,7 +99,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add option to disable/enable plugin auto updates. 
+		// Add option to disable/enable plugin auto updates.
 		add_settings_field(
 			'auto_update_plugins',
 			__( 'Plugin Auto-Updates', 'nerdpress-support' ),
@@ -113,7 +113,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add option to disable/enable theme auto updates. 
+		// Add option to disable/enable theme auto updates.
 		add_settings_field(
 			'auto_update_themes',
 			__( 'Theme Auto-Updates', 'nerdpress-support' ),
@@ -127,7 +127,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add option to disable/enable excluding WP Rocket delay js list. 
+		// Add option to disable/enable excluding WP Rocket delay js list.
 		add_settings_field(
 			'exclude_wp_rocket_delay_js',
 			__( 'WP Rocket Delay JS', 'nerdpress-support' ),
@@ -140,7 +140,7 @@ class NerdPress_Admin {
 				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
 			)
 		);
-		// Add option to disable/enable ShortPixel bulk optimization. 
+		// Add option to disable/enable ShortPixel bulk optimization.
 		add_settings_field(
 			'shortpixel_bulk_optimize',
 			__( 'ShortPixel Bulk Optimize', 'nerdpress-support' ),
@@ -376,7 +376,7 @@ class NerdPress_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-auto-update-core-field.php';
 	}
-		
+
 	/**
 	 * Checkbox auto update plugins element callback.
 	 *
@@ -414,7 +414,7 @@ class NerdPress_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-auto-update-themes-field.php';
 	}
-		
+
 	/**
 	 * Checkbox Exclude WP Rocket Delay JS element callback.
 	 *
@@ -470,14 +470,14 @@ class NerdPress_Admin {
 			$current = isset( $args['default'] ) ? $args['default'] : 'none';
 		}
 
-		if( isset( $options['firewall_choice'] ) ) { 
+		if( isset( $options['firewall_choice'] ) ) {
 			$firewall = $options['firewall_choice'];
 		} else {
 			$firewall = 'none';
 			$options['firewall_choice'] = $firewall;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
- 
+
 		include dirname( __FILE__ ) . '/views/html-radiobutton-field.php';
 	}
 
@@ -550,7 +550,7 @@ class NerdPress_Admin {
 		$options = get_option( $menu );
 		$zone    = '';
 
-		if( isset( $options['cloudflare_zone'] ) ) { 
+		if( isset( $options['cloudflare_zone'] ) ) {
 			$zone = $options['cloudflare_zone'];
 		} else {
 			$zone = 'dns1';
@@ -572,8 +572,8 @@ class NerdPress_Admin {
 		$id      = $args['id'];
 		$options = get_option( $menu );
 		$token   = '';
-		
-		if( isset( $options['cloudflare_token'] ) ) { 
+
+		if( isset( $options['cloudflare_token'] ) ) {
 			$token = $options['cloudflare_token'];
 		} else {
 			$token = '';

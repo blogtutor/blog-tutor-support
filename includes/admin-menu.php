@@ -37,13 +37,13 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						'parent' => 'nerdpress-menu',
 						'meta'   => array(
 							'tabindex' => 9999,
-							'id'   => 'cfClearcache',
-							'class'  => 'btButton',
-							'title'  => 'Clear everything from the Cloudflare cache',
-						)
+							'id'       => 'cfClearcache',
+							'class'    => 'btButton',
+							'title'    => 'Clear everything from the Cloudflare cache',
+						),
 					);
 					$wp_admin_bar->add_node( $args );
-					if ( ! is_admin() && ! NerdPress_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== FALSE ) {
+					if ( ! is_admin() && ! NerdPress_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== false ) {
 						$args = array(
 							'id'     => 'nerdpress-purge-url',
 							'title'  => 'Purge this URL from Cloudflare',
@@ -51,10 +51,10 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 							'parent' => 'nerdpress-menu',
 							'meta'   => array(
 								'tabindex' => 9999,
-								'id'   => 'cfClearurl',
-								'class'  => 'btButton',
-								'title'  => 'Purge just this URL from Cloudflare',
-							)
+								'id'       => 'cfClearurl',
+								'class'    => 'btButton',
+								'title'    => 'Purge just this URL from Cloudflare',
+							),
 						);
 						$wp_admin_bar->add_node( $args );
 					}
@@ -68,8 +68,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 							'tabindex' => 9999,
 							'class'    => 'btButton',
 							'title'    => "This appears to be a non-production site, so we've disabled cache clearing. Please contact us with any questions.",
-							'onclick'  => 'window.supportHeroWidget.show("contact")();'
-						)
+							'onclick'  => 'window.supportHeroWidget.show("contact")();',
+						),
 					);
 					$wp_admin_bar->add_node( $args );
 				}
@@ -83,8 +83,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						'tabindex' => 9999,
 						'class'    => 'btButton',
 						'title'    => 'There is a problem with your Cloudflare Enterprise settings! Please contact us.',
-						'onclick'  => 'window.supportHeroWidget.show("contact")();'
-					)
+						'onclick'  => 'window.supportHeroWidget.show("contact")();',
+					),
 				);
 				$wp_admin_bar->add_node( $args );
 			}
@@ -99,8 +99,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'meta'   => array(
 					'class'   => 'btButton',
 					'title'   => 'The Sucuri Plugin is not installed! Please contact us.',
-					'onclick' => 'window.supportHeroWidget.show("contact")();'
-				)
+					'onclick' => 'window.supportHeroWidget.show("contact")();',
+				),
 			);
 			$wp_admin_bar->add_node( $args );
 
@@ -134,13 +134,12 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					'href'   => '#',
 					'parent' => 'nerdpress-menu',
 					'meta'   => array(
-						'id'   => 'btClearcache',
-						'class'  => 'btButton',
-						'title'  => 'Clear the Sucuri Firewall Cache',
+						'id'    => 'btClearcache',
+						'class' => 'btButton',
+						'title' => 'Clear the Sucuri Firewall Cache',
 					),
 				);
 				$wp_admin_bar->add_node( $args );
-
 
 				// Clear current page from Cloudproxy cache.
 				if ( ! is_admin() ) {
@@ -150,7 +149,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						'id'     => 'bt-clear-uri-cloudproxy',
 						'title'  => 'Clear this page from Sucuri Firewall',
 						// Keep using the v1 API for this menu item
-						'href'   => str_replace('?&k', '?k', str_replace('api?v2', 'api?', $cloudproxy_clear_uri)),
+						'href'   => str_replace( '?&k', '?k', str_replace( 'api?v2', 'api?', $cloudproxy_clear_uri ) ),
 						'parent' => 'nerdpress-menu',
 						'meta'   => array(
 							'class'  => 'btButton',
@@ -164,7 +163,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 				if ( NerdPress_Helpers::is_nerdpress() ) {
 					$cloudproxy_allowlist = $sucuri_api_call . '&a=whitelist&duration=3600';
-					$allowlist_args              = array(
+					$allowlist_args       = array(
 						'id'     => 'bt-allowlist-cloudproxy',
 						'title'  => 'Add Your IP Address to the Allowlist',
 						'href'   => $cloudproxy_allowlist,
@@ -179,7 +178,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					$wp_admin_bar->add_node( $allowlist_args );
 				}
 
-			} else  {
+			} else {
 				$args = array(
 					'id'     => 'bt-cloudproxy-api-not-set',
 					'title'  => 'Missing Firewall API Keys! Please contact us',
@@ -187,7 +186,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					'meta'   => array(
 						'class'   => 'btButton',
 						'title'   => 'Missing Firewall API Keys! Please contact us',
-						'onclick' => 'window.supportHeroWidget.show("contact")();'
+						'onclick' => 'window.supportHeroWidget.show("contact")();',
 					),
 				);
 				$wp_admin_bar->add_node( $args );
@@ -256,7 +255,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					if ( $cpu_loads ) {
 						$cpu_load_info = '<span>Load: ' . $cpu_loads[0] . ' &nbsp;' . $cpu_loads[1] . ' &nbsp;' . $cpu_loads[2] . '  &nbsp; ';
 					}
- 				}
+				}
 
 				$disk_space_info = 'Free Disk: ' . NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] ) . '</span>';
 				$cpu_disk_info   = $cpu_load_info . $disk_space_info;

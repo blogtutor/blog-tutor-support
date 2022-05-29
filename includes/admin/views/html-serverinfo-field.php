@@ -37,8 +37,6 @@ if ( $mem_show ) {
 }
 ?>
 
-<link rel="stylesheet" href="<?php echo plugins_url(); ?>/blog-tutor-support/includes/css/html-serverinfo-field-style.css" type="text/css" media="all">
-
 <?php
 $disk_total = NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_total'] );
 $disk_used  = NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_used'] );

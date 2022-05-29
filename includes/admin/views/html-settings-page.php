@@ -10,11 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
+<link rel="stylesheet" href="<?php echo plugins_url(); ?>/blog-tutor-support/includes/css/html-settings-page-style.css" type="text/css" media="all">
+
 <div class="wrap">
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
 	<?php
 	$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'nerdpress_settings';
+  NerdPress_Helpers::maybe_disable_cloudflare_firewall_settings();
 	?>
 
 	<h2 class="nav-tab-wrapper">

@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class NerdPress_Helpers {
 	private static $sucuri_api_key = FALSE;
 	private static $sucuri_buttons_flag = NULL;
+  public static $maybe_disable_cloudflare_settings = ''; 
 	
 	private static function set_sucuri_api() {
 		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
@@ -158,6 +159,17 @@ class NerdPress_Helpers {
 		$option_list = get_option( 'blog_tutor_support_settings', array() );
 		return ( isset( $option_list['firewall_choice'] ) && $option_list['firewall_choice'] == 'cloudflare' );
 	}
+
+  /**
+   * Determin if we will be disabling editing of Cloudflare DNS Zone and Token.
+   *
+   * @return string. CSS class to make changes.
+   */
+  public static function maybe_disable_cloudflare_firewall_settings() {
+    if ( ! self::is_cloudflare_firewall_selected() ) {
+      self::$maybe_disable_cloudflare_settings = 'nerdpress_disable';
+    }
+  }
 
 	/**
 	 * Determine whether Sucuri Firewall option is selected

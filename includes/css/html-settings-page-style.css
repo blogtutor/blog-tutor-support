@@ -29,3 +29,8 @@
 .progress .prginfo { margin: 3px 0; }
 .progress .prgbar-danger{ background: red; }
 .progress .prgtext-danger { color: #FCFCFC; }
+
+.nerdpress_disable {
+  opacity:0.5;
+  pointer-events:none;
+}

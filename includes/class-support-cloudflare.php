@@ -351,7 +351,8 @@ class NerdPress_Cloudflare_Client {
 			}
 			
 			// Removing http(s):// because Cloudflare API "prefixes" cache clear requires it
-			$prefixes_no_protocol = preg_replace('#https?://#', '', $prefixes);
+			$prefixes_no_lang_query = preg_replace('#[\?|&]lang=.[^&]#', '', $prefixes);
+			$prefixes_no_protocol   = preg_replace('#https?://#', '', $prefixes_no_lang_query);
 			
 			self::$cache_clear_type = implode( ',', $prefixes_no_protocol );
 			$body = '{ "prefixes": [' . implode( ',', $prefixes_no_protocol ) . '] }';

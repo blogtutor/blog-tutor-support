@@ -6,8 +6,8 @@
  * Version:     1.3-beta1
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
- * GitHub URI: 	blogtutor/blog-tutor-support
- * License: 	  GPLv2
+ * GitHub URI:  blogtutor/blog-tutor-support
+ * License:     GPLv2
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -23,83 +23,83 @@ if ( ! defined( 'BT_PLUGIN_VERSION' ) ) {
 	define( 'BT_PLUGIN_VERSION', '1.3-beta1' );
 }
 
-if ( ! class_exists( 'NerdPress' ) ) :
-	/**
-	 * NerdPress main class.
-	 *
-	 * @package  NerdPress
-	 * @category Core
-	 * @author   Fernando Acosta, Andrew Wilder, Sergio Scabuzzo
-	 */
-class NerdPress {
-	/**
-	 * Instance of this class.
-	 *
-	 * @var object
-	 */
-	protected static $instance = null;
+if ( ! class_exists( 'NerdPress' ) ) {
+		/**
+		 * NerdPress main class.
+		 *
+		 * @package  NerdPress
+		 * @category Core
+		 * @author   Fernando Acosta, Andrew Wilder, Sergio Scabuzzo
+		 */
+	class NerdPress {
+		/**
+		 * Instance of this class.
+		 *
+		 * @var object
+		 */
+		protected static $instance = null;
 
-	/**
- 	 * NerdPress plugin root URL.
- 	 */
-	public static $plugin_dir_url = '';
+		/**
+		 * NerdPress plugin root URL.
+		 */
+		public static $plugin_dir_url = '';
 
-	/**
-	 * Initialize the plugin.
-	 */
-	private function __construct() {
-		// Include classes.
-		$this->includes();
+		/**
+		 * Initialize the plugin.
+		 */
+		private function __construct() {
+			// Include classes.
+			$this->includes();
 
-		if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-			$this->admin_includes();
+			if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+				$this->admin_includes();
+			}
+
+			self::$plugin_dir_url = plugin_dir_url( __FILE__ );
 		}
 
-		self::$plugin_dir_url = plugin_dir_url( __FILE__ );
+		/**
+		 * Return an instance of this class.
+		 *
+		 * @return object A single instance of this class.
+		 */
+		public static function get_instance() {
+			if ( null == self::$instance ) {
+				self::$instance = new self;
+			}
+
+			return self::$instance;
+		}
+
+		/**
+		 * Include admin actions.
+		 */
+		protected function admin_includes() {
+			include dirname( __FILE__ ) . '/includes/admin/class-support-admin.php';
+		}
+
+		/**
+		 * Include plugin functions.
+		 */
+		protected function includes() {
+			include_once dirname( __FILE__ ) . '/includes/class-support-helpers.php';
+			include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
+			include_once dirname( __FILE__ ) . '/includes/class-support-overrides.php';
+			include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
+			if ( NerdPress_Helpers::is_sucuri_header_set() || NerdPress_Helpers::is_sucuri_firewall_selected() ) {
+				include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
+				include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
+			}
+
+			if ( NerdPress_Helpers::is_cloudflare_firewall_selected() ) {
+				include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
+			}
+		}
 	}
 
 	/**
-	 * Return an instance of this class.
-	 *
-	 * @return object A single instance of this class.
+	 * Init the plugin.
 	 */
-	public static function get_instance() {
-		if ( null == self::$instance ) {
-			self::$instance = new self;
-		}
-
-		return self::$instance;
-	}
-
-	/**
-	 * Include admin actions.
-	 */
-	protected function admin_includes() {
-		include dirname( __FILE__ ) . '/includes/admin/class-support-admin.php';
-	}
-
-	/**
-	 * Include plugin functions.
-	 */
-	protected function includes() {
-		include_once dirname( __FILE__ ) . '/includes/class-support-helpers.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-overrides.php';
-		include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
-		if ( NerdPress_Helpers::is_sucuri_header_set() || NerdPress_Helpers::is_sucuri_firewall_selected() ) {
-			include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
-			include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';
-		}
-
-		if ( NerdPress_Helpers::is_cloudflare_firewall_selected() ) {
-			include_once dirname( __FILE__ ) . '/includes/class-support-cloudflare.php';
-		}
-	}
+	add_action( 'plugins_loaded', array( 'NerdPress', 'get_instance' ) );
 }
 
-/**
- * Init the plugin.
- */
-add_action( 'plugins_loaded', array( 'NerdPress', 'get_instance' ) );
-
-endif;

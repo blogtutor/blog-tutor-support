@@ -185,7 +185,7 @@ class NerdPress_Cloudflare_Client {
 			return;
 		}
   	global $wp;
-  	wp_register_script( 'np_cf_js', plugins_url( 'includes/js/np-cloudflare.js', dirname( __FILE__ ) ), array( 'jquery' ), BT_PLUGIN_VERSION );
+  	wp_register_script( 'np_cf_js', esc_url( NerdPress::$plugin_dir_url . 'includes/js/np-cloudflare.js' ), array( 'jquery' ), BT_PLUGIN_VERSION );
 		wp_enqueue_script( 'np_cf_js' );  
 		wp_localize_script( 'np_cf_js', 'np_cf_ei', array(
 			'endpoint'     => admin_url( 'admin-ajax.php' ),
@@ -351,7 +351,8 @@ class NerdPress_Cloudflare_Client {
 			}
 			
 			// Removing http(s):// because Cloudflare API "prefixes" cache clear requires it
-			$prefixes_no_protocol = preg_replace('#https?://#', '', $prefixes);
+			$prefixes_no_lang_query = preg_replace('#[\?|&]lang=.[^&]#', '', $prefixes);
+			$prefixes_no_protocol   = preg_replace('#https?://#', '', $prefixes_no_lang_query);
 			
 			self::$cache_clear_type = implode( ',', $prefixes_no_protocol );
 			$body = '{ "prefixes": [' . implode( ',', $prefixes_no_protocol ) . '] }';

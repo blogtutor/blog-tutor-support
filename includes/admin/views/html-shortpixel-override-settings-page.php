@@ -68,18 +68,24 @@ if ( $display_settings_summary ) {
 		$short_pixel_backups = 'are not';
 	}
 
+	if ( empty( $shortpixel_options['wp-short-pixel-resize-width'] ) && empty( $shortpixel_options['wp-short-pixel-resize-height'] ) ) {
+		$short_pixel_resize_info = '';
+	} else {
+		$short_pixel_resize_info = ', and the sizes are set to: <strong>' . $shortpixel_options['wp-short-pixel-resize-width'] . ' wide x ' . $shortpixel_options['wp-short-pixel-resize-height'] . ' high (' . $short_pixel_resize_type . ')</strong>';
+	}
+
 	?>
 
-  <h2>Settings Summary:</h2>
-	
-	<p>Current compression setting is: <strong><?php echo $short_pixel_compression_level ?></strong>.</p>
-	
-  <p>Images <strong><?php echo $short_pixel_resize_images ?></strong> set to be resized, and the sizes are set to: <strong><?php echo $shortpixel_options['wp-short-pixel-resize-width'] ?> wide x <?php echo $shortpixel_options['wp-short-pixel-resize-height'] . ' high (' . $short_pixel_resize_type . ')' ?></strong>.</p>
-	
-	<p>Thumbnail images <strong><?php echo $short_pixel_thumbnails ?></strong> being optimized.</p>
+	<h2>Settings Summary:</h2>
 
-	<p>Originals <strong><?php echo $short_pixel_backups ?></strong> being saved to the backups folder.</p>
-<?php
+	<p>Current compression setting is: <strong><?php echo $short_pixel_compression_level; ?></strong>.</p>
+
+	<p>Images <strong><?php echo $short_pixel_resize_images; ?></strong> set to be resized<?php echo $short_pixel_resize_info; ?>.</p>
+
+	<p>Thumbnail images <strong><?php echo $short_pixel_thumbnails; ?></strong> being optimized.</p>
+
+	<p>Originals <strong><?php echo $short_pixel_backups; ?></strong> being saved to the backups folder.</p>
+	<?php
 }
 ?>
 

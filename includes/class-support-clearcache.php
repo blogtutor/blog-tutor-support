@@ -1,5 +1,5 @@
 <?php
-if ( !defined('ABSPATH') ) {
+if ( !defined( 'ABSPATH' ) ) {
 	die();
 }
 
@@ -12,7 +12,7 @@ if ( !defined('ABSPATH') ) {
 	 */
 
 class NerdPress_Clearcache {
-	
+
 	public function __construct() {
 		add_action( 'admin_notices', array( $this, 'nerdpress_clearcache_message' ), 59 );
 		add_action( 'wp_ajax_sucuri_clearcache', array( $this, 'sucuri_clearcache' ) );
@@ -42,46 +42,50 @@ class NerdPress_Clearcache {
 				echo false;
 				die();
 			}
-				
+
 			$body = wp_remote_retrieve_body( $response );
 			try {
-				$message_body = json_decode($body, TRUE);
+				$message_body = json_decode($body, true);
 			} catch(Exception $e) {
 				// TODO: Notfiy us when this happens.
 				// Overrwrite the returned object
 				$message_body = array();
-				$message_body['status'] = 0; 
+				$message_body['status'] = 0;
 			}
 
 			$message = ( $message_body['status'] == 0
 					? 'There was a problem clearing the Sucuri Firewall cache. Please try again, and if it still doesn\'t work please contact support@nerdpress.net.'
-					: $message_body['messages']['0']);
+					: $message_body['messages']['0'] );
 
 			$option_payload = array(
 				'msg'    => sanitize_text_field( $message ),
 				'status' => sanitize_text_field( $message_body['status'] )
 			);
 			update_option( 'clear_cache_msg', $option_payload );
-				
+
 			// Send message to awaiting JS
-			echo ( $message_body['status'] == 0 ? false : $message );			
+			echo ( $message_body['status'] == 0 ? false : $message );
 			die();
 		}
-		
+
 		die();
 	}
 
 	public function bt_enqueue_scripts() {
 		if ( user_can( get_current_user_id(), 'edit_posts' ) ) {
-			wp_enqueue_script( 'jquery' ); 
-			wp_register_script( 'clearcache_js', plugins_url( 'js/bt-clearcache.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
-			wp_localize_script( 'clearcache_js', 'sucuri_clearcache', array(
-				'endpoint' => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'sucuri_clearcache_secure_me' ),
-			) );
+			wp_enqueue_script( 'jquery' );
+			wp_register_script( 'clearcache_js', esc_url( NerdPress::$plugin_dir_url . 'includes/js/bt-clearcache.js' ), array(), BT_PLUGIN_VERSION );
+			wp_localize_script(
+				'clearcache_js',
+				'sucuri_clearcache',
+				array(
+					'endpoint' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'sucuri_clearcache_secure_me' ),
+				)
+			);
 			wp_enqueue_script( 'clearcache_js' );
 		}
 	}
 }
 
-new NerdPress_Clearcache(); 
+new NerdPress_Clearcache();

@@ -241,19 +241,22 @@ class NerdPress_Helpers {
 	 * @return void
 	 */
 	public static function display_notification( $msg ) {
-		if ( ! is_array( $msg ) )
+		if ( ! is_array( $msg ) ) {
 			$msg = array( 'status' => 1, 'msg' => $msg );
-	
+		}
+		
 		// Exit if message is empty
-		if ( $msg['msg'] == '') return;
+		if ( $msg['msg'] == '') {
+			return;
+		}
 
 		$msg_class = ( $msg['status'] ? 'np-notice' : 'error np-notice' );
-	?>
-		<link rel="stylesheet" href="<?php echo plugins_url(); ?>/blog-tutor-support/includes/css/html-notifications-style.css" type="text/css" media="all">
-		<div class="notice <?php echo $msg_class; ?>">
-			<p><img src="<?php echo esc_url( site_url() ); ?>/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg['msg']; ?></strong></p>
+		?>
+			<link rel="stylesheet" href="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/css/html-notifications-style.css' ); ?>" type="text/css" media="all">
+			<div class="notice <?php echo $msg_class; ?>">
+				<p><img src="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/images/nerdpress-icon-250x250.png' ); ?>" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg['msg']; ?></strong></p>
 			</div>
-			<?php
+		<?php
   }
 	
 	/**
@@ -307,8 +310,17 @@ class NerdPress_Helpers {
  	 */
 	public static function cache_clear_bypass_on_string( $prefixes ) {
 		$bypass_strings = array(
-			'wc_user_membership',
-			'shop_subscription',
+      'edd_log',
+      'edd_payment',
+      'elementor_library',
+      'page_id',
+      'post_type=recipe',
+      'scheduled-action',
+      'shop_coupon',
+      'shop_order',
+      'shop_subscription',
+      'wc_user_membership',
+      'wprm_recipe',
 		);
 		
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
@@ -324,5 +336,15 @@ class NerdPress_Helpers {
 		}
 
 		return FALSE;
+	}
+
+	/**
+	 * Determine whether we are hiding ShortPixel settings.
+	 *
+	 * @return boolean. If the option is selected
+	 */
+	public static function hide_shortpixel_settings() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		return ( ! isset( $options['shortpixel_bulk_optimize'] ) && ! self::is_nerdpress() && defined( 'SHORTPIXEL_HIDE_API_KEY' ) );
 	}
 }

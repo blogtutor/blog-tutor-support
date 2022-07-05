@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $allowlist_ips = get_option( 'cloudproxy_allowlist_ips', array() );
 
 if( count( $allowlist_ips ) > 0 ) {	
-	wp_register_script( 'clear_allowlist_js', plugins_url( '../js/bt-clearallowlist.js', __FILE__ ), array(), BT_PLUGIN_VERSION );
+	wp_register_script( 'clear_allowlist_js', esc_url( NerdPress::$plugin_dir_url . 'includes/admin/js/bt-clearallowlist.js' ), array(), BT_PLUGIN_VERSION );
 	wp_localize_script( 'clear_allowlist_js', 'clear_allowlist', array(
 		'endpoint' => admin_url( 'admin-ajax.php' ),
 		'nonce'	   => wp_create_nonce( 'clear_allowlist_secure_me' ),

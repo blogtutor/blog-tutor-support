@@ -322,7 +322,7 @@ class NerdPress_Cloudflare_Client {
 						'errors' => array(
 							array( 'message' => $result->get_error_message() ),
 						),
-					),
+					)
 				),
 			);
 		}

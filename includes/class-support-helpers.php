@@ -335,4 +335,30 @@ class NerdPress_Helpers {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 		return ( ! isset( $options['shortpixel_bulk_optimize'] ) && ! self::is_nerdpress() && defined( 'SHORTPIXEL_HIDE_API_KEY' ) );
 	}
+
+	/**
+	 * Determine whether the relay server settings are set
+	 *
+	 * @return boolean. If the Relay Server URL and API Token are set
+	 */
+	public static function is_relay_server_configured() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+
+		return (
+			isset( $options['np_relay_server_url'] ) &&
+			isset( $options['np_relay_api_token'] )
+		);
+	}
+
+	public static function relay_server_url()
+	{
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		return $options['np_relay_server_url'];
+	}
+
+	public static function relay_server_api_token()
+	{
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		return $options['np_relay_api_token'];
+	}
 }

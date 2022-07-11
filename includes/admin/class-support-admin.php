@@ -240,6 +240,33 @@ class NerdPress_Admin {
 			)
 		);
 
+		// Add Relay Server Settings
+		add_settings_field(
+			'np_relay_server_url',
+			__( 'NerdPress Relay Server URL', 'nerdpress-support' ),
+			array( $this, 'nerdpress_relay_server_url_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'    => $settings_option,
+				'id'      => 'np_relay_server_url',
+				'label'   => __( 'NerdPress Relay Server URL', 'nerdpress-support' ),
+			)
+		);
+
+		add_settings_field(
+			'np_relay_api_token',
+			__( 'NerdPress Relay API Token', 'nerdpress-support' ),
+			array( $this, 'nerdpress_relay_api_token_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'np_relay_api_token',
+				'label' => __( 'NerdPress Relay API Token', 'nerdpress-support' ),
+			)
+		);
+
 		// Register settings.
 		register_setting( $settings_option, $settings_option, array( $this, 'validate_options' ) );
 
@@ -549,6 +576,52 @@ class NerdPress_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-cloudflare-token-field.php';
 	}
+
+	/**
+	 * NerdPress Relay Server URL Callback
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function nerdpress_relay_server_url_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$token   = '';
+
+		if ( isset( $options['np_relay_api_token'] ) ) {
+			$url = $options['np_relay_api_token'];
+		} else {
+			$url                       = '';
+			$options['np_relay_api_token'] = $url;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-nerdpress-relay-server-url-field.php';
+	}
+
+	/**
+	 * NerdPress Relay Server URL Callback
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function nerdpress_relay_api_token_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$token   = '';
+
+		if ( isset( $options['np_relay_server_url'] ) ) {
+			$url = $options['np_relay_server_url'];
+		} else {
+			$url                       = '';
+			$options['np_relay_server_url'] = $url;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-nerdpress-relay-server-api-token-field.php';
+	}
+
+
 
 	/**
 	 * Valid options.

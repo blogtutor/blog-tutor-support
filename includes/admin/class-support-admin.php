@@ -155,6 +155,7 @@ class NerdPress_Admin {
 				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
 			)
 		);
+
 		// Add option to disable/enable ShortPixel bulk optimization.
 		add_settings_field(
 			'shortpixel_bulk_optimize',
@@ -167,6 +168,20 @@ class NerdPress_Admin {
 				'id'          => 'shortpixel_bulk_optimize',
 				'label'       => __( 'Un-hide ShortPixel settings for users.', 'nerdpress-support' ),
 				'description' => __( 'SHORTPIXEL_HIDE_API_KEY constant ' ),
+			)
+		);
+
+		// Add option to deactivate check for production site.
+		add_settings_field(
+			'deactivate_is_production_check',
+			__( 'Production Server Check', 'nerdpress-support' ),
+			array( $this, 'checkbox_deactivate_is_production_check_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'        => $settings_option,
+				'id'          => 'deactivate_is_production_check',
+				'label'       => __( 'Deactivate check for production site.', 'nerdpress-support' ),
 			)
 		);
 
@@ -401,6 +416,7 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-exclude-wp-rocket-delay-js-field.php';
 
 	}
+
 	/**
 	 * Checkbox ShortPixel Bulk Optimize element callback.
 	 *
@@ -419,6 +435,27 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-shortpixel-bulk-optimize-field.php';
 
 	}
+
+	/**
+	 * Checkbox Deactivate is_production element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_deactivate_is_production_check_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+		include dirname( __FILE__ ) . '/views/html-deactivate-is-production-check-field.php';
+
+	}
+
+
 
 
 	/**

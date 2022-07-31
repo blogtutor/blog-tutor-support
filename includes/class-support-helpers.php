@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class NerdPress_Helpers {
 	private static $sucuri_api_key = FALSE;
 	private static $sucuri_buttons_flag = NULL;
-	
+
 	private static function set_sucuri_api() {
 		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
 			$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
@@ -21,7 +21,7 @@ class NerdPress_Helpers {
 			$upload_dir  = wp_upload_dir( $time = null, $create_dir = null );
 			$path        = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
 
-			if( file_exists( $path ) )  
+			if( file_exists( $path ) )
 				$input_lines = file_get_contents( $path );
 			else return;
 		}
@@ -51,7 +51,7 @@ class NerdPress_Helpers {
 	 */
 	public static function is_nerdpress() {
 		$current_user = wp_get_current_user();
-		return ( current_user_can( 'administrator' ) 
+		return ( current_user_can( 'administrator' )
 			&& ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false
 			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) );
 	}
@@ -67,7 +67,7 @@ class NerdPress_Helpers {
 		$disk_info['disk_used']       = 'Unavailable';
 		$disk_info['disk_free']       = 'Unavailable';
 		$disk_info['disk_percentage'] = 'Unavailable';
-			
+
 		if ( function_exists( 'disk_free_space' ) && ( disk_free_space( __DIR__ ) != false ) ) {
 			/* Get disk space free (in bytes). */
 			$disk_free                    = disk_free_space( __DIR__ );
@@ -196,8 +196,8 @@ class NerdPress_Helpers {
 	public static function is_sucuri_api_and_settings_set() {
 		if( self::$sucuri_buttons_flag === NULL ) {
 			self::$sucuri_buttons_flag = (
-				self::is_sucuri_firewall_api_key_set() 
-				&& self::is_sucuri_firewall_selected() 
+				self::is_sucuri_firewall_api_key_set()
+				&& self::is_sucuri_firewall_selected()
 			);
 		}
 		return self::$sucuri_buttons_flag;
@@ -232,7 +232,7 @@ class NerdPress_Helpers {
 		if ( ! is_array( $msg ) ) {
 			$msg = array( 'status' => 1, 'msg' => $msg );
 		}
-		
+
 		// Exit if message is empty
 		if ( $msg['msg'] == '') {
 			return;
@@ -246,13 +246,19 @@ class NerdPress_Helpers {
 			</div>
 		<?php
   }
-	
+
 	/**
  	 * Bypass clearing Cloudflare cache for non-production domains.
  	 * @param string $domain. URL to be cleared
  	 * @return boolean. TRUE if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
  	 */
 	public static function is_production( $home_url ) {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+
+		if ( isset( $options['deactivate_is_production_check'] ) ) {
+			return TRUE;
+		}
+
 		$domain_bypass_strings = array(
 			'development',
 			'staging',
@@ -310,9 +316,9 @@ class NerdPress_Helpers {
       'wc_user_membership',
       'wprm_recipe',
 		);
-		
+
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
-			$bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS; 		
+			$bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS;
 		}
 
 		foreach ( $bypass_strings as $string ) {

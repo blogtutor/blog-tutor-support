@@ -256,7 +256,7 @@ class NerdPress_Helpers {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 
 		if ( isset( $options['deactivate_is_production_check'] ) ) {
-			return TRUE;
+			return true;
 		}
 
 		$domain_bypass_strings = array(

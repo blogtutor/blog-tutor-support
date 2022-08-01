@@ -40,10 +40,10 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 							'id'       => 'cfClearcache',
 							'class'    => 'btButton',
 							'title'    => 'Clear everything from the Cloudflare cache',
-						)
+						),
 					);
 					$wp_admin_bar->add_node( $args );
-					if ( ! is_admin() && ! NerdPress_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== FALSE ) {
+					if ( ! is_admin() && ! NerdPress_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== false ) {
 						$args = array(
 							'id'     => 'nerdpress-purge-url',
 							'title'  => 'Purge this URL from Cloudflare',
@@ -141,7 +141,6 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				);
 				$wp_admin_bar->add_node( $args );
 
-
 				// Clear current page from Cloudproxy cache.
 				if ( ! is_admin() ) {
 					$path                 = $_SERVER['REQUEST_URI'];
@@ -164,7 +163,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 
 				if ( NerdPress_Helpers::is_nerdpress() ) {
 					$cloudproxy_allowlist = $sucuri_api_call . '&a=whitelist&duration=3600';
-					$allowlist_args = array(
+					$allowlist_args       = array(
 						'id'     => 'bt-allowlist-cloudproxy',
 						'title'  => 'Add Your IP Address to the Allowlist',
 						'href'   => $cloudproxy_allowlist,

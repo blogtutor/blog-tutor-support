@@ -24,7 +24,7 @@ class NerdPress_Admin {
 	/**
 	 * Hide WP Rocket's help beacon.
 	 */
-	function hide_wp_rocket_beacon() {
+	public function hide_wp_rocket_beacon() {
 		$current_screen = get_current_screen();
 		if ( $current_screen->id === 'settings_page_wprocket' && ! NerdPress_Helpers::is_nerdpress() ) {
 			echo '<style type="text/css">div#beacon-container {display: none;}</style>';
@@ -179,9 +179,9 @@ class NerdPress_Admin {
 			$settings_option,
 			'options_section',
 			array(
-				'menu'        => $settings_option,
-				'id'          => 'deactivate_is_production_check',
-				'label'       => __( 'Deactivate check for production site.', 'nerdpress-support' ),
+				'menu'  => $settings_option,
+				'id'    => 'deactivate_is_production_check',
+				'label' => __( 'Deactivate check for production site.', 'nerdpress-support' ),
 			)
 		);
 
@@ -226,7 +226,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'cloudflare' );
+		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] === 'cloudflare' );
 
 		// Add field Cloudflare Options
 		add_settings_field(
@@ -285,7 +285,7 @@ class NerdPress_Admin {
 		register_setting( $information_option, $information_option, array( $this, 'validate_options' ) );
 
 		// Check if Sucuri's enabled to skip this branch since it would still execute even if the SFW tab is absent
-		$has_sucuri            = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
+		$has_sucuri            = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] === 'sucuri' );
 		$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 
 		if ( $has_sucuri ) {

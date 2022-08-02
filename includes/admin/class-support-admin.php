@@ -171,20 +171,6 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add option to deactivate check for production site.
-		add_settings_field(
-			'deactivate_is_production_check',
-			__( 'Production Server Check', 'nerdpress-support' ),
-			array( $this, 'checkbox_deactivate_is_production_check_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'deactivate_is_production_check',
-				'label' => __( 'Deactivate check for production site.', 'nerdpress-support' ),
-			)
-		);
-
 		// Add admin notice text area
 		add_settings_field(
 			'admin_notice',
@@ -435,28 +421,6 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-shortpixel-bulk-optimize-field.php';
 
 	}
-
-	/**
-	 * Checkbox Deactivate is_production element callback.
-	 *
-	 * @param array $args Callback arguments.
-	 */
-	public function checkbox_deactivate_is_production_check_element_callback( $args ) {
-		$menu    = $args['menu'];
-		$id      = $args['id'];
-		$options = get_option( $menu );
-
-		if ( isset( $options[ $id ] ) ) {
-			$current = $options[ $id ];
-		} else {
-			$current = isset( $args['default'] ) ? $args['default'] : '0';
-		}
-		include dirname( __FILE__ ) . '/views/html-deactivate-is-production-check-field.php';
-
-	}
-
-
-
 
 	/**
 	 * Radio Button area callback

@@ -142,6 +142,20 @@ class NerdPress_Admin {
 			)
 		);
 
+		// Add option to re-enable automatic WebP creation.
+		add_settings_field(
+			'auto_webp_creation',
+			__( 'WebP Auto-Creation', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_webp_creation_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_webp_creation',
+				'label' => __( 'Enable automatic WebP image creation.', 'nerdpress-support' ),
+			)
+		);
+
 		// Add option to disable/enable excluding WP Rocket delay js list.
 		add_settings_field(
 			'exclude_wp_rocket_delay_js',
@@ -381,6 +395,26 @@ class NerdPress_Admin {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-auto-update-themes-field.php';
+	}
+
+
+	/**
+	 * Checkbox Auto WebP Creation element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_auto_webp_creation_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+		include dirname( __FILE__ ) . '/views/html-auto-webp-creation-field.php';
+
 	}
 
 	/**

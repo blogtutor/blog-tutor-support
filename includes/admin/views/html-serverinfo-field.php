@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Get Memory usage info from /proc/meminfo.
 function get_system_mem_info() {
-	$data     = explode( '\n', trim( file_get_contents( '/proc/meminfo' ) ) );
+	$data     = explode( PHP_EOL, file_get_contents( '/proc/meminfo' ) );
 	$mem_info = array();
 	foreach ( $data as $line ) {
 		list( $key, $val ) = explode( ':', $line );
@@ -18,9 +18,8 @@ function string_to_bytes( $string ) {
 	return $string = preg_replace( '~\D~', '', $string ) * 1024;
 }
 
-$mem_show = array_filter( @get_system_mem_info() );
-if ( $mem_show ) {
-	$mem_info             = get_system_mem_info();
+$mem_info = array_filter( @get_system_mem_info() );
+if ( $mem_info !== false ) {
 	$mem_total            = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemTotal'] ) );
 	$mem_available        = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemAvailable'] ) );
 	$mem_used_unformatted = string_to_bytes( $mem_info['MemTotal'] ) - string_to_bytes( $mem_info['MemAvailable'] );
@@ -72,7 +71,7 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 </article>
 <br>
 
-<?php if ( $mem_show ) { ?>
+<?php if ( $mem_info !== false ) { ?>
 	<article>
 		<h2>Memory Usage:</h2>
 		<p>Total: <?php echo $mem_total; ?></p>

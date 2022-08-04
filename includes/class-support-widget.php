@@ -60,11 +60,11 @@ class NerdPress_Widget {
 			</script>
 			<?php
 			if ( ! is_admin() || ( isset( $options['hide_tab'] ) ) ) {
-			?>
+				?>
 				<style type="text/css">
 				#supporthero-button { display: none !important; }
 				</style>
-			<?php
+				<?php
 			}
 			if ( is_admin() ) {
 				?>

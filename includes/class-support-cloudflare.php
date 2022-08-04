@@ -351,6 +351,20 @@ class NerdPress_Cloudflare_Client {
 		if ( empty( $prefixes ) ) {
 			self::$cache_clear_type = 'full';
 			$body                   = '{ "hosts": ["' . self::$custom_hostname . '"] }';
+			$time                   = time();
+
+			if ( get_option( 'nerdpress_full_cache_clear_time' ) === false ) {
+				update_option( 'nerdpress_full_cache_clear_time', $time );
+			}
+			$last_cloudflare_cache_clear_time = get_option( 'nerdpress_full_cache_clear_time' );
+
+			$time_since_cache_clearing = $last_cloudflare_cache_clear_time - $time;
+
+			if ( $time_since_cache_clearing < 10 ) {
+				return 'skip_cache_clearing';
+			} else {
+				update_option( 'nerdpress_full_cache_clear_time', $time );
+			}
 		} else {
 			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes ) ) {
 				return 'skip_cache_clearing';

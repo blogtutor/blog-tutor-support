@@ -19,7 +19,7 @@ function string_to_bytes( $string ) {
 }
 
 $mem_info = array_filter( @get_system_mem_info() );
-if ( false !== $mem_info ) {
+if ( $mem_info !== false ) {
 	$mem_total            = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemTotal'] ) );
 	$mem_available        = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemAvailable'] ) );
 	$mem_used_unformatted = string_to_bytes( $mem_info['MemTotal'] ) - string_to_bytes( $mem_info['MemAvailable'] );
@@ -71,7 +71,7 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 </article>
 <br>
 
-<?php if ( false !== $mem_info ) { ?>
+<?php if ( $mem_info !== false ) { ?>
 	<article>
 		<h2>Memory Usage:</h2>
 		<p>Total: <?php echo $mem_total; ?></p>

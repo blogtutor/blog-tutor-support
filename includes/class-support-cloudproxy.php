@@ -65,10 +65,10 @@ class NerdPress_Cloudproxy {
 		$client_ip             = $_SERVER['HTTP_X_SUCURI_CLIENTIP'];
 		$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 		$errors                = get_option( $this->err_counter_option );
-		if ( $errors == false ) {
+		if ( $errors === false ) {
 			$error_count = 0;
 		} else {
-			$error_count = $errors[$client_ip];
+			$error_count = $errors[ $client_ip ];
 		}
 		if ( $client_ip && is_array( $sucuri_api_call_array ) && $error_count < 3 ) {
 			// Make sure the option isn't cached
@@ -104,7 +104,7 @@ class NerdPress_Cloudproxy {
 					$message    = json_decode( $body, true );
 					$return_str = $message['messages'][0];
 					$this->save_allowlist_meta( $body, $allowlist_ips );
-					if ( $return_str == 'Invalid domain' ) {
+					if ( $return_str === 'Invalid domain' ) {
 						$this->process_allowlist_error( $message, $client_ip, 'Invalid Sucuri API Key' );
 					}
 				} catch ( Exception $e ) {
@@ -184,22 +184,22 @@ class NerdPress_Cloudproxy {
 		wp_remote_post(
 			$url,
 			array(
-				'headers' => array(
+				'headers'     => array(
 					'Content-Type' => 'application/json',
 				),
-			'body'        => json_encode( $error ),
-			'method'      => 'POST',
-			'data_format' => 'body',
+				'body'        => wp_json_encode( $error ),
+				'method'      => 'POST',
+				'data_format' => 'body',
 			)
 		);
 	}
 
 	private function process_allowlist_error( $response, $client_ip, $msg ) {
 		$errors = get_option( $this->err_counter_option, array() );
-		if ( isset( $errors[$client_ip] ) && 3 > ++$errors[$client_ip] ) {
+		if ( isset( $errors[ $client_ip ] ) && 3 > ++$errors[ $client_ip ] ) {
 			// ignore
-		} elseif ( ! isset( $errors[$client_ip] ) ) {
-			$errors[$client_ip] = 1;
+		} elseif ( ! isset( $errors[ $client_ip ] ) ) {
+			$errors[ $client_ip ] = 1;
 		} else {
 			$this->alert_hook( array( 'error_msg' => $msg ) );
 		}

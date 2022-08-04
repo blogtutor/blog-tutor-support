@@ -24,7 +24,7 @@ class NerdPress_Admin {
 	/**
 	 * Hide WP Rocket's help beacon.
 	 */
-	function hide_wp_rocket_beacon() {
+	public function hide_wp_rocket_beacon() {
 		$current_screen = get_current_screen();
 		if ( $current_screen->id === 'settings_page_wprocket' && ! NerdPress_Helpers::is_nerdpress() ) {
 			echo '<style type="text/css">div#beacon-container {display: none;}</style>';
@@ -155,6 +155,7 @@ class NerdPress_Admin {
 				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
 			)
 		);
+
 		// Add option to disable/enable ShortPixel bulk optimization.
 		add_settings_field(
 			'shortpixel_bulk_optimize',
@@ -211,7 +212,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'cloudflare' );
+		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] === 'cloudflare' );
 
 		// Add field Cloudflare Options
 		add_settings_field(
@@ -270,7 +271,7 @@ class NerdPress_Admin {
 		register_setting( $information_option, $information_option, array( $this, 'validate_options' ) );
 
 		// Check if Sucuri's enabled to skip this branch since it would still execute even if the SFW tab is absent
-		$has_sucuri            = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
+		$has_sucuri            = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] === 'sucuri' );
 		$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 
 		if ( $has_sucuri ) {
@@ -401,6 +402,7 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-exclude-wp-rocket-delay-js-field.php';
 
 	}
+
 	/**
 	 * Checkbox ShortPixel Bulk Optimize element callback.
 	 *
@@ -419,7 +421,6 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-shortpixel-bulk-optimize-field.php';
 
 	}
-
 
 	/**
 	 * Radio Button area callback

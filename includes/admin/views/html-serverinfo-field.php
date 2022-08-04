@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Get Memory usage info from /proc/meminfo.
 function get_system_mem_info() {
-	$data = explode( "\n", trim( file_get_contents( '/proc/meminfo' ) ) );
+	$data     = explode( PHP_EOL, file_get_contents( '/proc/meminfo' ) );
 	$mem_info = array();
 	foreach ( $data as $line ) {
 		list( $key, $val ) = explode( ':', $line );
@@ -18,9 +18,8 @@ function string_to_bytes( $string ) {
 	return $string = preg_replace( '~\D~', '', $string ) * 1024;
 }
 
-$mem_show = array_filter( @get_system_mem_info() );
-if ( $mem_show ) {
-	$mem_info             = get_system_mem_info();
+$mem_info = array_filter( @get_system_mem_info() );
+if ( false !== $mem_info ) {
 	$mem_total            = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemTotal'] ) );
 	$mem_available        = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemAvailable'] ) );
 	$mem_used_unformatted = string_to_bytes( $mem_info['MemTotal'] ) - string_to_bytes( $mem_info['MemAvailable'] );
@@ -53,7 +52,7 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 		</article>
 		<?php
 	}
-} 
+}
 
 ?>
 
@@ -61,8 +60,8 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 	<h2>Disk Space:</h2>
 	<p>Total: <?php echo $disk_total; ?></p>
 	<div class='progress'>
-		<div class='prgtext <?php if ( NerdPress_Helpers::get_disk_info()['disk_percentage']>90 )echo 'prgtext-danger'; ?>'><?php echo NerdPress_Helpers::get_disk_info()['disk_percentage']; ?>% Used</div>
-		<div class='prgbar-disk <?php if ( NerdPress_Helpers::get_disk_info()['disk_percentage']>90 )echo 'prgbar-danger'; ?>' style="width: <?php echo NerdPress_Helpers::get_disk_info()['disk_percentage']; ?>%;"></div>
+		<div class='prgtext <?php if ( NerdPress_Helpers::get_disk_info()['disk_percentage'] > 90 ) echo 'prgtext-danger'; ?>'><?php echo NerdPress_Helpers::get_disk_info()['disk_percentage']; ?>% Used</div>
+		<div class='prgbar-disk <?php if ( NerdPress_Helpers::get_disk_info()['disk_percentage'] > 90 ) echo 'prgbar-danger'; ?>' style="width: <?php echo NerdPress_Helpers::get_disk_info()['disk_percentage']; ?>%;"></div>
 		<div class='prginfo'>
 			<span style='float: left;'><?php echo $disk_used . ' used'; ?></span>
 			<span style='float: right;'><?php echo $disk_free . ' free'; ?></span>
@@ -72,7 +71,7 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 </article>
 <br>
 
-<?php if ( $mem_show ) { ?>
+<?php if ( false !== $mem_info ) { ?>
 	<article>
 		<h2>Memory Usage:</h2>
 		<p>Total: <?php echo $mem_total; ?></p>
@@ -99,10 +98,10 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 	<p><strong>REMOTE_ADDR:</strong> <?php if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) { echo $_SERVER['REMOTE_ADDR']; } ?></p>
 	<p><strong>HTTP_UPGRADE_INSECURE_REQUESTS:</strong> <?php if ( ! empty( $_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS'] ) ) { echo $_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS']; } ?></p>
 	<P><strong>HTTP_CLIENT_IP:</strong> <?php if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) { echo $_SERVER['HTTP_CLIENT_IP']; } else { echo '(not set)'; } ?></p>
-	<p><strong>HTTP_X_SUCURI_CLIENTIP:</strong> <?php if ( !empty( $_SERVER['HTTP_X_SUCURI_CLIENTIP'] ) ) { echo $_SERVER['HTTP_X_SUCURI_CLIENTIP']; } ?></p>
-	<p><strong>HTTP_X_FORWARDED_FOR:</strong> <?php if ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) { echo $_SERVER['HTTP_X_FORWARDED_FOR']; } ?></p>
-	<p><strong>HTTP_X_REAL_IP:</strong> <?php if ( !empty( $_SERVER['HTTP_X_REAL_IP'] ) ) { echo $_SERVER['HTTP_X_REAL_IP']; } ?></p>
-	<p><strong>SERVER_ADDR:</strong> <?php if ( !empty( $_SERVER['SERVER_ADDR'] ) ) { echo $_SERVER['SERVER_ADDR']; } ?></p>	
+	<p><strong>HTTP_X_SUCURI_CLIENTIP:</strong> <?php if ( ! empty( $_SERVER['HTTP_X_SUCURI_CLIENTIP'] ) ) { echo $_SERVER['HTTP_X_SUCURI_CLIENTIP']; } ?></p>
+	<p><strong>HTTP_X_FORWARDED_FOR:</strong> <?php if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) { echo $_SERVER['HTTP_X_FORWARDED_FOR']; } ?></p>
+	<p><strong>HTTP_X_REAL_IP:</strong> <?php if ( ! empty( $_SERVER['HTTP_X_REAL_IP'] ) ) { echo $_SERVER['HTTP_X_REAL_IP']; } ?></p>
+	<p><strong>SERVER_ADDR:</strong> <?php if ( ! empty( $_SERVER['SERVER_ADDR'] ) ) { echo $_SERVER['SERVER_ADDR']; } ?></p>
 </article>
 
 <br>

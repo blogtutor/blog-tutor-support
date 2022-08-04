@@ -255,7 +255,7 @@ class NerdPress_Helpers {
 	public static function is_production( $home_url ) {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 
-		if ( isset( $options['deactivate_is_production_check'] ) ) {
+		if ( defined( 'NERDPRESS_PRODUCTION_CHECK_BYPASS' ) ) {
 			return true;
 		}
 

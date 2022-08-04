@@ -48,8 +48,6 @@ class NerdPress_Support_Overrides {
 			add_filter( 'auto_update_theme', '__return_false' );
 		}
 
-	}
-
 	public function is_auto_webp_set() {
 		if ( ! isset( self::$nerdpress_options['auto_webp_creation'] ) ) {
 			add_filter( 'wp_upload_image_mime_transforms', '__return_empty_array' );

@@ -262,9 +262,7 @@ class NerdPress_Helpers {
 	 * @return boolean. true if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
 	 */
 	public static function is_production( $home_url ) {
-		$options = get_option( 'blog_tutor_support_settings', array() );
-
-		if ( isset( $options['deactivate_is_production_check'] ) ) {
+		if ( defined( 'NERDPRESS_PRODUCTION_CHECK_BYPASS' ) ) {
 			return true;
 		}
 

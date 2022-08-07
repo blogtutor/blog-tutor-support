@@ -356,12 +356,14 @@ class NerdPress_Cloudflare_Client {
 			if ( get_option( 'nerdpress_full_cache_clear_time' ) === false ) {
 				add_option( 'nerdpress_full_cache_clear_time', $time, '', false );
 			}
+
 			$last_cloudflare_cache_clear_time = get_option( 'nerdpress_full_cache_clear_time' );
 			$time_since_cache_clearing        = $time - $last_cloudflare_cache_clear_time;
 
 			if ( $time_since_cache_clearing < 10 ) {
 				return 'skip_cache_clearing';
 			}
+
 		} else {
 			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes ) ) {
 				return 'skip_cache_clearing';

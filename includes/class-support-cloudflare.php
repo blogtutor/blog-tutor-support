@@ -387,7 +387,7 @@ class NerdPress_Cloudflare_Client {
 		);
 
 		$result          = self::post( $url, $opts );
-		$api_call_status =  json_decode( $result['body'] );
+		$api_call_status = json_decode( $result['body'] );
 
 		if (
 			self::$cache_clear_type === 'full'

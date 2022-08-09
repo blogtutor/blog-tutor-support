@@ -361,7 +361,7 @@ class NerdPress_Cloudflare_Client {
 			$time_since_cache_clearing        = $time - $last_cloudflare_cache_clear_time;
 
 			if ( $time_since_cache_clearing < 10 ) {
-				return 'skip_cache_clearing';
+				return 'cache_clear_rate_limited';
 			}
 
 		} else {
@@ -386,9 +386,14 @@ class NerdPress_Cloudflare_Client {
 			'body'    => $body,
 		);
 
-		$result = self::post( $url, $opts );
+		$result          = self::post( $url, $opts );
+		$api_call_status =  json_decode( $result['body'] );
 
-		if ( self::$cache_clear_type === 'full' ) {
+		if (
+			self::$cache_clear_type === 'full'
+			&& ! is_wp_error( $result )
+			&& $api_call_status->success
+		) {
 			update_option( 'nerdpress_full_cache_clear_time', $time, false );
 		}
 

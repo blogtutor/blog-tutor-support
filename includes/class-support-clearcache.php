@@ -1,5 +1,5 @@
 <?php
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
@@ -45,26 +45,28 @@ class NerdPress_Clearcache {
 
 			$body = wp_remote_retrieve_body( $response );
 			try {
-				$message_body = json_decode($body, true);
-			} catch(Exception $e) {
+				$message_body = json_decode( $body, true );
+			} catch ( Exception $e ) {
 				// TODO: Notfiy us when this happens.
 				// Overrwrite the returned object
-				$message_body = array();
+				$message_body           = array();
 				$message_body['status'] = 0;
 			}
 
-			$message = ( $message_body['status'] == 0
-					? 'There was a problem clearing the Sucuri Firewall cache. Please try again, and if it still doesn\'t work please contact support@nerdpress.net.'
-					: $message_body['messages']['0'] );
+			$message = (
+				$message_body['status'] === 0
+				? 'There was a problem clearing the Sucuri Firewall cache. Please try again, and if it still doesn\'t work please contact support@nerdpress.net.'
+				: $message_body['messages']['0']
+			);
 
 			$option_payload = array(
 				'msg'    => sanitize_text_field( $message ),
-				'status' => sanitize_text_field( $message_body['status'] )
+				'status' => sanitize_text_field( $message_body['status'] ),
 			);
 			update_option( 'clear_cache_msg', $option_payload );
 
 			// Send message to awaiting JS
-			echo ( $message_body['status'] == 0 ? false : $message );
+			echo ( $message_body['status'] === 0 ? false : $message );
 			die();
 		}
 

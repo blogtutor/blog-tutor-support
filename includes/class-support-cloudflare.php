@@ -139,12 +139,8 @@ class NerdPress_Cloudflare_Client {
 		if ( isset( $nerdpress_options['cloudflare_token'] ) ) {
 			self::$cloudflare_api_key = $nerdpress_options['cloudflare_token'];
 		}
-		self::$header_cloudflare = [
-			'Authorization' => 'Bearer ' . self::$cloudflare_api_key,
-		];
-		self::$header_content_type = [
-			'Content-Type' => 'application/json'
-		];
+		self::$header_cloudflare   = [ 'Authorization' => 'Bearer ' . self::$cloudflare_api_key ];
+		self::$header_content_type = [ 'Content-Type' => 'application/json' ];
 
 		$class = __CLASS__;
 		new $class;
@@ -160,7 +156,7 @@ class NerdPress_Cloudflare_Client {
 		$firewall_choice   = $nerdpress_options['firewall_choice'];
 		if ( ( $firewall_choice === 'cloudflare' ) && isset( $nerdpress_options['cloudflare_token'] ) ) {
 
-			$this->cloudflare_notices = ['nerdpress_cloudflare_notice'];
+			$this->cloudflare_notices = [ 'nerdpress_cloudflare_notice' ];
 
 			add_action( 'wp_enqueue_scripts', array( $this, 'inject_scripts' ), 20 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'inject_scripts' ), 20 );
@@ -213,8 +209,8 @@ class NerdPress_Cloudflare_Client {
 		);
 
 		foreach ( $options as $option ) {
-			if ( isset ( $input[$option] ) ) {
-				$input[$option] = sanitize_text_field( $input[$option] );
+			if ( isset( $input[ $option ] ) ) {
+				$input[ $option ] = sanitize_text_field( $input[ $option ] );
 			}
 		}
 
@@ -270,9 +266,9 @@ class NerdPress_Cloudflare_Client {
 
 		$error = array(
 			'host'    => array( self::$custom_hostname ),
-			'payload' => stripslashes( str_replace( array( '\n', '\r' ), '', json_encode( $result['body'] ) ) ),
-			'cf-ray'  => json_encode( $result['headers']['CF-Ray'] ),
-			'user'    => "$current_user->user_login ($current_user->display_name)",
+			'payload' => stripslashes( str_replace( array( '\n', '\r' ), '', wp_json_encode( $result['body'] ) ) ),
+			'cf-ray'  => wp_json_encode( $result['headers']['CF-Ray'] ),
+			'user'    => "$current_user->user_login( $current_user->display_name )",
 			'cleared' => self::$cache_clear_type,
 			'method'  => self::$which_cloudflare_method,
 			'url'     => self::$cache_trigger_url,
@@ -286,7 +282,7 @@ class NerdPress_Cloudflare_Client {
 				'headers'     => array(
 					'Content-Type' => 'application/json',
 				),
-				'body'        => json_encode( $error ),
+				'body'        => wp_json_encode( $error ),
 				'method'      => 'POST',
 				'data_format' => 'body',
 				'timeout'     => 10,
@@ -317,12 +313,12 @@ class NerdPress_Cloudflare_Client {
 	private static function process_response( $result ) {
 		if ( is_wp_error( $result ) ) {
 			$result = array(
-				'body' => json_encode(
+				'body' => wp_json_encode(
 					array(
 						'errors' => array(
 							array( 'message' => $result->get_error_message() ),
 						),
-					),
+					)
 				),
 			);
 		}
@@ -354,7 +350,20 @@ class NerdPress_Cloudflare_Client {
 
 		if ( empty( $prefixes ) ) {
 			self::$cache_clear_type = 'full';
-			$body = '{ "hosts": ["' . self::$custom_hostname . '"] }';
+			$body                   = '{ "hosts": ["' . self::$custom_hostname . '"] }';
+			$time                   = time();
+
+			if ( get_option( 'nerdpress_full_cache_clear_time' ) === false ) {
+				add_option( 'nerdpress_full_cache_clear_time', $time, '', false );
+			}
+
+			$last_cloudflare_cache_clear_time = get_option( 'nerdpress_full_cache_clear_time' );
+			$time_since_cache_clearing        = $time - $last_cloudflare_cache_clear_time;
+
+			if ( $time_since_cache_clearing < 10 ) {
+				return 'cache_clear_rate_limited';
+			}
+
 		} else {
 			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes ) ) {
 				return 'skip_cache_clearing';
@@ -365,7 +374,7 @@ class NerdPress_Cloudflare_Client {
 			$prefixes_no_protocol   = preg_replace( '#https?://#', '', $prefixes_no_lang_query );
 
 			self::$cache_clear_type = implode( ',', $prefixes_no_protocol );
-			$body = '{ "prefixes": [' . implode( ',', $prefixes_no_protocol ) . '] }';
+			$body                   = '{ "prefixes": [' . implode( ',', $prefixes_no_protocol ) . '] }';
 		}
 
 		$url  = self::assemble_url() . 'purge_cache';
@@ -374,15 +383,25 @@ class NerdPress_Cloudflare_Client {
 				self::$header_content_type,
 				self::$header_cloudflare
 			),
-			'body' => $body,
+			'body'    => $body,
 		);
 
-		$result = self::post( $url, $opts );
+		$result          = self::post( $url, $opts );
+		$api_call_status = json_decode( $result['body'] );
+
+		if (
+			self::$cache_clear_type === 'full'
+			&& ! is_wp_error( $result )
+			&& $api_call_status->success
+		) {
+			update_option( 'nerdpress_full_cache_clear_time', $time, false );
+		}
+
 		return self::process_response( $result );
 	}
 
 	public function handle_post_cache_transition( $new_status, $old_status, $post ) {
-		if ( ( $old_status != 'publish' && $new_status != 'publish' ) || self::$clearing_comment_cache ) {
+		if ( ( $old_status !== 'publish' && $new_status !== 'publish' ) || self::$clearing_comment_cache ) {
 			return;
 		}
 
@@ -476,7 +495,6 @@ class NerdPress_Cloudflare_Client {
 	public function purge_cloudflare_url() {
 		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
 
-		// self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
@@ -505,12 +523,14 @@ class NerdPress_Cloudflare_Client {
 		self::$which_cloudflare_method = __METHOD__;
 
 		// Some of these could be combined but let's leave these for clarity
-		if ( ( $old_status == 'unapproved' && ( $new_status == 'trash' || $new_status == 'spam' ) )
-			|| ( $new_status == 'unapproved' && ( $old_status == 'trash' || $old_status == 'spam' ) )
-			|| ( $new_status == 'spam' && $old_status == 'trash' )
-			|| ( $new_status == 'trash' && $old_status == 'spam' )
-			|| ( $new_status == 'delete' && ( $old_status == 'trash' || $old_status == 'spam') )
-			|| ( $new_status != 'approved' && $old_status == 'post-trashed' ) ) {
+		if (
+			( $old_status === 'unapproved' && ( $new_status === 'trash' || $new_status === 'spam' ) )
+			|| ( $new_status === 'unapproved' && ( $old_status === 'trash' || $old_status === 'spam' ) )
+			|| ( $new_status === 'spam' && $old_status === 'trash' )
+			|| ( $new_status === 'trash' && $old_status === 'spam' )
+			|| ( $new_status === 'delete' && ( $old_status === 'trash' || $old_status === 'spam' ) )
+			|| ( $new_status !== 'approved' && $old_status === 'post-trashed' )
+		) {
 			return;
 		}
 
@@ -540,7 +560,11 @@ class NerdPress_Cloudflare_Client {
 		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
-		if ( ! $comment_approved || $comment_approved == 'spam' || $comment_approved == 'trash' ) {
+		if (
+			! $comment_approved
+			|| $comment_approved === 'spam'
+			|| $comment_approved === 'trash'
+		) {
 			return;
 		}
 
@@ -593,7 +617,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param integer $post_id. Id of the post
 	 */
 	public function handle_deletion_cache( $post_id ) {
-		if ( get_post_status( $post_id ) != 'publish' ) {
+		if ( get_post_status( $post_id ) !== 'publish' ) {
 			return;
 		}
 

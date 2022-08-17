@@ -66,8 +66,9 @@ class NerdPress_Support_Snapshot {
 			$status = true;
 		}
 
-		$relay_url = NerdPress_Helpers::relay_server_url() . '/wp-json/nerdpress/v1/snapshot';
-		$api_token = NerdPress_Helpers:: relay_server_api_token();
+
+		$relay_url = trailingslashit(NerdPress_Helpers::relay_server_url()) . 'wp-json/nerdpress/v1/snapshot';
+		$api_token = NerdPress_Helpers::relay_server_api_token();
 
 		$args = array(
 			'headers'   => array(
@@ -101,8 +102,17 @@ class NerdPress_Support_Snapshot {
 		}
 
 		$current_plugins = get_plugins();
+		$mu_plugins = get_mu_plugins();
 		$current_theme   = wp_get_theme();
+		$active_plugins_option = get_option( 'active_plugins' );
+		$active_plugins = static::filter_active_plugins(get_plugins(), $active_plugins_option);
+		$inactive_plugins = static::filter_inactive_plugins(get_plugins(), $active_plugins_option);
+
 		array_walk_recursive( $current_plugins, 'filter_htmlspecialchars' );
+		array_walk_recursive( $mu_plugins, 'filter_htmlspecialchars' );
+		array_walk_recursive( $active_plugins, 'filter_htmlspecialchars' );
+		array_walk_recursive( $inactive_plugins, 'filter_htmlspecialchars' );
+
 		require ABSPATH . WPINC . '/version.php';
 
 		$user                             = wp_parse_url( get_bloginfo( 'wpurl' ) )['host'];
@@ -113,7 +123,9 @@ class NerdPress_Support_Snapshot {
 		$dump['firewall_setting']         = $options['firewall_choice'];
 		$dump['domain']                   = $user;
 		$dump['all_plugins']              = $current_plugins;
-		$dump['active_plugins']           = get_option( 'active_plugins' );
+		$dump['mu_plugins']               = $mu_plugins;
+		$dump['active_plugins']           = $active_plugins;
+		$dump['inactive_plugins']         = $inactive_plugins;
 		$dump['active_theme']             = $current_theme['Name'];
 		$dump['active_theme_version']     = $current_theme['Version'];
 		$dump['plugin_update_data']       = get_option( '_site_transient_update_plugins' )->response;
@@ -135,6 +147,16 @@ class NerdPress_Support_Snapshot {
 		}
 
 		return $dump;
+	}
+
+	private static function filter_active_plugins($all_plugins, $active_plugins)
+	{
+		return array_filter($all_plugins, fn ($key) => in_array($key, $active_plugins), ARRAY_FILTER_USE_KEY);
+	}
+
+	private static function filter_inactive_plugins($all_plugins, $active_plugins)
+	{
+		return array_filter($all_plugins, fn ($key) => !in_array($key, $active_plugins), ARRAY_FILTER_USE_KEY);
 	}
 }
 

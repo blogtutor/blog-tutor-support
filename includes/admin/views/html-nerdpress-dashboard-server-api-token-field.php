@@ -5,8 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $options = get_option( 'blog_tutor_support_settings' );
 
-if ( isset( $options['np_relay_server_url'] ) ) {
-	$placeholder = $options['np_relay_server_url'];
+if ( isset( $options['np_dashboard_api_token'] ) ) {
+	$placeholder = $options['np_dashboard_api_token'];
 } else {
 	$placeholder = '';
 }

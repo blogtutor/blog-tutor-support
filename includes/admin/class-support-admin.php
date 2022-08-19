@@ -240,30 +240,30 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add Relay Server Settings
+		// Add Dashboard Server Settings
 		add_settings_field(
-			'np_relay_server_url',
-			__( 'NerdPress Relay Server URL', 'nerdpress-support' ),
-			array( $this, 'nerdpress_relay_server_url_element_callback' ),
+			'np_dashboard_server_url',
+			__( 'NerdPress Dashboard Server URL', 'nerdpress-support' ),
+			array( $this, 'nerdpress_dashboard_server_url_element_callback' ),
 			$settings_option,
 			'options_section',
 			array(
 				'menu'    => $settings_option,
-				'id'      => 'np_relay_server_url',
-				'label'   => __( 'NerdPress Relay Server URL', 'nerdpress-support' ),
+				'id'      => 'np_dashboard_server_url',
+				'label'   => __( 'NerdPress Dashboard Server URL', 'nerdpress-support' ),
 			)
 		);
 
 		add_settings_field(
-			'np_relay_api_token',
-			__( 'NerdPress Relay API Token', 'nerdpress-support' ),
-			array( $this, 'nerdpress_relay_api_token_element_callback' ),
+			'np_dashboard_api_token',
+			__( 'NerdPress Dashboard API Token', 'nerdpress-support' ),
+			array( $this, 'nerdpress_dashboard_api_token_element_callback' ),
 			$settings_option,
 			'options_section',
 			array(
 				'menu'  => $settings_option,
-				'id'    => 'np_relay_api_token',
-				'label' => __( 'NerdPress Relay API Token', 'nerdpress-support' ),
+				'id'    => 'np_dashboard_api_token',
+				'label' => __( 'NerdPress Dashboard API Token', 'nerdpress-support' ),
 			)
 		);
 
@@ -578,47 +578,47 @@ class NerdPress_Admin {
 	}
 
 	/**
-	 * NerdPress Relay Server URL Callback
+	 * NerdPress Dashboard Server URL Callback
 	 *
 	 * @param array $args Callback arguments.
 	 */
-	public function nerdpress_relay_server_url_element_callback( $args ) {
+	public function nerdpress_dashboard_server_url_element_callback( $args ) {
 		$menu    = $args['menu'];
 		$id      = $args['id'];
 		$options = get_option( $menu );
 		$token   = '';
 
-		if ( isset( $options['np_relay_api_token'] ) ) {
-			$url = $options['np_relay_api_token'];
+		if ( isset( $options['np_dashboard_api_token'] ) ) {
+			$url = $options['np_dashboard_api_token'];
 		} else {
 			$url                       = '';
-			$options['np_relay_api_token'] = $url;
+			$options['np_dashboard_api_token'] = $url;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-nerdpress-relay-server-url-field.php';
+		include dirname( __FILE__ ) . '/views/html-nerdpress-dashboard-server-url-field.php';
 	}
 
 	/**
-	 * NerdPress Relay Server URL Callback
+	 * NerdPress Dashboard Server URL Callback
 	 *
 	 * @param array $args Callback arguments.
 	 */
-	public function nerdpress_relay_api_token_element_callback( $args ) {
+	public function nerdpress_dashboard_api_token_element_callback( $args ) {
 		$menu    = $args['menu'];
 		$id      = $args['id'];
 		$options = get_option( $menu );
 		$token   = '';
 
-		if ( isset( $options['np_relay_server_url'] ) ) {
-			$url = $options['np_relay_server_url'];
+		if ( isset( $options['np_dashboard_server_url'] ) ) {
+			$url = $options['np_dashboard_server_url'];
 		} else {
 			$url                       = '';
-			$options['np_relay_server_url'] = $url;
+			$options['np_dashboard_server_url'] = $url;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-nerdpress-relay-server-api-token-field.php';
+		include dirname( __FILE__ ) . '/views/html-nerdpress-dashboard-server-api-token-field.php';
 	}
 
 

@@ -53,6 +53,7 @@ class NerdPress_Helpers {
 		$current_user = wp_get_current_user();
 		return ( current_user_can( 'administrator' ) 
 			&& ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false
+			|| strpos( $current_user->user_email, '@apsis.io' ) !== false
 			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) );
 	}
 
@@ -67,7 +68,7 @@ class NerdPress_Helpers {
 		$disk_info['disk_used']       = 'Unavailable';
 		$disk_info['disk_free']       = 'Unavailable';
 		$disk_info['disk_percentage'] = 'Unavailable';
-			
+
 		if ( function_exists( 'disk_free_space' ) && ( disk_free_space( __DIR__ ) != false ) ) {
 			/* Get disk space free (in bytes). */
 			$disk_free                    = disk_free_space( __DIR__ );
@@ -196,8 +197,8 @@ class NerdPress_Helpers {
 	public static function is_sucuri_api_and_settings_set() {
 		if( self::$sucuri_buttons_flag === NULL ) {
 			self::$sucuri_buttons_flag = (
-				self::is_sucuri_firewall_api_key_set() 
-				&& self::is_sucuri_firewall_selected() 
+				self::is_sucuri_firewall_api_key_set()
+				&& self::is_sucuri_firewall_selected()
 			);
 		}
 		return self::$sucuri_buttons_flag;
@@ -232,7 +233,7 @@ class NerdPress_Helpers {
 		if ( ! is_array( $msg ) ) {
 			$msg = array( 'status' => 1, 'msg' => $msg );
 		}
-		
+
 		// Exit if message is empty
 		if ( $msg['msg'] == '') {
 			return;
@@ -246,7 +247,7 @@ class NerdPress_Helpers {
 			</div>
 		<?php
   }
-	
+
 	/**
  	 * Bypass clearing Cloudflare cache for non-production domains.
  	 * @param string $domain. URL to be cleared
@@ -310,9 +311,9 @@ class NerdPress_Helpers {
       'wc_user_membership',
       'wprm_recipe',
 		);
-		
+
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
-			$bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS; 		
+			$bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS;
 		}
 
 		foreach ( $bypass_strings as $string ) {
@@ -337,28 +338,32 @@ class NerdPress_Helpers {
 	}
 
 	/**
-	 * Determine whether the relay server settings are set
+	 * Determine whether the dashboard server settings are set
 	 *
-	 * @return boolean. If the Relay Server URL and API Token are set
+	 * @return boolean. If the dashboard API Token is set
 	 */
-	public static function is_relay_server_configured() {
+	public static function is_dashboard_server_configured() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 
 		return (
-			isset( $options['np_relay_server_url'] ) &&
-			isset( $options['np_relay_api_token'] )
+			isset( $options['np_dashboard_api_token'] )
 		);
 	}
 
-	public static function relay_server_url()
+	public static function dashboard_server_url()
 	{
 		$options = get_option( 'blog_tutor_support_settings', array() );
-		return $options['np_relay_server_url'];
+		return trailingslashit($options['np_dashboard_server_url'] || self::dashboard_server_default_url());
 	}
 
-	public static function relay_server_api_token()
+	public static function dashboard_server_default_url()
+	{
+		return "https://dashboard.nerdpress.net/";
+	}
+
+	public static function dashboard_server_api_token()
 	{
 		$options = get_option( 'blog_tutor_support_settings', array() );
-		return $options['np_relay_api_token'];
+		return $options['np_dashboard_api_token'];
 	}
 }

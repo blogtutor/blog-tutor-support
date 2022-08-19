@@ -21,19 +21,19 @@ class NerdPress_Support_Snapshot
 
 	public function __construct()
 	{
-		add_action('wp_loaded', array($this, 'ping_relay'));
+		add_action('wp_loaded', array($this, 'ping_dashboard'));
 		add_action('wp_loaded', array($this, 'schedule_snapshot_cron'));
 
 		add_action('np_scheduled_snapshot', array($this, 'take_snapshot'));
 	}
 
 	/**
-	 * Ping the relay server if the PING is set in the GET request.
+	 * Ping the dashboard server if the PING is set in the GET request.
 	 */
-	public static function ping_relay()
+	public static function ping_dashboard()
 	{
 		// If the request is a one-time call from the dashboard.
-		if (isset($_GET['np_snapshot']) && NerdPress_Helpers::is_relay_server_configured()) {
+		if (isset($_GET['np_snapshot']) && NerdPress_Helpers::is_dashboard_server_configured()) {
 			self::take_snapshot();
 			wp_safe_redirect($_SERVER['HTTP_REFERER']);
 			die;
@@ -42,28 +42,26 @@ class NerdPress_Support_Snapshot
 
 	public function schedule_snapshot_cron()
 	{
-
 		if (!wp_next_scheduled('np_scheduled_snapshot')) {
 			wp_schedule_event(time(), 'twicedaily', 'np_scheduled_snapshot');
 		}
 
-		// if ( isset( get_option( 'blog_tutor_support_settings' )['schedule_snapshot'] ) ) {
-		// } else {
-		//  if ( wp_next_scheduled( 'np_scheduled_snapshot' ) ) {
-		//      wp_clear_scheduled_hook( 'np_scheduled_snapshot' );
-		//  }
-		// }
+		if (!isset(get_option('blog_tutor_support_settings')['schedule_snapshot'])) {
+			if (wp_next_scheduled('np_scheduled_snapshot')) {
+				wp_clear_scheduled_hook('np_scheduled_snapshot');
+			}
+		}
 	}
 
 	public function take_snapshot()
 	{
 		$dump         = self::assemble_snapshot();
-		$api_response = self::send_request_to_relay($dump);
+		$api_response = self::send_request_to_dashboard($dump);
 
 		return $api_response;
 	}
 
-	public static function send_request_to_relay($dump)
+	public static function send_request_to_dashboard($dump)
 	{
 
 		if (defined('SSLVERIFY_DEV') && SSLVERIFY_DEV === false) {
@@ -72,23 +70,23 @@ class NerdPress_Support_Snapshot
 			$status = true;
 		}
 
-
-		$relay_url = trailingslashit(NerdPress_Helpers::relay_server_url()) . 'wp-json/nerdpress/v1/snapshot';
-		$api_token = NerdPress_Helpers::relay_server_api_token();
+		$dashboard_url = NerdPress_Helpers::dashboard_server_url() . 'wp-json/nerdpress/v1/snapshot';
+		$api_token = NerdPress_Helpers::dashboard_server_api_token();
 
 		$args = array(
-			'headers'   => array(
+			'headers' => array(
 				'Authorization' => "Bearer $api_token",
 				"Content-Type" => 'application/json',
 			),
-			'body'      => wp_json_encode($dump),
-			// Bypass SSL verification when using self signed cert. Like when in a local dev environment.
+			'body' => wp_json_encode($dump),
+			// Bypass SSL verification when using self
+			// signed cert. Like when in a local dev environment.
 			'sslverify' => $status,
 		);
 
 
-		// Make request to the relay server.
-		$api_response = wp_remote_post($relay_url, $args);
+		// Make request to the dashboard server.
+		$api_response = wp_remote_post($dashboard_url, $args);
 
 		return $api_response;
 	}
@@ -96,7 +94,7 @@ class NerdPress_Support_Snapshot
 
 	public static function assemble_snapshot()
 	{
-		// The HTML must be escaped to prevent JSON errors on the relay server.
+		// The HTML must be escaped to prevent JSON errors on the dashboard server.
 		function filter_htmlspecialchars(&$value)
 		{
 			$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');

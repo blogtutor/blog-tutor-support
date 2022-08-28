@@ -268,7 +268,7 @@ class NerdPress_Cloudflare_Client {
 			'host'    => array( self::$custom_hostname ),
 			'payload' => stripslashes( str_replace( array( '\n', '\r' ), '', wp_json_encode( $result['body'] ) ) ),
 			'cf-ray'  => wp_json_encode( $result['headers']['CF-Ray'] ),
-			'user'    => "$current_user->user_login( $current_user->display_name )",
+			'user'    => "$current_user->user_login ($current_user->display_name)",
 			'cleared' => self::$cache_clear_type,
 			'method'  => self::$which_cloudflare_method,
 			'url'     => self::$cache_trigger_url,

@@ -21,19 +21,19 @@ class NerdPress_Support_Snapshot
 
 	public function __construct()
 	{
-		add_action('wp_loaded', array($this, 'ping_dashboard'));
+		add_action('wp_loaded', array($this, 'ping_relay'));
 		add_action('wp_loaded', array($this, 'schedule_snapshot_cron'));
 
 		add_action('np_scheduled_snapshot', array($this, 'take_snapshot'));
 	}
 
 	/**
-	 * Ping the dashboard server if the PING is set in the GET request.
+	 * Ping the relay server if the PING is set in the GET request.
 	 */
-	public static function ping_dashboard()
+	public static function ping_relay()
 	{
-		// If the request is a one-time call from the dashboard.
-		if (isset($_GET['np_snapshot']) && NerdPress_Helpers::is_dashboard_server_configured()) {
+		// If the request is a one-time call from the relay.
+		if (isset($_GET['np_snapshot']) && NerdPress_Helpers::is_relay_server_configured()) {
 			self::take_snapshot();
 			wp_safe_redirect($_SERVER['HTTP_REFERER']);
 			die;
@@ -56,12 +56,12 @@ class NerdPress_Support_Snapshot
 	public function take_snapshot()
 	{
 		$dump         = self::assemble_snapshot();
-		$api_response = self::send_request_to_dashboard($dump);
+		$api_response = self::send_request_to_relay($dump);
 
 		return $api_response;
 	}
 
-	public static function send_request_to_dashboard($dump)
+	public static function send_request_to_relay($dump)
 	{
 
 		if (defined('SSLVERIFY_DEV') && SSLVERIFY_DEV === false) {
@@ -70,8 +70,8 @@ class NerdPress_Support_Snapshot
 			$status = true;
 		}
 
-		$dashboard_url = NerdPress_Helpers::dashboard_server_url() . 'wp-json/nerdpress/v1/snapshot';
-		$api_token = NerdPress_Helpers::dashboard_server_api_token();
+		$relay_url = NerdPress_Helpers::relay_server_url() . 'wp-json/nerdpress/v1/snapshot';
+		$api_token = NerdPress_Helpers::relay_server_api_token();
 
 		$args = array(
 			'headers' => array(
@@ -85,8 +85,8 @@ class NerdPress_Support_Snapshot
 		);
 
 
-		// Make request to the dashboard server.
-		$api_response = wp_remote_post($dashboard_url, $args);
+		// Make request to the relay server.
+		$api_response = wp_remote_post($relay_url, $args);
 
 		return $api_response;
 	}
@@ -94,7 +94,7 @@ class NerdPress_Support_Snapshot
 
 	public static function assemble_snapshot()
 	{
-		// The HTML must be escaped to prevent JSON errors on the dashboard server.
+		// The HTML must be escaped to prevent JSON errors on the relay server.
 		function filter_htmlspecialchars(&$value)
 		{
 			$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');

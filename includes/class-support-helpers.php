@@ -338,32 +338,32 @@ class NerdPress_Helpers {
 	}
 
 	/**
-	 * Determine whether the dashboard server settings are set
+	 * Determine whether the relay server settings are set
 	 *
-	 * @return boolean. If the dashboard API Token is set
+	 * @return boolean. If the relay API Token is set
 	 */
-	public static function is_dashboard_server_configured() {
+	public static function is_relay_server_configured() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 
 		return (
-			isset( $options['np_dashboard_api_token'] )
+			isset( $options['np_relay_api_token'] )
 		);
 	}
 
-	public static function dashboard_server_url()
+	public static function relay_server_url()
 	{
 		$options = get_option( 'blog_tutor_support_settings', array() );
-		return trailingslashit($options['np_dashboard_server_url'] || self::dashboard_server_default_url());
+		return trailingslashit($options['np_relay_server_url'] || self::relay_server_default_url());
 	}
 
-	public static function dashboard_server_default_url()
+	public static function relay_server_default_url()
 	{
-		return "https://dashboard.nerdpress.net/";
+		return "https://relay.nerdpress.net/";
 	}
 
-	public static function dashboard_server_api_token()
+	public static function relay_server_api_token()
 	{
 		$options = get_option( 'blog_tutor_support_settings', array() );
-		return $options['np_dashboard_api_token'];
+		return $options['np_relay_api_token'];
 	}
 }

@@ -87,7 +87,7 @@ if ( ! class_exists( 'NerdPress' ) ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-overrides.php';
 			include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
 
-			if ( NerdPress_Helpers::is_dashboard_server_configured() ) {
+			if ( NerdPress_Helpers::is_relay_server_configured() ) {
 				include_once dirname( __FILE__ ) . '/includes/class-support-snapshot.php';
 			}
 

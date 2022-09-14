@@ -365,12 +365,15 @@ class NerdPress_Cloudflare_Client {
 			}
 
 		} else {
-			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes ) ) {
+
+			// Removing the ?lang= query string, then bypassing cache clearing if another query string exists.
+			$prefixes_no_lang_query = preg_replace( '#[\?|&]lang=.[^&]#', '', $prefixes );
+
+			if ( NerdPress_Helpers::cache_clear_bypass_on_string( $prefixes_no_lang_query ) ) {
 				return 'skip_cache_clearing';
 			}
 
 			// Removing http(s):// because Cloudflare API "prefixes" cache clear requires it
-			$prefixes_no_lang_query = preg_replace( '#[\?|&]lang=.[^&]#', '', $prefixes );
 			$prefixes_no_protocol   = preg_replace( '#https?://#', '', $prefixes_no_lang_query );
 
 			self::$cache_clear_type = implode( ',', $prefixes_no_protocol );

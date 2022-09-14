@@ -322,6 +322,7 @@ class NerdPress_Helpers {
 			'shop_subscription',
 			'wc_user_membership',
 			'wprm_recipe',
+			'?=',
 		);
 
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {

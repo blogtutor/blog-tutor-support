@@ -311,18 +311,7 @@ class NerdPress_Helpers {
 	 */
 	public static function cache_clear_bypass_on_string( $prefixes ) {
 		$bypass_strings = array(
-			'edd_log',
-			'edd_payment',
-			'elementor_library',
-			'page_id',
-			'post_type=recipe',
-			'scheduled-action',
-			'shop_coupon',
-			'shop_order',
-			'shop_subscription',
-			'wc_user_membership',
-			'wprm_recipe',
-			'?=',
+			'?',
 		);
 
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {

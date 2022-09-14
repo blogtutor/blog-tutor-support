@@ -386,15 +386,16 @@ class NerdPress_Cloudflare_Client {
 			'body'    => $body,
 		);
 
-		$result          = self::post( $url, $opts );
-		$api_call_status = json_decode( $result['body'] );
+		$result = self::post( $url, $opts );
 
 		if (
 			self::$cache_clear_type === 'full'
 			&& ! is_wp_error( $result )
-			&& $api_call_status->success
 		) {
-			update_option( 'nerdpress_full_cache_clear_time', $time, false );
+			$api_call_status = json_decode( $result['body'] );
+			if ( $api_call_status->success ) {
+				update_option( 'nerdpress_full_cache_clear_time', $time, false );
+			}
 		}
 
 		return self::process_response( $result );

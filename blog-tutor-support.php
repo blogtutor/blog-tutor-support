@@ -3,7 +3,7 @@
 /**
  * Plugin Name: NerdPress Support
  * Description: Helps your site work with our custom Cloudflare Enterprise setup or the Sucuri Firewall, and adds the NerdPress "Need Help?" support tab to your dashboard.
- * Version:     1.4-beta1
+ * Version:     1.3.1
  * Author:      NerdPress
  * Author URI:  https://www.nerdpress.net
  * GitHub URI:  blogtutor/blog-tutor-support
@@ -20,7 +20,7 @@ include( dirname( __FILE__ ) . '/github-updater.php' );
 include( dirname( __FILE__ ) . '/includes/admin-menu.php' );
 
 if ( ! defined( 'BT_PLUGIN_VERSION' ) ) {
-	define( 'BT_PLUGIN_VERSION', '1.4-beta1' );
+	define( 'BT_PLUGIN_VERSION', '1.3.1' );
 }
 
 if ( ! class_exists( 'NerdPress' ) ) {
@@ -86,6 +86,11 @@ if ( ! class_exists( 'NerdPress' ) ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
 			include_once dirname( __FILE__ ) . '/includes/class-support-overrides.php';
 			include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
+
+			if ( NerdPress_Helpers::is_relay_server_configured() ) {
+				include_once dirname( __FILE__ ) . '/includes/class-support-snapshot.php';
+			}
+
 			if ( NerdPress_Helpers::is_sucuri_header_set() || NerdPress_Helpers::is_sucuri_firewall_selected() ) {
 				include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
 				include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';

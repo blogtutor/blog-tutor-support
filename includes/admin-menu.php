@@ -43,7 +43,14 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						),
 					);
 					$wp_admin_bar->add_node( $args );
-					if ( ! is_admin() && ! NerdPress_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== false ) {
+
+					if (
+						! is_admin() &&
+						(
+							! NerdPress_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== false ||
+							strpos( $_SERVER['REQUEST_URI'], 'lang=' ) !== false
+						)
+				   	) {
 						$args = array(
 							'id'     => 'nerdpress-purge-url',
 							'title'  => 'Purge this URL from Cloudflare',

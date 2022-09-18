@@ -380,7 +380,7 @@ class NerdPress_Cloudflare_Client {
 			$prefixes_no_protocol   = preg_replace( '#https?://#', '', $prefixes );
 
 			self::$cache_clear_type = implode( ',', $prefixes_no_protocol );
-			$body                   = '{ "prefixes": [' . implode( ',', $prefixes_no_protocol ) . '] }';
+			$body                   = '{ "prefixes": ["' . implode( ',', $prefixes_no_protocol ) . '"] }';
 		}
 
 		$url  = self::assemble_url() . 'purge_cache';
@@ -510,7 +510,7 @@ class NerdPress_Cloudflare_Client {
 
 		$url_clear               = esc_url( $_POST['url'] );
 		self::$cache_trigger_url = $url_clear;
-		echo self::purge_cloudflare_cache( array( '"' . $url_clear . '"' ) );
+		echo self::purge_cloudflare_cache( array( $url_clear ) );
 		die();
 	}
 
@@ -549,7 +549,7 @@ class NerdPress_Cloudflare_Client {
 		self::$status_before     = $old_status;
 		self::$status_after      = $new_status;
 
-		self::purge_cloudflare_cache( array( '"' . get_permalink( $post_id ) . '"' ) );
+		self::purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
 	}
 
 	/**
@@ -583,7 +583,7 @@ class NerdPress_Cloudflare_Client {
 		self::$status_before     = 'new comment';
 		self::$status_after      = 'approved';
 
-		self::purge_cloudflare_cache( array( '"' . get_permalink( $post_id ) . '"' ) );
+		self::purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
 	}
 
 	/**
@@ -612,7 +612,7 @@ class NerdPress_Cloudflare_Client {
 		self::$status_before     = 'approved';
 		self::$status_after      = ( $data['comment_approved'] ? $data['comment_approved'] : 'pending' );
 
-		self::purge_cloudflare_cache( array( '"' . get_permalink( $post_id ) . '"' ) );
+		self::purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
 	}
 
 	/**

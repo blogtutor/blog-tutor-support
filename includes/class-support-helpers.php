@@ -58,8 +58,8 @@ class NerdPress_Helpers {
 		return (
 			current_user_can( 'administrator' )
 			&& ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false
-			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false )
-		);
+			|| strpos( $current_user->user_email, '@apsis.io' ) !== false
+			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) );
 	}
 
 	/**
@@ -337,5 +337,33 @@ class NerdPress_Helpers {
 	public static function hide_shortpixel_settings() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 		return ( ! isset( $options['shortpixel_bulk_optimize'] ) && ! self::is_nerdpress() && defined( 'SHORTPIXEL_HIDE_API_KEY' ) );
+	}
+
+	/**
+	 * Determine whether the relay server settings are set
+	 *
+	 * @return boolean. If the relay API Token is set
+	 */
+	public static function is_relay_server_configured() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+
+		return ( isset( $options['np_relay_api_token'] ) );
+	}
+
+	public static function relay_server_url()
+	{
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		return trailingslashit($options['np_relay_server_url'] || self::relay_server_default_url());
+	}
+
+	public static function relay_server_default_url()
+	{
+		return "https://relay.nerdpress.net/";
+	}
+
+	public static function relay_server_api_token()
+	{
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		return $options['np_relay_api_token'];
 	}
 }

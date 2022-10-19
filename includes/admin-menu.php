@@ -214,22 +214,6 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		);
 		$wp_admin_bar->add_node( $args );
 
-		if ( NerdPress_Helpers::is_nerdpress() ) {
-
-			// "Plugin Settings" link to open the NerdPress Support settings page.
-			$args = array(
-				'id'     => 'bt-settings',
-				'title'  => 'Plugin Settings',
-				'href'   => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
-				'parent' => 'nerdpress-menu',
-				'meta'   => array(
-					'class' => 'btButton',
-					'title' => 'Open NerdPress Support plugin settings.',
-				),
-			);
-			$wp_admin_bar->add_node( $args );
-		}
-
 		if ( NerdPress_Helpers::is_nerdpress() && NerdPress_Helpers::is_relay_server_configured() ) {
 			if ( strpos( $_SERVER['REQUEST_URI'], '?' ) ) {
 				$query_char = '&';
@@ -248,6 +232,22 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				),
 			);
 
+			$wp_admin_bar->add_node( $args );
+		}
+
+		if ( NerdPress_Helpers::is_nerdpress() ) {
+
+			// "Plugin Settings" link to open the NerdPress Support settings page.
+			$args = array(
+				'id'     => 'bt-settings',
+				'title'  => 'Plugin Settings',
+				'href'   => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
+				'parent' => 'nerdpress-menu',
+				'meta'   => array(
+					'class' => 'btButton',
+					'title' => 'Open NerdPress Support plugin settings.',
+				),
+			);
 			$wp_admin_bar->add_node( $args );
 		}
 

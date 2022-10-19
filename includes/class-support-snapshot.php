@@ -46,7 +46,7 @@ class NerdPress_Support_Snapshot
 			wp_schedule_event(time(), 'twicedaily', 'np_scheduled_snapshot');
 		}
 
-		if (!isset(get_option('blog_tutor_support_settings')['schedule_snapshot'])) {
+		if (!NerdPress_Helpers::is_relay_server_configured()) {
 			if (wp_next_scheduled('np_scheduled_snapshot')) {
 				wp_clear_scheduled_hook('np_scheduled_snapshot');
 			}

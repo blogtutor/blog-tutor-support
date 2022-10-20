@@ -366,9 +366,11 @@ class NerdPress_Cloudflare_Client {
 
 		} else {
 
+			foreach ($prefixes as $prefix) {
 			// Removing all query strings if lang= exist.
-			if ( strpos( $prefixes, 'lang=' ) !== false ) {
-				$prefixes = preg_replace( '#\?.*$#', '', $prefixes );
+				if ( strpos( $prefix, 'lang=' ) !== false ) {
+					$prefix = preg_replace( '#\?.*$#', '', $prefix );
+				}
 			}
 
 			// Bypassing cache clearing if another query string exists.

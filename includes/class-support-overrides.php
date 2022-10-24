@@ -23,6 +23,7 @@ class NerdPress_Support_Overrides {
 		add_action( 'init', array( $this, 'is_auto_update_set' ) );
 		add_action( 'init', array( $this, 'check_default_options' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
+		add_action( 'admin_head-tools_page_view-broken-links', array( $this, 'broken_link_checker_hide_link' ) );
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
@@ -30,6 +31,17 @@ class NerdPress_Support_Overrides {
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
+	}
+
+	public function broken_link_checker_hide_link() {
+		?>
+		<style type="text/css">
+			#blc-links .column-used-in .trash,
+			#blc-bulk-action-form .delete,
+			#blc-bulk-action-form option[value="bulk-trash-sources"]
+			{display: none;}
+		</style>
+		<?php
 	}
 
 	public function is_auto_update_set() {

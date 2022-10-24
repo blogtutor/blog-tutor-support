@@ -2,8 +2,8 @@
 
 defined( 'ABSPATH' ) or exit;
 
-if ( ! class_exists( 'GHU_Core' ) ) {
-	class GHU_Core
+if ( ! class_exists( 'NerdPress_GHU_Core' ) ) {
+	class NerdPress_GHU_Core
 	{
 		public $update_data = array();
 		public $active_plugins = array();
@@ -45,7 +45,13 @@ if ( ! class_exists( 'GHU_Core' ) ) {
 		function get_github_updates() {
 			$output = array();
 			$plugins = get_plugins();
+
 			foreach ( $plugins as $plugin_path => $info ) {
+
+				if ( 'blog-tutor-support/blog-tutor-support.php' !== $plugin_path ) {
+					continue;
+				}
+
 				if ( isset( $this->active_plugins[ $plugin_path ] ) && ! empty( $info['GitHub URI'] ) ) {
 					$temp = array(
 						'plugin'            => $plugin_path,
@@ -175,5 +181,5 @@ if ( ! class_exists( 'GHU_Core' ) ) {
 		}
 	}
 
-	new GHU_Core();
+	new NerdPress_GHU_Core();
 }

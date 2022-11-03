@@ -127,6 +127,8 @@ class NerdPress_Support_Snapshot
 		$dump                             = array();
 		$dump['free_disk_space']          = $disk_space == "Unavailable" ? null : $disk_space;
 		$dump['firewall_setting']         = self::format_firewall_choice($options);
+		$dump['document_root']            = $_SERVER['DOCUMENT_ROOT'];
+		$dump['php_version']              = phpversion();
 		$dump['domain']                   = $user;
 		$dump['all_plugins']              = $current_plugins;
 		$dump['mu_plugins']               = $mu_plugins;
@@ -136,6 +138,12 @@ class NerdPress_Support_Snapshot
 		$dump['active_theme_version']     = $current_theme['Version'];
 		$dump['plugin_update_data']       = get_option('_site_transient_update_plugins')->response;
 		$dump['wordpress_version']        = $wp_version;
+		$dump['notes']                    = $options['admin_notice'];
+
+		$dump['wp_blog_public']           = !!get_option('blog_public');
+		$dump['wp_users_can_register']    = !!get_option('users_can_register');
+		$dump['wp_default_role']          = get_option('default_role');
+
 		$dump['inactive_themes_data']     = wp_get_themes();
 
 		// Removing the active theme from the theme data.

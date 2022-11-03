@@ -347,7 +347,7 @@ class NerdPress_Helpers {
 	public static function is_relay_server_configured() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 
-		return ( isset( $options['np_relay_api_token'] ) );
+		return ( NerdPress_Helpers::is_production( home_url( '/' ) ) && isset( $options['np_relay_api_token'] ) );
 	}
 
 	public static function relay_server_url()

@@ -61,7 +61,7 @@ class NerdPress_Support_Snapshot
 		return $api_response;
 	}
 
-	public static function send_request_to_relay($dump)
+	public function send_request_to_relay($dump)
 	{
 
 		if (defined('SSLVERIFY_DEV') && SSLVERIFY_DEV === false) {
@@ -92,7 +92,7 @@ class NerdPress_Support_Snapshot
 	}
 
 
-	public static function assemble_snapshot()
+	public function assemble_snapshot()
 	{
 		// The HTML must be escaped to prevent JSON errors on the relay server.
 		function filter_htmlspecialchars(&$value)
@@ -110,8 +110,8 @@ class NerdPress_Support_Snapshot
 		$mu_plugins = get_mu_plugins();
 		$current_theme   = wp_get_theme();
 		$active_plugins_option = get_option('active_plugins');
-		$active_plugins = static::filter_active_plugins(get_plugins(), $active_plugins_option);
-		$inactive_plugins = static::filter_inactive_plugins(get_plugins(), $active_plugins_option);
+		$active_plugins = self::filter_active_plugins(get_plugins(), $active_plugins_option);
+		$inactive_plugins = self::filter_inactive_plugins(get_plugins(), $active_plugins_option);
 
 		array_walk_recursive($current_plugins, 'filter_htmlspecialchars');
 		array_walk_recursive($mu_plugins, 'filter_htmlspecialchars');
@@ -126,7 +126,7 @@ class NerdPress_Support_Snapshot
 
 		$dump                             = array();
 		$dump['free_disk_space']          = $disk_space == "Unavailable" ? null : $disk_space;
-		$dump['firewall_setting']         = $options['firewall_choice'];
+		$dump['firewall_setting']         = self::format_firewall_choice($options);
 		$dump['domain']                   = $user;
 		$dump['all_plugins']              = $current_plugins;
 		$dump['mu_plugins']               = $mu_plugins;
@@ -155,12 +155,37 @@ class NerdPress_Support_Snapshot
 		return $dump;
 	}
 
-	private static function filter_active_plugins($all_plugins, $active_plugins)
+	private function format_firewall_choice($options)
+	{
+		if ($options['firewall_choice'] === "cloudflare") {
+			$firewall = "Cloudflare";
+			$zone = "";
+
+			if ($options["cloudflare_zone"] === "dns1") {
+				$zone = "1";
+			} else if ($options["cloudflare_zone"] === "dns2") {
+				$zone = "2";
+			} else if ($options["cloudflare_zone"] === "dns3") {
+				$zone = "3";
+			}
+
+			return $firewall . " " . $zone;
+		}
+
+		if ($options["firewall_choice"] === "sucuri") {
+			return "Sucuri";
+		}
+
+		return "None/Other";
+	}
+
+
+	private function filter_active_plugins($all_plugins, $active_plugins)
 	{
 		return array_filter($all_plugins, fn ($key) => in_array($key, $active_plugins), ARRAY_FILTER_USE_KEY);
 	}
 
-	private static function filter_inactive_plugins($all_plugins, $active_plugins)
+	private function filter_inactive_plugins($all_plugins, $active_plugins)
 	{
 		return array_filter($all_plugins, fn ($key) => !in_array($key, $active_plugins), ARRAY_FILTER_USE_KEY);
 	}

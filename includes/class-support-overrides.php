@@ -33,18 +33,17 @@ class NerdPress_Support_Overrides {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
 	}
-  
+
 	public function hide_logtivity_settings() {
 		if ( ! NerdPress_Helpers::is_nerdpress() ) {
 			remove_submenu_page( 'logs', 'logtivity-settings' );
 		}
 	}
-  
+
 	public function broken_link_checker_hide_link() {
 		?>
 		<style type="text/css">
 			#blc-links .column-used-in .trash,
-			#blc-bulk-action-form .delete,
 			#blc-bulk-action-form option[value="bulk-trash-sources"]
 			{display: none;}
 		</style>

@@ -44,6 +44,7 @@ class NerdPress_Support_Overrides {
 		?>
 		<style type="text/css">
 			#blc-links .column-used-in .trash,
+			#blc-links .column-used-in .delete,
 			#blc-bulk-action-form option[value="bulk-trash-sources"]
 			{display: none;}
 		</style>

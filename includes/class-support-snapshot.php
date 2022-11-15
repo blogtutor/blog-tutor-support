@@ -140,6 +140,9 @@ class NerdPress_Support_Snapshot
 		$dump['wordpress_version']        = $wp_version;
 		$dump['notes']                    = $options['admin_notice'];
 
+		$dump['sucuri_api_key']            = NerdPress_Helpers::is_sucuri_firewall_api_key_set() ? implode("/", NerdPress_Helpers::get_sucuri_api()) : null;
+		$dump['sucuri_notification_email'] = NerdPress_Helpers::is_sucuri_notification_email_set() ? NerdPress_Helpers::get_sucuri_notification_email() : null;
+
 		$dump['wp_blog_public']           = !!get_option('blog_public');
 		$dump['wp_users_can_register']    = !!get_option('users_can_register');
 		$dump['wp_default_role']          = get_option('default_role');

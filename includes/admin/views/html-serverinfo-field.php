@@ -18,22 +18,6 @@ function string_to_bytes( $string ) {
 	return $string = preg_replace( '~\D~', '', $string ) * 1024;
 }
 
-$mem_info = array_filter( @get_system_mem_info() );
-if ( $mem_info !== false ) {
-	$mem_total            = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemTotal'] ) );
-	$mem_available        = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemAvailable'] ) );
-	$mem_used_unformatted = string_to_bytes( $mem_info['MemTotal'] ) - string_to_bytes( $mem_info['MemAvailable'] );
-	$mem_used             = NerdPress_Helpers::format_size( $mem_used_unformatted );
-	$mem_percentage       = sprintf( '%.2f', ( $mem_used_unformatted / string_to_bytes( $mem_info['MemTotal'] ) ) * 100 );
-
-	if ( $mem_percentage > 90 ) {
-		$prgtext_danger = 'prgtext-danger';
-		$prgbar_danger  = 'prgbar-danger';
-	} else {
-		$prgtext_danger = '';
-		$prgbar_danger  = '';
-	}
-}
 ?>
 
 <link rel="stylesheet" href="<?php echo NerdPress::$plugin_dir_url . 'includes/css/html-serverinfo-field-style.css'; ?>" type="text/css" media="all">
@@ -71,7 +55,24 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 </article>
 <br>
 
-<?php if ( $mem_info !== false ) { ?>
+<?php
+$mem_info = array_filter( @get_system_mem_info() );
+
+if ( array_key_exists( 'MemTotal', $mem_info ) ) {
+	$mem_total            = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemTotal'] ) );
+	$mem_available        = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemAvailable'] ) );
+	$mem_used_unformatted = string_to_bytes( $mem_info['MemTotal'] ) - string_to_bytes( $mem_info['MemAvailable'] );
+	$mem_used             = NerdPress_Helpers::format_size( $mem_used_unformatted );
+	$mem_percentage       = sprintf( '%.2f', ( $mem_used_unformatted / string_to_bytes( $mem_info['MemTotal'] ) ) * 100 );
+
+	if ( $mem_percentage > 90 ) {
+		$prgtext_danger = 'prgtext-danger';
+		$prgbar_danger  = 'prgbar-danger';
+	} else {
+		$prgtext_danger = '';
+		$prgbar_danger  = '';
+	}
+?>
 	<article>
 		<h2>Memory Usage:</h2>
 		<p>Total: <?php echo $mem_total; ?></p>

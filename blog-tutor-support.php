@@ -86,6 +86,11 @@ if ( ! class_exists( 'NerdPress' ) ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
 			include_once dirname( __FILE__ ) . '/includes/class-support-overrides.php';
 			include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
+
+			if ( NerdPress_Helpers::is_relay_server_configured() ) {
+				include_once dirname( __FILE__ ) . '/includes/class-support-snapshot.php';
+			}
+
 			if ( NerdPress_Helpers::is_sucuri_header_set() || NerdPress_Helpers::is_sucuri_firewall_selected() ) {
 				include_once dirname( __FILE__ ) . '/includes/class-support-cloudproxy.php';
 				include_once dirname( __FILE__ ) . '/includes/class-support-clearcache.php';

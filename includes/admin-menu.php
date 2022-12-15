@@ -214,6 +214,27 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		);
 		$wp_admin_bar->add_node( $args );
 
+		if ( NerdPress_Helpers::is_nerdpress() && NerdPress_Helpers::is_relay_server_configured() ) {
+			if ( strpos( $_SERVER['REQUEST_URI'], '?' ) ) {
+				$query_char = '&';
+			} else {
+				$query_char = '?';
+			}
+
+			$args = array(
+				'id'     => 'bt-send-snapshot',
+				'title'  => 'Send Snapshot to Relay',
+				'href'   => get_site_url() . $_SERVER['REQUEST_URI'] . $query_char . 'np_snapshot',
+				'parent' => 'nerdpress-menu',
+				'meta'   => array(
+					'class' => 'btButton',
+					'title' => 'Send Site Snapshot to NerdPress Relay.',
+				),
+			);
+
+			$wp_admin_bar->add_node( $args );
+		}
+
 		if ( NerdPress_Helpers::is_nerdpress() ) {
 
 			// "Plugin Settings" link to open the NerdPress Support settings page.

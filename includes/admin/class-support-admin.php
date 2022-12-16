@@ -248,9 +248,9 @@ class NerdPress_Admin {
 			$settings_option,
 			'options_section',
 			array(
-				'menu'    => $settings_option,
-				'id'      => 'np_relay_server_url',
-				'label'   => __( 'NerdPress Relay Server URL', 'nerdpress-support' ),
+				'menu'  => $settings_option,
+				'id'    => 'np_relay_server_url',
+				'label' => __( 'NerdPress Relay Server URL', 'nerdpress-support' ),
 			)
 		);
 
@@ -447,7 +447,6 @@ class NerdPress_Admin {
 
 	}
 
-
 	/**
 	 * Radio Button area callback
 	 *
@@ -591,7 +590,7 @@ class NerdPress_Admin {
 		if ( isset( $options['np_relay_api_token'] ) ) {
 			$url = $options['np_relay_api_token'];
 		} else {
-			$url                       = '';
+			$url                           = '';
 			$options['np_relay_api_token'] = $url;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
@@ -613,7 +612,7 @@ class NerdPress_Admin {
 		if ( isset( $options['np_relay_server_url'] ) ) {
 			$url = $options['np_relay_server_url'];
 		} else {
-			$url                       = '';
+			$url                            = '';
 			$options['np_relay_server_url'] = $url;
 			update_option( 'blog_tutor_support_settings', $options );
 		}

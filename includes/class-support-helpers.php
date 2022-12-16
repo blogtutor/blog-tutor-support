@@ -18,7 +18,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_api() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if (  !$input_lines ) {
+		if ( ! $input_lines ) {
 			return;
 		}
 
@@ -40,7 +40,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_notification_email() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if (  !$input_lines ) {
+		if ( ! $input_lines ) {
 			return;
 		}
 
@@ -57,13 +57,13 @@ class NerdPress_Helpers {
 
 	private static function get_sucuri_settings_contents() {
 		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
-			$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
+			$input_lines = wp_remote_get( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
 		} else {
 			$upload_dir = wp_upload_dir( $time = null, $create_dir = null );
 			$path       = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
 
 			if ( file_exists( $path ) ) {
-				return file_get_contents( $path );
+				return wp_remote_get( $path );
 			} else {
 				return null;
 			}
@@ -94,7 +94,8 @@ class NerdPress_Helpers {
 			current_user_can( 'administrator' )
 			&& ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false
 			|| strpos( $current_user->user_email, '@apsis.io' ) !== false
-			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) );
+			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false )
+		);
 	}
 
 	/**
@@ -394,23 +395,20 @@ class NerdPress_Helpers {
 	public static function is_relay_server_configured() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 
-		return ( NerdPress_Helpers::is_production( home_url( '/' ) ) && isset( $options['np_relay_api_token'] ) );
+		return ( self::is_production( home_url( '/' ) ) && isset( $options['np_relay_api_token'] ) );
 	}
 
-	public static function relay_server_url()
-	{
+	public static function relay_server_url() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
-		$url = $options['np_relay_server_url'] ? $options['np_relay_server_url'] : self::relay_server_default_url();
-		return trailingslashit($url);
+		$url     = $options['np_relay_server_url'] ? $options['np_relay_server_url'] : self::relay_server_default_url();
+		return trailingslashit( $url );
 	}
 
-	public static function relay_server_default_url()
-	{
-		return "https://relay.nerdpress.net/";
+	public static function relay_server_default_url() {
+		return 'https://relay.nerdpress.net/';
 	}
 
-	public static function relay_server_api_token()
-	{
+	public static function relay_server_api_token() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 		return $options['np_relay_api_token'];
 	}

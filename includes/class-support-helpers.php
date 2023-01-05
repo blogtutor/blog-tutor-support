@@ -18,7 +18,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_api() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if ( ! $input_lines ) {
+		if ( ! $input_lines || is_wp_error( $input_lines ) ) {
 			return;
 		}
 
@@ -92,9 +92,11 @@ class NerdPress_Helpers {
 		$current_user = wp_get_current_user();
 		return (
 			current_user_can( 'administrator' )
-			&& ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false
-			|| strpos( $current_user->user_email, '@apsis.io' ) !== false
-			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false )
+			&& (
+				strpos( $current_user->user_email, '@blogtutor.com' ) !== false
+				|| strpos( $current_user->user_email, '@apsis.io' ) !== false
+				|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false
+			)
 		);
 	}
 
@@ -141,8 +143,11 @@ class NerdPress_Helpers {
 		}
 
 		$types = array( 'B', 'KB', 'MB', 'GB', 'TB' );
-		for ( $i = 0; $bytes >= 1000 && $i < ( count( $types ) - 1 );
-		$bytes /= 1024, $i++ );
+		for (
+				$i = 0;
+				$bytes >= 1000 && $i < ( count( $types ) - 1 );
+				$bytes /= 1024, $i++
+		);
 		return ( round( $bytes, 2 ) . ' ' . $types[ $i ] );
 	}
 

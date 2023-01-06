@@ -76,7 +76,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 							'tabindex' => 9999,
 							'class'    => 'btButton',
 							'title'    => "This appears to be a non-production site, so we've disabled cache clearing. Please contact us with any questions.",
-							'onclick'  => 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");',
+							'onclick'  => NerdPress_Helpers::$help_scout_widget_menu_init,
 						),
 					);
 					$wp_admin_bar->add_node( $args );
@@ -91,7 +91,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						'tabindex' => 9999,
 						'class'    => 'btButton',
 						'title'    => 'There is a problem with your Cloudflare Enterprise settings! Please contact us.',
-						'onclick'  => 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");',
+						'onclick'  => NerdPress_Helpers::$help_scout_widget_menu_init,
 					),
 				);
 				$wp_admin_bar->add_node( $args );
@@ -107,7 +107,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'meta'   => array(
 					'class'   => 'btButton',
 					'title'   => 'The Sucuri Plugin is not installed! Please contact us.',
-					'onclick' => 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");',
+					'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
 				),
 			);
 			$wp_admin_bar->add_node( $args );
@@ -121,7 +121,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'meta'   => array(
 					'class'   => 'btButton',
 					'title'   => 'Your Sucuri Plugin is not activated. Please contact us!',
-					'onclick' => 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");',
+					'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
 				),
 			);
 			$wp_admin_bar->add_node( $args );
@@ -193,7 +193,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					'meta'   => array(
 						'class'   => 'btButton',
 						'title'   => 'Missing Firewall API Keys! Please contact us',
-						'onclick' => 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");',
+						'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
 					),
 				);
 				$wp_admin_bar->add_node( $args );
@@ -209,7 +209,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			'meta'   => array(
 				'class'   => 'btButton',
 				'title'   => 'Click to open our knowledge base and contact form.',
-				'onclick' => 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");',
+				'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
 			),
 		);
 		$wp_admin_bar->add_node( $args );
@@ -221,10 +221,12 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				$query_char = '?';
 			}
 
+			$snapshot_nonce = wp_create_nonce( 'np_snapshot' );
+
 			$args = array(
 				'id'     => 'bt-send-snapshot',
 				'title'  => 'Send Snapshot to Relay',
-				'href'   => get_site_url() . $_SERVER['REQUEST_URI'] . $query_char . 'np_snapshot',
+				'href'   => get_site_url() . $_SERVER['REQUEST_URI'] . $query_char . 'np_snapshot=1&_snapshot_nonce=' . $snapshot_nonce,
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',

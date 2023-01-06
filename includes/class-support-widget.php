@@ -21,7 +21,6 @@ class NerdPress_Widget {
 			} else {
 				add_action( 'admin_footer', array( $this, 'widget' ), 50 );
 			}
-			add_action( 'init', array( $this, 'maybe_show_widget' ), 20 );
 		}
 	}
 
@@ -44,25 +43,19 @@ class NerdPress_Widget {
 						})
 					}, n.readyQueue = [], "complete" === t.readyState) return a();
 				e.attachEvent ? e.attachEvent("onload", a) : e.addEventListener("load", a, !1)
-			}
-			(window, document, window.Beacon || function() {});
+				e.Beacon('prefill', {
+					name: '<?php echo esc_html( sanitize_text_field( $nerdpress_current_user->user_firstname . ' ' . $nerdpress_current_user->user_lastname ) ); ?>',
+					email: '<?php echo esc_html( sanitize_text_field( $nerdpress_current_user->user_email ) ); ?>'
+				})
+
+			}(window, document, window.Beacon || function() {});
 		</script>
 		<?php
-		if ( is_admin() ) {
+		if ( is_admin() && ( ! isset( $options['hide_tab'] ) ) ) {
 			?>
 			<script type = "text/javascript">
-				window.Beacon('init', '85b7b97c-d6a0-4ff9-a392-8344155cc991')
+				<?php echo NerdPress_Helpers::$help_scout_widget_init; ?>
 			</script>
-			<?php
-		}
-	}
-
-	public function maybe_show_widget() {
-		if ( ! is_admin() || ( isset( $options['hide_tab'] ) ) ) {
-			?>
-			<style type="text/css">
-				#beacon-container button[aria-expanded="false"] { display: none !important; }
-			</style>
 			<?php
 		}
 	}

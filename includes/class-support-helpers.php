@@ -78,7 +78,7 @@ class NerdPress_Helpers {
 			function_exists( 'disk_free_space' )
 			&& ( disk_free_space( __DIR__ ) !== false )
 			&& function_exists( 'disk_total_space' )
-			&& ( disk_total_space( __DIR__ ) !== false )
+			&& ( disk_total_space( __DIR__ ) > 0 )
 		) {
 			/* Get disk space free (in bytes). */
 			$disk_free                    = disk_free_space( __DIR__ );

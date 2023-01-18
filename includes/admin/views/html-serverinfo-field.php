@@ -9,17 +9,17 @@ function get_system_mem_info() {
 	$mem_info = array();
 	foreach ( $data as $line ) {
 		list( $key, $val ) = explode( ':', $line );
-		$mem_info[ $key ]  = trim( $val );
+		$mem_info[ $key ]  = trim( $val ?? '' );
 	}
 	return $mem_info;
 }
 
 function string_to_bytes( $string ) {
-	return $string = preg_replace( '~\D~', '', $string ) * 1024;
+	return $string = intval( preg_replace( '~\D~', '', $string ) ) * 1024;
 }
 
 $mem_info = array_filter( @get_system_mem_info() );
-if ( $mem_info !== false ) {
+if ( $mem_info != false ) {
 	$mem_total            = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemTotal'] ) );
 	$mem_available        = NerdPress_Helpers::format_size( string_to_bytes( $mem_info['MemAvailable'] ) );
 	$mem_used_unformatted = string_to_bytes( $mem_info['MemTotal'] ) - string_to_bytes( $mem_info['MemAvailable'] );

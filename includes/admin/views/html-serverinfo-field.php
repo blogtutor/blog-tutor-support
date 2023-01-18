@@ -9,13 +9,13 @@ function get_system_mem_info() {
 	$mem_info = array();
 	foreach ( $data as $line ) {
 		list( $key, $val ) = explode( ':', $line );
-		$mem_info[ $key ]  = trim( $val );
+		$mem_info[ $key ]  = trim( $val ?? '' );
 	}
 	return $mem_info;
 }
 
 function string_to_bytes( $string ) {
-	return $string = preg_replace( '~\D~', '', $string ) * 1024;
+	return $string = intval( preg_replace( '~\D~', '', $string ) ) * 1024;
 }
 
 ?>

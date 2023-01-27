@@ -18,7 +18,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_api() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if ( ! $input_lines ) {
+		if ( is_wp_error( $input_lines ) ) {
 			return;
 		}
 
@@ -40,7 +40,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_notification_email() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if ( ! $input_lines ) {
+		if ( is_wp_error( $input_lines ) ) {
 			return;
 		}
 

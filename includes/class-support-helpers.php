@@ -20,7 +20,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_api() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if ( ! $input_lines || is_wp_error( $input_lines ) ) {
+		if ( is_wp_error( $input_lines ) ) {
 			return;
 		}
 
@@ -42,7 +42,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_notification_email() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if ( ! $input_lines ) {
+		if ( is_wp_error( $input_lines ) ) {
 			return;
 		}
 
@@ -114,7 +114,12 @@ class NerdPress_Helpers {
 		$disk_info['disk_free']       = 'Unavailable';
 		$disk_info['disk_percentage'] = 'Unavailable';
 
-		if ( function_exists( 'disk_free_space' ) && ( disk_free_space( __DIR__ ) !== false ) ) {
+		if (
+			function_exists( 'disk_free_space' )
+			&& ( disk_free_space( __DIR__ ) !== false )
+			&& function_exists( 'disk_total_space' )
+			&& ( disk_total_space( __DIR__ ) > 0 )
+		) {
 			/* Get disk space free (in bytes). */
 			$disk_free                    = disk_free_space( __DIR__ );
 			/* And get disk space total (in bytes).  */

@@ -55,14 +55,14 @@ class NerdPress_Support_Snapshot {
 		}
 	}
 
-	public function take_snapshot() {
+	public static function take_snapshot() {
 		$dump         = self::assemble_snapshot();
 		$api_response = self::send_request_to_relay( $dump );
 
 		return $api_response;
 	}
 
-	public function send_request_to_relay( $dump ) {
+	public static function send_request_to_relay( $dump ) {
 
 		if ( defined( 'SSLVERIFY_DEV' ) && SSLVERIFY_DEV === false ) {
 			$status = false;
@@ -91,7 +91,7 @@ class NerdPress_Support_Snapshot {
 	}
 
 
-	public function assemble_snapshot() {
+	public static function assemble_snapshot() {
 		// The HTML must be escaped to prevent JSON errors on the relay server.
 		function filter_htmlspecialchars( &$value ) {
 			$value = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
@@ -160,7 +160,7 @@ class NerdPress_Support_Snapshot {
 		return $dump;
 	}
 
-	private function format_firewall_choice( $options ) {
+	private static function format_firewall_choice( $options ) {
 		if ( $options['firewall_choice'] === 'cloudflare' ) {
 			$firewall = 'Cloudflare';
 			$zone     = '';
@@ -184,11 +184,11 @@ class NerdPress_Support_Snapshot {
 	}
 
 
-	private function filter_active_plugins( $all_plugins, $active_plugins ) {
+	private static function filter_active_plugins( $all_plugins, $active_plugins ) {
 		return array_filter( $all_plugins, fn ( $key ) => in_array( $key, $active_plugins, true ), ARRAY_FILTER_USE_KEY );
 	}
 
-	private function filter_inactive_plugins( $all_plugins, $active_plugins ) {
+	private static function filter_inactive_plugins( $all_plugins, $active_plugins ) {
 		return array_filter( $all_plugins, fn ( $key ) => ! in_array( $key, $active_plugins, true ), ARRAY_FILTER_USE_KEY );
 	}
 }

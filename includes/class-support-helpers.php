@@ -20,7 +20,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_api() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if ( is_wp_error( $input_lines ) ) {
+		if ( false === $input_lines ) {
 			return;
 		}
 
@@ -42,7 +42,7 @@ class NerdPress_Helpers {
 	private static function set_sucuri_notification_email() {
 		$input_lines = static::get_sucuri_settings_contents();
 
-		if ( is_wp_error( $input_lines ) ) {
+		if ( false ===  $input_lines ) {
 			return;
 		}
 
@@ -59,15 +59,15 @@ class NerdPress_Helpers {
 
 	private static function get_sucuri_settings_contents() {
 		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
-			return wp_remote_get( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
+			return file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
 		} else {
 			$upload_dir = wp_upload_dir( $time = null, $create_dir = null );
 			$path       = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
 
 			if ( file_exists( $path ) ) {
-				return wp_remote_get( $path );
+				return file_get_contents( $path );
 			} else {
-				return null;
+				return false;
 			}
 		}
 
@@ -96,7 +96,6 @@ class NerdPress_Helpers {
 			current_user_can( 'administrator' )
 			&& (
 				strpos( $current_user->user_email, '@blogtutor.com' ) !== false
-				|| strpos( $current_user->user_email, '@apsis.io' ) !== false
 				|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false
 			)
 		);

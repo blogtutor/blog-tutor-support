@@ -59,7 +59,7 @@ class NerdPress_Helpers {
 
 	private static function get_sucuri_settings_contents() {
 		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
-			$input_lines = wp_remote_get( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
+			return wp_remote_get( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
 		} else {
 			$upload_dir = wp_upload_dir( $time = null, $create_dir = null );
 			$path       = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';

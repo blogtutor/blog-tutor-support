@@ -309,7 +309,7 @@ class NerdPress_Helpers {
 		$msg_class = ( $msg['status'] ? 'np-notice' : 'error np-notice' );
 		?>
 			<link rel="stylesheet" href="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/css/html-notifications-style.css' ); ?>" type="text/css" media="all">
-			<div class="notice <?php echo $msg_class; ?>">
+			<div class="notice <?php echo esc_attr( $msg_class ); ?>">
 				<p><img src="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/images/nerdpress-icon-250x250.png' ); ?>" style="max-width:45px;vertical-align:middle;"><strong><?php echo esc_html( $msg['msg'] ); ?></strong></p>
 			</div>
 		<?php

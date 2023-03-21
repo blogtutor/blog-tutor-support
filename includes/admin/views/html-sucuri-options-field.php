@@ -26,7 +26,7 @@ if ( count( $allowlist_ips ) > 0 ) {
 	<?php
 	foreach ( $allowlist_ips as $ip ) {
 		?>
-		<p> <?php echo $ip; ?></p>
+		<p> <?php echo esc_html( $ip ); ?></p>
 		<?php
 	}
 	?>

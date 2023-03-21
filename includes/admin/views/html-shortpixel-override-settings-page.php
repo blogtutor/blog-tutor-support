@@ -78,13 +78,13 @@ if ( $display_settings_summary ) {
 
 	<h2>Settings Summary:</h2>
 
-	<p>Current compression setting is: <strong><?php echo $short_pixel_compression_level; ?></strong>.</p>
+	<p>Current compression setting is: <strong><?php echo esc_html( $short_pixel_compression_level ); ?></strong>.</p>
 
-	<p>Images <strong><?php echo $short_pixel_resize_images; ?></strong> set to be resized<?php echo $short_pixel_resize_info; ?>.</p>
+	<p>Images <strong><?php echo esc_html( $short_pixel_resize_images ); ?></strong> set to be resized<?php echo esc_html( $short_pixel_resize_info ); ?>.</p>
 
-	<p>Thumbnail images <strong><?php echo $short_pixel_thumbnails; ?></strong> being optimized.</p>
+	<p>Thumbnail images <strong><?php echo esc_html( $short_pixel_thumbnails ); ?></strong> being optimized.</p>
 
-	<p>Originals <strong><?php echo $short_pixel_backups; ?></strong> being saved to the backups folder.</p>
+	<p>Originals <strong><?php echo esc_html( $short_pixel_backups ); ?></strong> being saved to the backups folder.</p>
 	<?php
 }
 ?>

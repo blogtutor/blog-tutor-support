@@ -215,18 +215,13 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		$wp_admin_bar->add_node( $args );
 
 		if ( NerdPress_Helpers::is_nerdpress() && NerdPress_Helpers::is_relay_server_configured() ) {
-			if ( strpos( $_SERVER['REQUEST_URI'], '?' ) ) {
-				$query_char = '&';
-			} else {
-				$query_char = '?';
-			}
-
-			$snapshot_nonce = wp_create_nonce( 'np_snapshot' );
-
 			$args = array(
 				'id'     => 'bt-send-snapshot',
 				'title'  => 'Send Snapshot to Relay',
-				'href'   => get_site_url() . $_SERVER['REQUEST_URI'] . $query_char . 'np_snapshot=1&_snapshot_nonce=' . $snapshot_nonce,
+				'href'   => add_query_arg( array(
+					'np_snapshot'     => '1',
+					'_snapshot_nonce' => wp_create_nonce( 'np_snapshot' ),
+				) ),
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
@@ -243,7 +238,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$args = array(
 				'id'     => 'bt-settings',
 				'title'  => 'Plugin Settings',
-				'href'   => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
+				'href'   => admin_url( 'options-general.php?page=nerdpress-support' ),
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
@@ -262,16 +257,16 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				if ( function_exists( 'sys_getloadavg' ) ) {
 					$cpu_loads = sys_getloadavg();
 					if ( $cpu_loads ) {
-						$cpu_load_info = '<span>Load: ' . $cpu_loads[0] . ' &nbsp;' . $cpu_loads[1] . ' &nbsp;' . $cpu_loads[2] . '  &nbsp; ';
+						$cpu_load_info = '<span>Load: ' . esc_html( $cpu_loads[0] ) . ' &nbsp;' . esc_html( $cpu_loads[1] ) . ' &nbsp;' . esc_html( $cpu_loads[2] ) . '  &nbsp; ';
 					}
 				}
 
-				$disk_space_info = 'Free Disk: ' . NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] ) . '</span>';
+				$disk_space_info = 'Free Disk: ' . esc_html( NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] ) ) . '</span>';
 				$cpu_disk_info   = $cpu_load_info . $disk_space_info;
 				$args            = array(
 					'id'    => 'cpu-disk-info',
 					'title' => $cpu_disk_info,
-					'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support&tab=server_information',
+					'href'  => site_url( '/wp-admin/options-general.php?page=nerdpress-support&tab=server_information' ),
 					'meta'  => array(
 						'class' => 'btButton',
 						'title' => 'Open NerdPress Support plugin settings.',

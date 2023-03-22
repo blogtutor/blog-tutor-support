@@ -266,7 +266,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				$args            = array(
 					'id'    => 'cpu-disk-info',
 					'title' => $cpu_disk_info,
-					'href'  => site_url( '/wp-admin/options-general.php?page=nerdpress-support&tab=server_information' ),
+					'href'  => admin_url( 'options-general.php?page=nerdpress-support&tab=server_information' ),
 					'meta'  => array(
 						'class' => 'btButton',
 						'title' => 'Open NerdPress Support plugin settings.',

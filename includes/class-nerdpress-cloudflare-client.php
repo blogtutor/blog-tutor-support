@@ -10,70 +10,70 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class NerdPress_Cloudflare_Client {
 	/**
-	 * @var string. NerdPress CF API Key
+	 * @var string NerdPress CF API Key
 	 *
 	 * @since 0.0.1
 	 */
 	private static $cloudflare_api_key = '';
 
 	/**
-	 * @var string. NerdPress CF email address
+	 * @var string NerdPress CF email address
 	 *
 	 * @since 0.0.1
 	 */
 	private static $cloudflare_email = 'support@nerdpress.net';
 
 	/**
-	 * @var string. Cloudflare API base endpoint
+	 * @var string Cloudflare API base endpoint
 	 *
 	 * @since 0.0.1
 	 */
 	private static $cloudflare_api_url = 'https://api.cloudflare.com/client/';
 
 	/**
-	 * @var string. Cloudflare API version
+	 * @var string Cloudflare API version
 	 *
 	 * @since 0.0.1
 	 */
 	private static $cloudflare_api_version = 'v4/';
 
 	/**
-	 * @var string. Zones subdir string
+	 * @var string Zones subdir string
 	 *
 	 * @since 0.0.1
 	 */
 	private static $cloudflare_zones_directory = 'zones/';
 
 	/**
-	 * @var array. Content type header
+	 * @var array|null Content type header
 	 *
 	 * @since 0.0.1
 	 */
 	private static $header_content_type = null;
 
 	/**
-	 * @var string. Cloudflare zone
+	 * @var string Cloudflare zone
 	 *
 	 * @since 0.0.1
 	 */
 	private static $cloudflare_zone = '';
 
 	/**
-	 * @var array. Cloudflare specific headers
+	 * @var array|null Cloudflare specific headers
 	 *
 	 * @since 0.0.1
 	 */
 	private static $header_cloudflare = null;
 
 	/**
-	 * @var string. Target host
+	 * @var string Target host
 	 *
 	 * @since 0.0.1
 	 */
 	private static $custom_hostname = '';
 
 	/**
-	 * @var string. Cache Clear type
+	 * @var string Cache Clear type
 	 * full vs single post (gets the value of the post's URL)
 	 *
 	 * @since 0.2.0
@@ -81,42 +81,42 @@ class NerdPress_Cloudflare_Client {
 	private static $cache_clear_type = '';
 
 	/**
-	 * @var string. Post status before
+	 * @var string Post status before
 	 *
 	 * @since 0.2.1
 	 */
 	private static $status_before = '';
 
 	/**
-	 * @var string. Post status after
+	 * @var string Post status after
 	 *
 	 * @since 0.2.1
 	 */
 	private static $status_after = '';
 
 	/**
-	 * @var string. URL where the cache was triggered from
+	 * @var string URL where the cache was triggered from
 	 *
 	 * @since 0.2.1
 	 */
 	private static $cache_trigger_url = '';
 
 	/**
-	 * @var strin. Gets what method your are in so we can pass to other methods and eventually Slack through Zapier.
+	 * @var string Gets what method your are in so we can pass to other methods and eventually Slack through Zapier.
 	 *
 	 * @since 0.8.2
 	 */
 	private static $which_cloudflare_method = '';
 
 	/**
-	 * @var bool. Suppress NerdPress Notification or not.
+	 * @var bool Suppress NerdPress Notification or not.
 	 *
 	 * @since 0.8.3
 	 */
 	private static $suppress_notification = false;
 
 	/**
-	 * @var bool. Are we already clearing any comment cache?
+	 * @var bool Are we already clearing any comment cache?
 	 *
 	 * @since 0.9.0
 	 */
@@ -182,7 +182,7 @@ class NerdPress_Cloudflare_Client {
 			return;
 		}
 		global $wp;
-		wp_register_script( 'np_cf_js', esc_url( NerdPress::$plugin_dir_url . 'includes/js/np-cloudflare.js' ), array( 'jquery' ), BT_PLUGIN_VERSION );
+		wp_register_script( 'np_cf_js', esc_url( NerdPress_Plugin::$plugin_dir_url . 'includes/js/np-cloudflare.js' ), array( 'jquery' ), BT_PLUGIN_VERSION );
 			wp_enqueue_script( 'np_cf_js' );
 		wp_localize_script(
 			'np_cf_js',
@@ -200,8 +200,8 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param string input. Option value
-	 * @return string input. Sanitzed input
+	 * @param string $input Option value
+	 * @return string Sanitzed input
 	 */
 	public function sanitize_option( $input ) {
 		$options = array(
@@ -242,9 +242,9 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param string url. Url to post to
-	 * @param array opts. Associative options array
-	 * @return WP_Error|array. Response from the endpoint
+	 * @param string $url Url to post to
+	 * @param array $opts Associative options array
+	 * @return WP_Error|array Response from the endpoint
 	 */
 	private static function post( $url, $opts ) {
 		$opts['timeout'] = 8;
@@ -257,8 +257,7 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param WP_ERROR result. WP_ERROR object
-	 * @param string methodname. Name of the method that sent the originating request
+	 * @param WP_Error $result WP_Error object
 	 */
 	private static function send_alert( $result ) {
 		$hookUrl      = 'https://hooks.zapier.com/hooks/catch/332669/o1lpmis/';
@@ -305,10 +304,9 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param string methodName. Name f the method calling process_response
-	 * @param WP_Error|array. Response/error
+	 * @param WP_Error|array $result Response/error
 	 *
-	 * @return bool. wp_mail status
+	 * @return string
 	 */
 	private static function process_response( $result ) {
 		if ( is_wp_error( $result ) ) {
@@ -336,8 +334,8 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.0.1
 	 *
-	 * @param array= prefixes. URLs to purge. Purge full site cache if no prefixes passed
-	 * @return string. Cloudflare result id
+	 * @param array $prefixes URLs to purge. Purge full site cache if no prefixes passed
+	 * @return string Cloudflare result id
 	 */
 	public static function purge_cloudflare_cache( $prefixes = array() ) {
 		if ( ! self::$custom_hostname ) {
@@ -499,7 +497,7 @@ class NerdPress_Cloudflare_Client {
 	/**
 	 * Clear current URL from front end admin menu.
 	 *
-	 * @since 0.7.2:
+	 * @since 0.7.2
 	 */
 	public function purge_cloudflare_url() {
 		check_ajax_referer( 'np_cf_ei_secure_me', 'np_cf_ei_nonce' );
@@ -522,9 +520,9 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param string $new_status. The current status of the comment
-	 * @param string $old_status. Prev value of the comment
-	 * @param object $comment. WP_Comment object
+	 * @param string $new_status The current status of the comment
+	 * @param string $old_status Prev value of the comment
+	 * @param object $comment WP_Comment object
 	 */
 	public function handle_comment_cache_transition( $new_status, $old_status, $comment ) {
 		self::$clearing_comment_cache  = true;
@@ -560,9 +558,9 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param integer $comment_id. WP_Comment ID
-	 * @param mixed $comment_approved. If the comment approved or not, also may carry "spam" status.
-	 * @param array $comment_data. Associative array with comment data
+	 * @param int $comment_id WP_Comment ID
+	 * @param mixed $comment_approved If the comment approved or not, also may carry "spam" status.
+	 * @param array $comment_data Associative array with comment data
 	 */
 	public function handle_comment_cache( $comment_id, $comment_approved, $comment_data ) {
 		self::$clearing_comment_cache  = true;
@@ -594,8 +592,8 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param integer $comment_id. WP_Comment ID
-	 * @param array $data. Associative array with the comment's data
+	 * @param int $comment_id WP_Comment ID
+	 * @param array $data Associative array with the comment's data
 	 */
 	public function handle_comment_cache_edit( $comment_id, $data ) {
 		self::$clearing_comment_cache  = true;
@@ -623,7 +621,7 @@ class NerdPress_Cloudflare_Client {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param integer $post_id. Id of the post
+	 * @param int $post_id Id of the post
 	 */
 	public function handle_deletion_cache( $post_id ) {
 		if ( get_post_status( $post_id ) !== 'publish' ) {
@@ -639,5 +637,3 @@ class NerdPress_Cloudflare_Client {
 		self::purge_cloudflare_cache();
 	}
 }
-
-add_action( 'init', array( 'NerdPress_Cloudflare_Client', 'init' ) );

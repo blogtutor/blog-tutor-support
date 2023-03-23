@@ -72,14 +72,14 @@ class NerdPress_Admin {
 	 * Render the settings page for this plugin.
 	 */
 	public function html_settings_page() {
-		include dirname( __FILE__ ) . '/views/html-settings-page.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-settings-page.php';
 	}
 
 	/**
 	 * Render overridden settings page for ShortPixel.
 	 */
 	public function html_shortpixel_override_settings_page() {
-		include dirname( __FILE__ ) . '/views/html-shortpixel-override-settings-page.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-shortpixel-override-settings-page.php';
 	}
 
 	/**
@@ -350,7 +350,7 @@ class NerdPress_Admin {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
 
-		include dirname( __FILE__ ) . '/views/html-checkbox-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-checkbox-field.php';
 	}
 
 	/**
@@ -369,7 +369,7 @@ class NerdPress_Admin {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
 
-		include dirname( __FILE__ ) . '/views/html-auto-update-core-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-auto-update-core-field.php';
 	}
 
 	/**
@@ -388,7 +388,7 @@ class NerdPress_Admin {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
 
-		include dirname( __FILE__ ) . '/views/html-auto-update-plugins-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-auto-update-plugins-field.php';
 	}
 
 	/**
@@ -407,7 +407,7 @@ class NerdPress_Admin {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
 
-		include dirname( __FILE__ ) . '/views/html-auto-update-themes-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-auto-update-themes-field.php';
 	}
 
 	/**
@@ -425,7 +425,7 @@ class NerdPress_Admin {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
-		include dirname( __FILE__ ) . '/views/html-exclude-wp-rocket-delay-js-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-exclude-wp-rocket-delay-js-field.php';
 
 	}
 	/**
@@ -443,7 +443,7 @@ class NerdPress_Admin {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '0';
 		}
-		include dirname( __FILE__ ) . '/views/html-shortpixel-bulk-optimize-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-shortpixel-bulk-optimize-field.php';
 
 	}
 
@@ -472,7 +472,7 @@ class NerdPress_Admin {
 			update_option( 'blog_tutor_support_settings', $options );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-radiobutton-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-radiobutton-field.php';
 	}
 
 	/**
@@ -491,7 +491,7 @@ class NerdPress_Admin {
 			$value = isset( $args['default'] ) ? $args['default'] : '';
 		}
 
-		include dirname( __FILE__ ) . '/views/html-textarea-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-textarea-field.php';
 	}
 
 	/**
@@ -510,7 +510,7 @@ class NerdPress_Admin {
 			$value = isset( $args['default'] ) ? $args['default'] : '';
 		}
 
-		include dirname( __FILE__ ) . '/views/html-serverinfo-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-serverinfo-field.php';
 	}
 
 	/**
@@ -529,7 +529,7 @@ class NerdPress_Admin {
 			$value = isset( $args['default'] ) ? $args['default'] : '';
 		}
 
-		include dirname( __FILE__ ) . '/views/html-sucuri-options-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-sucuri-options-field.php';
 	}
 
 	/**
@@ -551,7 +551,7 @@ class NerdPress_Admin {
 			update_option( 'blog_tutor_support_settings', $options );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-cloudflare-dns-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-cloudflare-dns-field.php';
 	}
 
 	/**
@@ -573,7 +573,7 @@ class NerdPress_Admin {
 			update_option( 'blog_tutor_support_settings', $options );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-cloudflare-token-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-cloudflare-token-field.php';
 	}
 
 	/**
@@ -595,7 +595,7 @@ class NerdPress_Admin {
 			update_option( 'blog_tutor_support_settings', $options );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-nerdpress-relay-server-url-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-nerdpress-relay-server-url-field.php';
 	}
 
 	/**
@@ -617,7 +617,7 @@ class NerdPress_Admin {
 			update_option( 'blog_tutor_support_settings', $options );
 		}
 
-		include dirname( __FILE__ ) . '/views/html-nerdpress-relay-server-api-token-field.php';
+		include dirname( BT_PLUGIN_FILE ) . '/includes/admin/views/html-nerdpress-relay-server-api-token-field.php';
 	}
 
 
@@ -644,5 +644,3 @@ class NerdPress_Admin {
 	}
 
 }
-
-new NerdPress_Admin();

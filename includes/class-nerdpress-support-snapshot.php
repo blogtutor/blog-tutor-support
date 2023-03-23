@@ -10,7 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @category Core
  * @author Apsis Labs
  */
-
 class NerdPress_Support_Snapshot {
 	public static function init() {
 		$class = __CLASS__;
@@ -92,11 +91,6 @@ class NerdPress_Support_Snapshot {
 
 
 	public static function assemble_snapshot() {
-		// The HTML must be escaped to prevent JSON errors on the relay server.
-		function filter_htmlspecialchars( &$value ) {
-			$value = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
-		}
-
 		// Check if get_plugins() function exists. This is required on the front end of the
 		// site, since it is in a file that is normally only loaded in the admin.
 		if ( ! function_exists( 'get_plugins' ) ) {
@@ -110,10 +104,10 @@ class NerdPress_Support_Snapshot {
 		$active_plugins        = self::filter_active_plugins( get_plugins(), $active_plugins_option );
 		$inactive_plugins      = self::filter_inactive_plugins( get_plugins(), $active_plugins_option );
 
-		array_walk_recursive( $current_plugins, 'filter_htmlspecialchars' );
-		array_walk_recursive( $mu_plugins, 'filter_htmlspecialchars' );
-		array_walk_recursive( $active_plugins, 'filter_htmlspecialchars' );
-		array_walk_recursive( $inactive_plugins, 'filter_htmlspecialchars' );
+		array_walk_recursive( $current_plugins, 'bt_filter_htmlspecialchars' );
+		array_walk_recursive( $mu_plugins, 'bt_filter_htmlspecialchars' );
+		array_walk_recursive( $active_plugins, 'bt_filter_htmlspecialchars' );
+		array_walk_recursive( $inactive_plugins, 'bt_filter_htmlspecialchars' );
 
 		require ABSPATH . WPINC . '/version.php';
 
@@ -193,4 +187,8 @@ class NerdPress_Support_Snapshot {
 	}
 }
 
-add_action( 'init', array( 'NerdPress_Support_Snapshot', 'init' ) );
+// FIXME The HTML must be escaped to prevent JSON errors on the relay server.
+function bt_filter_htmlspecialchars( &$value ) {
+	$value = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
+}
+

@@ -3,6 +3,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function bt_serverinfo_admin_menu_item( $wp_admin_bar ) {
+
+	$cpu_load_info = '';
+
+	if ( function_exists( 'sys_getloadavg' ) ) {
+		$cpu_loads = sys_getloadavg();
+		if ( $cpu_loads ) {
+			$cpu_load_info = '<span>Load: ' . esc_html( $cpu_loads[0] ) . ' &nbsp;' . esc_html( $cpu_loads[1] ) . ' &nbsp;' . esc_html( $cpu_loads[2] ) . '  &nbsp; ';
+		}
+	}
+
+	$disk_space_info = 'Free Disk: ' . esc_html( NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] ) ) . '</span>';
+	$cpu_disk_info   = $cpu_load_info . $disk_space_info;
+	$args            = array(
+		'id'    => 'cpu-disk-info',
+		'title' => $cpu_disk_info,
+		'href'  => admin_url( 'options-general.php?page=nerdpress-support&tab=server_information' ),
+		'meta'  => array(
+			'class' => 'btButton',
+			'title' => 'Open NerdPress Support plugin settings.',
+		),
+	);
+	$wp_admin_bar->add_node( $args );
+}
 
 // Add Admin Bar Menu Items.
 function bt_custom_toolbar_links( $wp_admin_bar ) {
@@ -15,7 +39,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		}
 
 		?>
-			<link rel="stylesheet" href="<?php echo NerdPress::$plugin_dir_url . 'includes/css/html-admin-menu.css'; ?>" type="text/css" media="all">
+			<link rel="stylesheet" href="<?php echo NerdPress_Plugin::$plugin_dir_url . 'includes/css/html-admin-menu.css'; ?>" type="text/css" media="all">
 		<?php
 
 		// Add "NerdPress" parent menu items.
@@ -249,33 +273,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		}
 
 		if ( NerdPress_Helpers::is_nerdpress() ) {
-			// add cpu load to admin menu.
-			function serverinfo_admin_menu_item( $wp_admin_bar ) {
-
-				$cpu_load_info = '';
-
-				if ( function_exists( 'sys_getloadavg' ) ) {
-					$cpu_loads = sys_getloadavg();
-					if ( $cpu_loads ) {
-						$cpu_load_info = '<span>Load: ' . esc_html( $cpu_loads[0] ) . ' &nbsp;' . esc_html( $cpu_loads[1] ) . ' &nbsp;' . esc_html( $cpu_loads[2] ) . '  &nbsp; ';
-					}
-				}
-
-				$disk_space_info = 'Free Disk: ' . esc_html( NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] ) ) . '</span>';
-				$cpu_disk_info   = $cpu_load_info . $disk_space_info;
-				$args            = array(
-					'id'    => 'cpu-disk-info',
-					'title' => $cpu_disk_info,
-					'href'  => admin_url( 'options-general.php?page=nerdpress-support&tab=server_information' ),
-					'meta'  => array(
-						'class' => 'btButton',
-						'title' => 'Open NerdPress Support plugin settings.',
-					),
-				);
-				$wp_admin_bar->add_node( $args );
-			}
-			add_action( 'admin_bar_menu', 'serverinfo_admin_menu_item', 1000 );
+			// Add cpu load to admin menu.
+			add_action( 'admin_bar_menu', 'bt_serverinfo_admin_menu_item', 1000 );
 		}
 	}
 }
-add_action( 'admin_bar_menu', 'bt_custom_toolbar_links', 99 );

@@ -20,7 +20,7 @@ function string_to_bytes( $string ) {
 
 ?>
 
-<link rel="stylesheet" href="<?php echo NerdPress::$plugin_dir_url . 'includes/css/html-serverinfo-field-style.css'; ?>" type="text/css" media="all">
+<link rel="stylesheet" href="<?php echo NerdPress_Plugin::$plugin_dir_url . 'includes/css/html-serverinfo-field-style.css'; ?>" type="text/css" media="all">
 
 <?php
 $disk_total = NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_total'] );

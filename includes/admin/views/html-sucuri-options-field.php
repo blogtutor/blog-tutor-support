@@ -8,7 +8,7 @@ $allowlist_ips = get_option( 'cloudproxy_allowlist_ips', array() );
 if ( count( $allowlist_ips ) > 0 ) {
 	wp_register_script(
 		'clear_allowlist_js',
-		esc_url( NerdPress::$plugin_dir_url . 'includes/admin/js/bt-clearallowlist.js' ),
+		esc_url( NerdPress_Plugin::$plugin_dir_url . 'includes/admin/js/bt-clearallowlist.js' ),
 		array(),
 		BT_PLUGIN_VERSION
 	);

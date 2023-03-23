@@ -3,14 +3,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
-	/**
-	 * NerdPress_Support_ShortPixel
-	 *
-	 * @package  NerdPress
-	 * @category Core
-	 * @author Sergio Scabuzzo
-	 */
-
+/**
+ * NerdPress_Support_ShortPixel
+ *
+ * @package  NerdPress
+ * @category Core
+ * @author Sergio Scabuzzo
+ */
 class NerdPress_Support_ShortPixel {
 	/**
 	 * Initialize the settings.
@@ -35,5 +34,3 @@ class NerdPress_Support_ShortPixel {
 		}
 	}
 }
-
-new NerdPress_Support_ShortPixel();

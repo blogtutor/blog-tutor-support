@@ -3,13 +3,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-	/**
-	 * NerdPress helper class.
-	 *
-	 * @package  NerdPress
-	 * @category Core
-	 * @author  Andrew Wilder, Sergio Scabuzzo
-	 */
+/**
+ * NerdPress helper class.
+ *
+ * @package  NerdPress
+ * @category Core
+ * @author  Andrew Wilder, Sergio Scabuzzo
+ */
 class NerdPress_Helpers {
 	private static $sucuri_api_key             = false;
 	private static $sucuri_notification_email  = false;
@@ -139,7 +139,7 @@ class NerdPress_Helpers {
 	/**
 	 * Format the argument from bytes to MB, GB, etc.
 	 *
-	 * @param array bytes size.
+	 * @param array $bytes bytes size.
 	 *
 	 * @return array size from bytes to larger ammount.
 	 */
@@ -184,7 +184,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri request header is set
 	 *
-	 * @return boolean. true if set
+	 * @return boolean true if set
 	 */
 	public static function is_sucuri_header_set() {
 		return isset( $_SERVER['HTTP_X_SUCURI_CLIENTIP'] );
@@ -193,7 +193,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri API key is set
 	 *
-	 * @return boolean. If the key is set
+	 * @return boolean If the key is set
 	 */
 	public static function is_sucuri_firewall_api_key_set() {
 		if ( self::get_sucuri_api() === false ) {
@@ -205,7 +205,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri Contact Email is set
 	 *
-	 * @return boolean. If the email is set
+	 * @return boolean If the email is set
 	 */
 	public static function is_sucuri_notification_email_set() {
 		if ( self::get_sucuri_notification_email() === false ) {
@@ -217,7 +217,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Cloudflare Firewall option is selected
 	 *
-	 * @return boolean. If the option is selected
+	 * @return boolean If the option is selected
 	 */
 	public static function is_cloudflare_firewall_selected() {
 		$option_list = get_option( 'blog_tutor_support_settings', array() );
@@ -227,7 +227,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri Firewall option is selected
 	 *
-	 * @return boolean. If the option is selected
+	 * @return boolean If the option is selected
 	 */
 	public static function is_sucuri_firewall_selected() {
 		$option_list = get_option( 'blog_tutor_support_settings', array() );
@@ -237,7 +237,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri Plugin is active
 	 *
-	 * @return boolean. If the plugin is active
+	 * @return boolean If the plugin is active
 	 */
 	public static function is_sucuri_plugin_active() {
 		return is_plugin_active( 'sucuri-scanner/sucuri.php' );
@@ -246,7 +246,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri Plugin is installed on the site
 	 *
-	 * @return boolean. If the plugin is installed
+	 * @return boolean If the plugin is installed
 	 */
 	public static function is_sucuri_plugin_installed() {
 		return file_exists( plugin_dir_path( __FILE__ ) . '/../../sucuri-scanner/sucuri.php' );
@@ -256,7 +256,7 @@ class NerdPress_Helpers {
 	 * Determine whether the api key is set and Sucuri firewall setting
 	 * is selected
 	 *
-	 * @return boolean. true if the key is set and the firewall is selected
+	 * @return boolean true if the key is set and the firewall is selected
 	 */
 	public static function is_sucuri_api_and_settings_set() {
 		if ( self::$sucuri_buttons_flag === null ) {
@@ -271,7 +271,7 @@ class NerdPress_Helpers {
 	/**
 	 * If the sucuri plugin is inactive but should be active
 	 *
-	 * @return boolean. true if inactive but should be active
+	 * @return boolean true if inactive but should be active
 	 */
 	public static function is_sucuri_inactive() {
 		return ( ! self::is_sucuri_firewall_api_key_set() &&
@@ -281,7 +281,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri API key is missing
 	 *
-	 * @return boolean. true if the key is missing
+	 * @return boolean true if the key is missing
 	 */
 	public static function is_sucuri_key_missing() {
 		return ( ! self::is_sucuri_firewall_api_key_set() &&
@@ -290,7 +290,7 @@ class NerdPress_Helpers {
 
 	/**
 	 * Display NerdPress Notification
-	 * @param string $msg. String to display on the notification
+	 * @param string $msg String to display on the notification
 	 * @return void
 	 */
 	public static function display_notification( $msg ) {
@@ -308,17 +308,18 @@ class NerdPress_Helpers {
 
 		$msg_class = ( $msg['status'] ? 'np-notice' : 'error np-notice' );
 		?>
-			<link rel="stylesheet" href="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/css/html-notifications-style.css' ); ?>" type="text/css" media="all">
+			<link rel="stylesheet" href="<?php echo esc_url( NerdPress_Plugin::$plugin_dir_url . 'includes/css/html-notifications-style.css' ); ?>" type="text/css" media="all">
 			<div class="notice <?php echo esc_attr( $msg_class ); ?>">
-				<p><img src="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/images/nerdpress-icon-250x250.png' ); ?>" style="max-width:45px;vertical-align:middle;"><strong><?php echo esc_html( $msg['msg'] ); ?></strong></p>
+				<p><img src="<?php echo esc_url( NerdPress_Plugin::$plugin_dir_url . 'includes/images/nerdpress-icon-250x250.png' ); ?>" style="max-width:45px;vertical-align:middle;"><strong><?php echo esc_html( $msg['msg'] ); ?></strong></p>
 			</div>
 		<?php
 	}
 
 	/**
 	 * Bypass clearing Cloudflare cache for non-production domains.
-	 * @param string $domain. URL to be cleared
-	 * @return boolean. true if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
+	 *
+	 * @param string $home_url URL to be cleared
+	 * @return boolean true if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
 	 */
 	public static function is_production( $home_url ) {
 		if ( defined( 'NERDPRESS_PRODUCTION_CHECK_BYPASS' ) ) {
@@ -366,7 +367,7 @@ class NerdPress_Helpers {
 	/**
 	 * Bypass clearing Cloudflare cache for non-production domains and NERDPRESS_CACHE_CLEAR_BYPASS constant.
 	 * @param array $prefixes. URL(S) to be cleared
-	 * @return boolean. true if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
+	 * @return boolean true if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
 	 */
 	public static function cache_clear_bypass_on_string( $prefixes ) {
 		$bypass_strings = array(
@@ -391,7 +392,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether we are hiding ShortPixel settings.
 	 *
-	 * @return boolean. If the option is selected
+	 * @return boolean If the option is selected
 	 */
 	public static function hide_shortpixel_settings() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
@@ -401,7 +402,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether the relay server settings are set
 	 *
-	 * @return boolean. If the relay API Token is set
+	 * @return boolean If the relay API Token is set
 	 */
 	public static function is_relay_server_configured() {
 		$options = get_option( 'blog_tutor_support_settings', array() );

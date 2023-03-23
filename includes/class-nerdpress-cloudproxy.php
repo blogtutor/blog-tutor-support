@@ -3,14 +3,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-	/**
-	 * NerdPress helper class
-	 *
-	 * @package  NerdPress
-	 * @category Core
-	 * @author Andrey Kalashnikov
-	 */
-
+/**
+ * NerdPress helper class
+ *
+ * @package  NerdPress
+ * @category Core
+ * @author Andrey Kalashnikov
+ */
 class NerdPress_Cloudproxy {
 	private $allowlist_option_name = 'cloudproxy_allowlist_ips';
 	private $err_counter_option    = 'nerdpress_allowlist_errors';
@@ -34,7 +33,7 @@ class NerdPress_Cloudproxy {
 	}
 
 	public function bt_enqueue_scripts() {
-		wp_register_script( 'allowlist_js', esc_url( NerdPress::$plugin_dir_url . 'includes/js/bt-allowlist.js' ), array(), BT_PLUGIN_VERSION );
+		wp_register_script( 'allowlist_js', esc_url( NerdPress_Plugin::$plugin_dir_url . 'includes/js/bt-allowlist.js' ), array(), BT_PLUGIN_VERSION );
 		wp_localize_script(
 			'allowlist_js',
 			'sucuri_allowlist',
@@ -208,5 +207,3 @@ class NerdPress_Cloudproxy {
 		update_option( $this->err_counter_option, $errors );
 	}
 }
-
-add_action( 'init', array( 'NerdPress_Cloudproxy', 'init' ) );

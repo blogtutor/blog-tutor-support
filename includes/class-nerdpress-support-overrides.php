@@ -3,14 +3,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
-	/**
-	 * NerdPress_Support_Overrides
-	 *
-	 * @package  NerdPress
-	 * @category Core
-	 * @author Sergio Scabuzzo
-	 */
-
+/**
+ * NerdPress_Support_Overrides
+ *
+ * @package  NerdPress
+ * @category Core
+ * @author Sergio Scabuzzo
+ */
 class NerdPress_Support_Overrides {
 	private static $options_array     = 'blog_tutor_support_settings';
 	private static $nerdpress_options = '';
@@ -123,5 +122,3 @@ class NerdPress_Support_Overrides {
 		return $excluded_strings;
 	}
 }
-
-new NerdPress_Support_Overrides();

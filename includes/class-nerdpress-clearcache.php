@@ -3,14 +3,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
-	/**
-	 * NerdPress Clear Cache
-	 *
-	 * @package  NerdPress
-	 * @category Core
-	 * @author Andrey Kalashnikov
-	 */
-
+/**
+ * NerdPress Clear Cache
+ *
+ * @package  NerdPress
+ * @category Core
+ * @author Andrey Kalashnikov
+ */
 class NerdPress_Clearcache {
 
 	public function __construct() {
@@ -76,7 +75,7 @@ class NerdPress_Clearcache {
 	public function bt_enqueue_scripts() {
 		if ( user_can( get_current_user_id(), 'edit_posts' ) ) {
 			wp_enqueue_script( 'jquery' );
-			wp_register_script( 'clearcache_js', esc_url( NerdPress::$plugin_dir_url . 'includes/js/bt-clearcache.js' ), array(), BT_PLUGIN_VERSION );
+			wp_register_script( 'clearcache_js', esc_url( NerdPress_Plugin::$plugin_dir_url . 'includes/js/bt-clearcache.js' ), array(), BT_PLUGIN_VERSION );
 			wp_localize_script(
 				'clearcache_js',
 				'sucuri_clearcache',
@@ -89,5 +88,3 @@ class NerdPress_Clearcache {
 		}
 	}
 }
-
-new NerdPress_Clearcache();

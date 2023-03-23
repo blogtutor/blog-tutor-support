@@ -60,5 +60,3 @@ class NerdPress_Widget {
 		}
 	}
 }
-
-new NerdPress_Widget();

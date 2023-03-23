@@ -104,10 +104,10 @@ class NerdPress_Support_Snapshot {
 		$active_plugins        = self::filter_active_plugins( get_plugins(), $active_plugins_option );
 		$inactive_plugins      = self::filter_inactive_plugins( get_plugins(), $active_plugins_option );
 
-		array_walk_recursive( $current_plugins, 'bt_filter_htmlspecialchars' );
-		array_walk_recursive( $mu_plugins, 'bt_filter_htmlspecialchars' );
-		array_walk_recursive( $active_plugins, 'bt_filter_htmlspecialchars' );
-		array_walk_recursive( $inactive_plugins, 'bt_filter_htmlspecialchars' );
+		array_walk_recursive( $current_plugins, array( __CLASS__, 'filter_htmlspecialchars' ) );
+		array_walk_recursive( $mu_plugins, array( __CLASS__, 'filter_htmlspecialchars' ) );
+		array_walk_recursive( $active_plugins, array( __CLASS__, 'filter_htmlspecialchars' ) );
+		array_walk_recursive( $inactive_plugins, array( __CLASS__, 'filter_htmlspecialchars' ) );
 
 		require ABSPATH . WPINC . '/version.php';
 
@@ -177,7 +177,6 @@ class NerdPress_Support_Snapshot {
 		return 'None/Other';
 	}
 
-
 	private static function filter_active_plugins( $all_plugins, $active_plugins ) {
 		return array_filter( $all_plugins, fn ( $key ) => in_array( $key, $active_plugins, true ), ARRAY_FILTER_USE_KEY );
 	}
@@ -185,10 +184,11 @@ class NerdPress_Support_Snapshot {
 	private static function filter_inactive_plugins( $all_plugins, $active_plugins ) {
 		return array_filter( $all_plugins, fn ( $key ) => ! in_array( $key, $active_plugins, true ), ARRAY_FILTER_USE_KEY );
 	}
-}
 
-// FIXME The HTML must be escaped to prevent JSON errors on the relay server.
-function bt_filter_htmlspecialchars( &$value ) {
-	$value = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
+	/**
+	 * The HTML must be escaped to prevent JSON errors on the relay server.
+	 */
+	public static function filter_htmlspecialchars( &$value ) {
+		$value = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
+	}
 }
-

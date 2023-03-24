@@ -80,7 +80,7 @@ if ( $display_settings_summary ) {
 
 	<p>Current compression setting is: <strong><?php echo esc_html( $short_pixel_compression_level ); ?></strong>.</p>
 
-	<p>Images <strong><?php echo esc_html( $short_pixel_resize_images ); ?></strong> set to be resized<?php echo esc_html( $short_pixel_resize_info ); ?>.</p>
+	<p>Images <strong><?php echo esc_html( $short_pixel_resize_images ); ?></strong> set to be resized<?php echo wp_kses( $short_pixel_resize_info, array( 'strong' => array(), ) ); ?>.</p>
 
 	<p>Thumbnail images <strong><?php echo esc_html( $short_pixel_thumbnails ); ?></strong> being optimized.</p>
 

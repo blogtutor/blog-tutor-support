@@ -257,7 +257,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				if ( function_exists( 'sys_getloadavg' ) ) {
 					$cpu_loads = sys_getloadavg();
 					if ( $cpu_loads ) {
-						$cpu_load_info = '<span>Load: ' . esc_html( $cpu_loads[0] ) . ' &nbsp;' . esc_html( $cpu_loads[1] ) . ' &nbsp;' . esc_html( $cpu_loads[2] ) . '  &nbsp; ';
+						$cpu_load_info = '<span>Load: ' . esc_html( round( $cpu_loads[0], 2) ) . ' &nbsp;' . esc_html( round( $cpu_loads[1], 2 ) ) . ' &nbsp;' . esc_html( round( $cpu_loads[2], 2 ) ) . '  &nbsp; ';
 					}
 				}
 

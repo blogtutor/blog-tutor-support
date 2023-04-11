@@ -32,7 +32,7 @@ if ( function_exists( 'sys_getloadavg' ) ) {
 	if ( $loads ) {
 		?>
 		<article>
-			<h2 style="margin-top: 0;">Load Averages: &nbsp; <?php echo esc_html( $loads[0] ) . ' &nbsp; ' . esc_html( $loads[1] ) . ' &nbsp; ' . esc_html( $loads[2] ); ?></h2>
+			<h2 style="margin-top: 0;">Load Averages: &nbsp; <?php echo esc_html( round( $loads[0], 2 ) ) . ' &nbsp; ' . esc_html( round( $loads[1], 2 ) ) . ' &nbsp; ' . esc_html( round( $loads[2], 2 ) ); ?></h2>
 		</article>
 		<?php
 	}

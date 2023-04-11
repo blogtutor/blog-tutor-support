@@ -51,7 +51,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 							! NerdPress_Helpers::cache_clear_bypass_on_string( array( $_SERVER['REQUEST_URI'] ) ) !== false ||
 							strpos( $_SERVER['REQUEST_URI'], 'lang=' ) !== false
 						)
-				   	) {
+					) {
 						$args = array(
 							'id'     => 'nerdpress-purge-url',
 							'title'  => 'Purge this URL from Cloudflare',
@@ -62,7 +62,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 								'id'       => 'cfClearurl',
 								'class'    => 'btButton',
 								'title'    => 'Purge just this URL from Cloudflare',
-							)
+							),
 						);
 						$wp_admin_bar->add_node( $args );
 					}
@@ -76,8 +76,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 							'tabindex' => 9999,
 							'class'    => 'btButton',
 							'title'    => "This appears to be a non-production site, so we've disabled cache clearing. Please contact us with any questions.",
-							'onclick'  => 'window.supportHeroWidget.show("contact")();',
-						)
+							'onclick'  => NerdPress_Helpers::$help_scout_widget_menu_init,
+						),
 					);
 					$wp_admin_bar->add_node( $args );
 				}
@@ -91,8 +91,8 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 						'tabindex' => 9999,
 						'class'    => 'btButton',
 						'title'    => 'There is a problem with your Cloudflare Enterprise settings! Please contact us.',
-						'onclick'  => 'window.supportHeroWidget.show("contact")();',
-					)
+						'onclick'  => NerdPress_Helpers::$help_scout_widget_menu_init,
+					),
 				);
 				$wp_admin_bar->add_node( $args );
 			}
@@ -107,7 +107,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'meta'   => array(
 					'class'   => 'btButton',
 					'title'   => 'The Sucuri Plugin is not installed! Please contact us.',
-					'onclick' => 'window.supportHeroWidget.show("contact")();',
+					'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
 				),
 			);
 			$wp_admin_bar->add_node( $args );
@@ -121,7 +121,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				'meta'   => array(
 					'class'   => 'btButton',
 					'title'   => 'Your Sucuri Plugin is not activated. Please contact us!',
-					'onclick' => 'window.supportHeroWidget.show("contact")();',
+					'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
 				),
 			);
 			$wp_admin_bar->add_node( $args );
@@ -193,7 +193,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 					'meta'   => array(
 						'class'   => 'btButton',
 						'title'   => 'Missing Firewall API Keys! Please contact us',
-						'onclick' => 'window.supportHeroWidget.show("contact")();',
+						'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
 					),
 				);
 				$wp_admin_bar->add_node( $args );
@@ -209,10 +209,28 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			'meta'   => array(
 				'class'   => 'btButton',
 				'title'   => 'Click to open our knowledge base and contact form.',
-				'onclick' => 'window.supportHeroWidget.show()();',
+				'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
 			),
 		);
 		$wp_admin_bar->add_node( $args );
+
+		if ( NerdPress_Helpers::is_nerdpress() && NerdPress_Helpers::is_relay_server_configured() ) {
+			$args = array(
+				'id'     => 'bt-send-snapshot',
+				'title'  => 'Send Snapshot to Relay',
+				'href'   => add_query_arg( array(
+					'np_snapshot'     => '1',
+					'_snapshot_nonce' => wp_create_nonce( 'np_snapshot' ),
+				) ),
+				'parent' => 'nerdpress-menu',
+				'meta'   => array(
+					'class' => 'btButton',
+					'title' => 'Send Site Snapshot to NerdPress Relay.',
+				),
+			);
+
+			$wp_admin_bar->add_node( $args );
+		}
 
 		if ( NerdPress_Helpers::is_nerdpress() ) {
 
@@ -220,7 +238,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 			$args = array(
 				'id'     => 'bt-settings',
 				'title'  => 'Plugin Settings',
-				'href'   => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support',
+				'href'   => admin_url( 'options-general.php?page=nerdpress-support' ),
 				'parent' => 'nerdpress-menu',
 				'meta'   => array(
 					'class' => 'btButton',
@@ -239,16 +257,16 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 				if ( function_exists( 'sys_getloadavg' ) ) {
 					$cpu_loads = sys_getloadavg();
 					if ( $cpu_loads ) {
-						$cpu_load_info = '<span>Load: ' . $cpu_loads[0] . ' &nbsp;' . $cpu_loads[1] . ' &nbsp;' . $cpu_loads[2] . '  &nbsp; ';
+						$cpu_load_info = '<span>Load: ' . esc_html( round( $cpu_loads[0], 2) ) . ' &nbsp;' . esc_html( round( $cpu_loads[1], 2 ) ) . ' &nbsp;' . esc_html( round( $cpu_loads[2], 2 ) ) . '  &nbsp; ';
 					}
 				}
 
-				$disk_space_info = 'Free Disk: ' . NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] ) . '</span>';
+				$disk_space_info = 'Free Disk: ' . esc_html( NerdPress_Helpers::format_size( NerdPress_Helpers::get_disk_info()['disk_free'] ) ) . '</span>';
 				$cpu_disk_info   = $cpu_load_info . $disk_space_info;
 				$args            = array(
 					'id'    => 'cpu-disk-info',
 					'title' => $cpu_disk_info,
-					'href'  => get_site_url() . '/wp-admin/options-general.php?page=nerdpress-support&tab=server_information',
+					'href'  => admin_url( 'options-general.php?page=nerdpress-support&tab=server_information' ),
 					'meta'  => array(
 						'class' => 'btButton',
 						'title' => 'Open NerdPress Support plugin settings.',

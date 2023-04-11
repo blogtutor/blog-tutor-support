@@ -11,21 +11,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 * @author  Andrew Wilder, Sergio Scabuzzo
 	 */
 class NerdPress_Helpers {
-	private static $sucuri_api_key      = false;
-	private static $sucuri_buttons_flag = null;
+	private static $sucuri_api_key             = false;
+	private static $sucuri_notification_email  = false;
+	private static $sucuri_buttons_flag        = null;
+	public static $help_scout_widget_init      = 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991")';
+	public static $help_scout_widget_menu_init = 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");';
 
 	private static function set_sucuri_api() {
-		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
-			$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
-		} else {
-			$upload_dir = wp_upload_dir( $time = null, $create_dir = null );
-			$path       = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
+		$input_lines = static::get_sucuri_settings_contents();
 
-			if ( file_exists( $path ) ) {
-				$input_lines = file_get_contents( $path );
-			} else {
-				return;
-			}
+		if ( false === $input_lines ) {
+			return;
 		}
 
 		// Using # as regex delimiters since / was giving error.
@@ -43,11 +39,52 @@ class NerdPress_Helpers {
 		}
 	}
 
+	private static function set_sucuri_notification_email() {
+		$input_lines = static::get_sucuri_settings_contents();
+
+		if ( false ===  $input_lines ) {
+			return;
+		}
+
+		$regex = '#\"sucuriscan_notify_to\":\"([^"]*)\"#';
+
+		preg_match_all( $regex, $input_lines, $output_array, PREG_SET_ORDER, 0 );
+
+		if ( array_filter( $output_array ) ) {
+			self::$sucuri_notification_email = $output_array[0][1];
+		} else {
+			self::$sucuri_notification_email = null;
+		}
+	}
+
+	private static function get_sucuri_settings_contents() {
+		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
+			return file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
+		} else {
+			$upload_dir = wp_upload_dir( $time = null, $create_dir = null );
+			$path       = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
+
+			if ( file_exists( $path ) ) {
+				return file_get_contents( $path );
+			} else {
+				return false;
+			}
+		}
+
+	}
+
 	/**
 	 * Wrapper method to retrieve the sucuri API static variable
 	 */
 	public static function get_sucuri_api() {
 		return self::$sucuri_api_key;
+	}
+
+	/**
+	 * Wrapper method to retrieve the sucuri API static variable
+	 */
+	public static function get_sucuri_notification_email() {
+		return self::$sucuri_notification_email;
 	}
 
 	/**
@@ -57,8 +94,10 @@ class NerdPress_Helpers {
 		$current_user = wp_get_current_user();
 		return (
 			current_user_can( 'administrator' )
-			&& ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false
-			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false )
+			&& (
+				strpos( $current_user->user_email, '@blogtutor.com' ) !== false
+				|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false
+			)
 		);
 	}
 
@@ -110,8 +149,11 @@ class NerdPress_Helpers {
 		}
 
 		$types = array( 'B', 'KB', 'MB', 'GB', 'TB' );
-		for ( $i = 0; $bytes >= 1000 && $i < ( count( $types ) - 1 );
-		$bytes /= 1024, $i++ );
+		for (
+				$i = 0;
+				$bytes >= 1000 && $i < ( count( $types ) - 1 );
+				$bytes /= 1024, $i++
+		);
 		return ( round( $bytes, 2 ) . ' ' . $types[ $i ] );
 	}
 
@@ -158,6 +200,18 @@ class NerdPress_Helpers {
 			self::set_sucuri_api();
 		}
 		return ( ! empty( self::$sucuri_api_key ) );
+	}
+
+	/**
+	 * Determine whether Sucuri Contact Email is set
+	 *
+	 * @return boolean. If the email is set
+	 */
+	public static function is_sucuri_notification_email_set() {
+		if ( self::get_sucuri_notification_email() === false ) {
+			self::set_sucuri_notification_email();
+		}
+		return ( ! empty( self::$sucuri_notification_email ) );
 	}
 
 	/**
@@ -255,7 +309,7 @@ class NerdPress_Helpers {
 		$msg_class = ( $msg['status'] ? 'np-notice' : 'error np-notice' );
 		?>
 			<link rel="stylesheet" href="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/css/html-notifications-style.css' ); ?>" type="text/css" media="all">
-			<div class="notice <?php echo $msg_class; ?>">
+			<div class="notice <?php echo esc_attr( $msg_class ); ?>">
 				<p><img src="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/images/nerdpress-icon-250x250.png' ); ?>" style="max-width:45px;vertical-align:middle;"><strong><?php echo esc_html( $msg['msg'] ); ?></strong></p>
 			</div>
 		<?php
@@ -342,5 +396,31 @@ class NerdPress_Helpers {
 	public static function hide_shortpixel_settings() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 		return ( ! isset( $options['shortpixel_bulk_optimize'] ) && ! self::is_nerdpress() && defined( 'SHORTPIXEL_HIDE_API_KEY' ) );
+	}
+
+	/**
+	 * Determine whether the relay server settings are set
+	 *
+	 * @return boolean. If the relay API Token is set
+	 */
+	public static function is_relay_server_configured() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+
+		return ( self::is_production( home_url( '/' ) ) && isset( $options['np_relay_api_token'] ) );
+	}
+
+	public static function relay_server_url() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		$url     = $options['np_relay_server_url'] ? $options['np_relay_server_url'] : self::relay_server_default_url();
+		return trailingslashit( $url );
+	}
+
+	public static function relay_server_default_url() {
+		return 'https://relay.nerdpress.net/';
+	}
+
+	public static function relay_server_api_token() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		return $options['np_relay_api_token'];
 	}
 }

@@ -51,7 +51,7 @@ class NerdPress_Widget {
 			}(window, document, window.Beacon || function() {});
 		</script>
 		<?php
-		if ( is_admin() && ( ! isset( $options['hide_tab'] ) ) ) {
+		if ( is_admin() && ( ! isset( $options['hide_tab'] ) ) && ! defined('IFRAME_REQUEST') ) {
 			?>
 			<script type = "text/javascript">
 				<?php echo NerdPress_Helpers::$help_scout_widget_init; ?>

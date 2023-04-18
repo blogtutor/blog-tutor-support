@@ -77,6 +77,7 @@ class NerdPress_Support_Snapshot {
 			'headers'   => array(
 				'Authorization' => "Bearer $api_token",
 				'Content-Type'  => 'application/json',
+				'Domain'        => site_url(),				
 			),
 			'body'      => wp_json_encode( $dump ),
 			// Bypass SSL verification when using self

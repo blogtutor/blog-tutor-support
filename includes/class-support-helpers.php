@@ -268,7 +268,7 @@ class NerdPress_Helpers {
 			'closte',
 			'runcloud',
 			'kinsta',
-			'cloudwaysapp',
+			'cloudwaysapps',
 			'pantheonsite',
 			'sg-host',
 			'onrocket',

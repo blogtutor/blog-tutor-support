@@ -3,7 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
 /**
  * NerdPress Support Admin.
  *
@@ -20,17 +19,17 @@ class NerdPress_Admin {
 		add_action( 'admin_menu', array( $this, 'settings_menu' ), 59 );
 		add_action( 'admin_init', array( $this, 'settings_tabs' ) );
 		add_action( 'admin_head', array( $this, 'hide_wp_rocket_beacon' ) );
-}
+	}
 
-  /**
-   * Hide WP Rocket's help beacon.
-   */
-  function hide_wp_rocket_beacon () {
+	/**
+	 * Hide WP Rocket's help beacon.
+	 */
+	public function hide_wp_rocket_beacon() {
 		$current_screen = get_current_screen();
 		if ( $current_screen->id === 'settings_page_wprocket' && ! NerdPress_Helpers::is_nerdpress() ) {
 			echo '<style type="text/css">div#beacon-container {display: none;}</style>';
 		}
-  }
+	}
 
 	/**
 	 * Add the settings page.
@@ -90,8 +89,8 @@ class NerdPress_Admin {
 		/**
 		* Plugin settings form fields.
 		*/
-		$settings_option   = 'blog_tutor_support_settings';
-		$bt_options        = get_option( 'blog_tutor_support_settings' );
+		$settings_option = 'blog_tutor_support_settings';
+		$bt_options      = get_option( 'blog_tutor_support_settings' );
 
 		// Set Custom Fields cection.
 		add_settings_section(
@@ -101,7 +100,7 @@ class NerdPress_Admin {
 			$settings_option
 		);
 
-		// Add option to disable/enable Core auto updates. 
+		// Add option to disable/enable Core auto updates.
 		add_settings_field(
 			'auto_update_core',
 			__( 'Core Auto-Updates', 'nerdpress-support' ),
@@ -115,7 +114,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add option to disable/enable plugin auto updates. 
+		// Add option to disable/enable plugin auto updates.
 		add_settings_field(
 			'auto_update_plugins',
 			__( 'Plugin Auto-Updates', 'nerdpress-support' ),
@@ -129,7 +128,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add option to disable/enable theme auto updates. 
+		// Add option to disable/enable theme auto updates.
 		add_settings_field(
 			'auto_update_themes',
 			__( 'Theme Auto-Updates', 'nerdpress-support' ),
@@ -143,7 +142,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add option to disable/enable excluding WP Rocket delay js list. 
+		// Add option to disable/enable excluding WP Rocket delay js list.
 		add_settings_field(
 			'exclude_wp_rocket_delay_js',
 			__( 'WP Rocket Delay JS', 'nerdpress-support' ),
@@ -156,7 +155,7 @@ class NerdPress_Admin {
 				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
 			)
 		);
-		// Add option to disable/enable ShortPixel bulk optimization. 
+		// Add option to disable/enable ShortPixel bulk optimization.
 		add_settings_field(
 			'shortpixel_bulk_optimize',
 			__( 'ShortPixel Settings', 'nerdpress-support' ),
@@ -164,9 +163,9 @@ class NerdPress_Admin {
 			$settings_option,
 			'options_section',
 			array(
-				'menu'  => $settings_option,
-				'id'    => 'shortpixel_bulk_optimize',
-				'label' => __( 'Un-hide ShortPixel settings for users.', 'nerdpress-support' ),
+				'menu'        => $settings_option,
+				'id'          => 'shortpixel_bulk_optimize',
+				'label'       => __( 'Un-hide ShortPixel settings for users.', 'nerdpress-support' ),
 				'description' => __( 'SHORTPIXEL_HIDE_API_KEY constant ' ),
 			)
 		);
@@ -207,41 +206,66 @@ class NerdPress_Admin {
 			$settings_option,
 			'options_section',
 			array(
-				'menu'  => $settings_option,
-				'id'    => 'firewall_choice'
+				'menu' => $settings_option,
+				'id'   => 'firewall_choice',
 			)
 		);
 
-		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'cloudflare' );
+		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] === 'cloudflare' );
 
-// 		if ( $has_cloudflare ) {
-			// Add field Cloudflare Options
-			add_settings_field(
-				'cloudflare_zone',
-				__( 'Cloudflare DNS Zone', 'nerdpress-support' ),
-				array( $this, 'cloudflare_dns_element_callback' ),
-				$settings_option,
-				'options_section',
-				array(
-					'menu'    => $settings_option,
-					'id'      => 'cloudflare_zone',
-					'label'   => __( 'Cloudflare DNS Zone', 'nerdpress-support' ),
-					'default' => 'dns1',
-				)
-			);
-			add_settings_field(
-				'cloudflare_token',
-				__( 'Cloudflare API Token', 'nerdpress-support' ),
-				array( $this, 'cloudflare_token_element_callback' ),
-				$settings_option,
-				'options_section',
-				array(
-					'menu'  => $settings_option,
-					'id'    => 'cloudflare_token',
-					'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
-				)
-			);
-// 		}
+		// Add field Cloudflare Options
+		add_settings_field(
+			'cloudflare_zone',
+			__( 'Cloudflare DNS Zone', 'nerdpress-support' ),
+			array( $this, 'cloudflare_dns_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'    => $settings_option,
+				'id'      => 'cloudflare_zone',
+				'label'   => __( 'Cloudflare DNS Zone', 'nerdpress-support' ),
+				'default' => 'dns1',
+			)
+		);
+		add_settings_field(
+			'cloudflare_token',
+			__( 'Cloudflare API Token', 'nerdpress-support' ),
+			array( $this, 'cloudflare_token_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'cloudflare_token',
+				'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
+			)
+		);
+
+		// Add Relay Server Settings
+		add_settings_field(
+			'np_relay_server_url',
+			__( 'NerdPress Relay Server URL', 'nerdpress-support' ),
+			array( $this, 'nerdpress_relay_server_url_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'np_relay_server_url',
+				'label' => __( 'NerdPress Relay Server URL', 'nerdpress-support' ),
+			)
+		);
+
+		add_settings_field(
+			'np_relay_api_token',
+			__( 'NerdPress Relay API Token', 'nerdpress-support' ),
+			array( $this, 'nerdpress_relay_api_token_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'np_relay_api_token',
+				'label' => __( 'NerdPress Relay API Token', 'nerdpress-support' ),
+			)
+		);
 
 		// Register settings.
 		register_setting( $settings_option, $settings_option, array( $this, 'validate_options' ) );
@@ -272,9 +296,8 @@ class NerdPress_Admin {
 		);
 		register_setting( $information_option, $information_option, array( $this, 'validate_options' ) );
 
-
 		// Check if Sucuri's enabled to skip this branch since it would still execute even if the SFW tab is absent
-		$has_sucuri = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] == 'sucuri' );
+		$has_sucuri            = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] === 'sucuri' );
 		$sucuri_api_call_array = NerdPress_Helpers::get_sucuri_api_call();
 
 		if ( $has_sucuri ) {
@@ -348,7 +371,7 @@ class NerdPress_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-auto-update-core-field.php';
 	}
-		
+
 	/**
 	 * Checkbox auto update plugins element callback.
 	 *
@@ -386,7 +409,7 @@ class NerdPress_Admin {
 
 		include dirname( __FILE__ ) . '/views/html-auto-update-themes-field.php';
 	}
-		
+
 	/**
 	 * Checkbox Exclude WP Rocket Delay JS element callback.
 	 *
@@ -424,7 +447,6 @@ class NerdPress_Admin {
 
 	}
 
-
 	/**
 	 * Radio Button area callback
 	 *
@@ -442,14 +464,14 @@ class NerdPress_Admin {
 			$current = isset( $args['default'] ) ? $args['default'] : 'none';
 		}
 
-		if( isset( $options['firewall_choice'] ) ) { 
+		if ( isset( $options['firewall_choice'] ) ) {
 			$firewall = $options['firewall_choice'];
 		} else {
-			$firewall = 'none';
+			$firewall                   = 'none';
 			$options['firewall_choice'] = $firewall;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
- 
+
 		include dirname( __FILE__ ) . '/views/html-radiobutton-field.php';
 	}
 
@@ -516,16 +538,15 @@ class NerdPress_Admin {
 	 * @param array $args Callback arguments.
 	 */
 	public function cloudflare_dns_element_callback( $args ) {
-// 		print_r( $args );
 		$menu    = $args['menu'];
 		$id      = $args['id'];
 		$options = get_option( $menu );
 		$zone    = '';
 
-		if( isset( $options['cloudflare_zone'] ) ) { 
+		if ( isset( $options['cloudflare_zone'] ) ) {
 			$zone = $options['cloudflare_zone'];
 		} else {
-			$zone = 'dns1';
+			$zone                       = 'dns1';
 			$options['cloudflare_zone'] = $zone;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
@@ -539,22 +560,67 @@ class NerdPress_Admin {
 	 * @param array $args Callback arguments.
 	 */
 	public function cloudflare_token_element_callback( $args ) {
-// 		print_r( $args );
 		$menu    = $args['menu'];
 		$id      = $args['id'];
 		$options = get_option( $menu );
 		$token   = '';
-		
-		if( isset( $options['cloudflare_token'] ) ) { 
+
+		if ( isset( $options['cloudflare_token'] ) ) {
 			$token = $options['cloudflare_token'];
 		} else {
-			$token = '';
+			$token                       = '';
 			$options['cloudflare_token'] = $token;
 			update_option( 'blog_tutor_support_settings', $options );
 		}
 
 		include dirname( __FILE__ ) . '/views/html-cloudflare-token-field.php';
 	}
+
+	/**
+	 * NerdPress Relay Server URL Callback
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function nerdpress_relay_server_url_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$token   = '';
+
+		if ( isset( $options['np_relay_api_token'] ) ) {
+			$url = $options['np_relay_api_token'];
+		} else {
+			$url                           = '';
+			$options['np_relay_api_token'] = $url;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-nerdpress-relay-server-url-field.php';
+	}
+
+	/**
+	 * NerdPress Relay Server URL Callback
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function nerdpress_relay_api_token_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+		$token   = '';
+
+		if ( isset( $options['np_relay_server_url'] ) ) {
+			$url = $options['np_relay_server_url'];
+		} else {
+			$url                            = '';
+			$options['np_relay_server_url'] = $url;
+			update_option( 'blog_tutor_support_settings', $options );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-nerdpress-relay-server-api-token-field.php';
+	}
+
+
 
 	/**
 	 * Valid options.

@@ -11,19 +11,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 * @author  Andrew Wilder, Sergio Scabuzzo
 	 */
 class NerdPress_Helpers {
-	private static $sucuri_api_key = FALSE;
-	private static $sucuri_buttons_flag = NULL;
-	
-	private static function set_sucuri_api() {
-		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
-			$input_lines = file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
-		} else {
-			$upload_dir  = wp_upload_dir( $time = null, $create_dir = null );
-			$path        = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
+	private static $sucuri_api_key             = false;
+	private static $sucuri_notification_email  = false;
+	private static $sucuri_buttons_flag        = null;
+	public static $help_scout_widget_init      = 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991")';
+	public static $help_scout_widget_menu_init = 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");';
 
-			if( file_exists( $path ) )  
-				$input_lines = file_get_contents( $path );
-			else return;
+	private static function set_sucuri_api() {
+		$input_lines = static::get_sucuri_settings_contents();
+
+		if ( false === $input_lines ) {
+			return;
 		}
 
 		// Using # as regex delimiters since / was giving error.
@@ -34,9 +32,45 @@ class NerdPress_Helpers {
 		if ( array_filter( $output_array ) ) {
 			self::$sucuri_api_key = array(
 				'api_key'    => $output_array[0][1],
-				'api_secret' => $output_array[0][2]
+				'api_secret' => $output_array[0][2],
 			);
-		} else self::$sucuri_api_key = array();
+		} else {
+			self::$sucuri_api_key = array();
+		}
+	}
+
+	private static function set_sucuri_notification_email() {
+		$input_lines = static::get_sucuri_settings_contents();
+
+		if ( false ===  $input_lines ) {
+			return;
+		}
+
+		$regex = '#\"sucuriscan_notify_to\":\"([^"]*)\"#';
+
+		preg_match_all( $regex, $input_lines, $output_array, PREG_SET_ORDER, 0 );
+
+		if ( array_filter( $output_array ) ) {
+			self::$sucuri_notification_email = $output_array[0][1];
+		} else {
+			self::$sucuri_notification_email = null;
+		}
+	}
+
+	private static function get_sucuri_settings_contents() {
+		if ( defined( 'SUCURI_DATA_STORAGE' ) ) {
+			return file_get_contents( SUCURI_DATA_STORAGE . '/sucuri-settings.php' );
+		} else {
+			$upload_dir = wp_upload_dir( $time = null, $create_dir = null );
+			$path       = $upload_dir['basedir'] . '/sucuri/sucuri-settings.php';
+
+			if ( file_exists( $path ) ) {
+				return file_get_contents( $path );
+			} else {
+				return false;
+			}
+		}
+
 	}
 
 	/**
@@ -47,13 +81,24 @@ class NerdPress_Helpers {
 	}
 
 	/**
+	 * Wrapper method to retrieve the sucuri API static variable
+	 */
+	public static function get_sucuri_notification_email() {
+		return self::$sucuri_notification_email;
+	}
+
+	/**
 	 * Check email address to see if user is a member of the NerdPress team (and also an administrator).
 	 */
 	public static function is_nerdpress() {
 		$current_user = wp_get_current_user();
-		return ( current_user_can( 'administrator' ) 
-			&& ( strpos( $current_user->user_email, '@blogtutor.com' ) !== false
-			|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false ) );
+		return (
+			current_user_can( 'administrator' )
+			&& (
+				strpos( $current_user->user_email, '@blogtutor.com' ) !== false
+				|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false
+			)
+		);
 	}
 
 	/**
@@ -67,8 +112,13 @@ class NerdPress_Helpers {
 		$disk_info['disk_used']       = 'Unavailable';
 		$disk_info['disk_free']       = 'Unavailable';
 		$disk_info['disk_percentage'] = 'Unavailable';
-			
-		if ( function_exists( 'disk_free_space' ) && ( disk_free_space( __DIR__ ) != false ) ) {
+
+		if (
+			function_exists( 'disk_free_space' )
+			&& ( disk_free_space( __DIR__ ) !== false )
+			&& function_exists( 'disk_total_space' )
+			&& ( disk_total_space( __DIR__ ) > 0 )
+		) {
 			/* Get disk space free (in bytes). */
 			$disk_free                    = disk_free_space( __DIR__ );
 			/* And get disk space total (in bytes).  */
@@ -94,13 +144,16 @@ class NerdPress_Helpers {
 	 * @return array size from bytes to larger ammount.
 	 */
 	public static function format_size( $bytes ) {
-		if ( $bytes == 'Unavailable' ) {
+		if ( $bytes === 'Unavailable' ) {
 			return $bytes;
 		}
 
 		$types = array( 'B', 'KB', 'MB', 'GB', 'TB' );
-		for ( $i = 0; $bytes >= 1000 && $i < ( count( $types ) - 1 );
-		$bytes /= 1024, $i++ );
+		for (
+				$i = 0;
+				$bytes >= 1000 && $i < ( count( $types ) - 1 );
+				$bytes /= 1024, $i++
+		);
 		return ( round( $bytes, 2 ) . ' ' . $types[ $i ] );
 	}
 
@@ -110,7 +163,7 @@ class NerdPress_Helpers {
 	 * @return string Sucuri API call with bare arguments
 	 */
 	public static function get_sucuri_api_call() {
-		if( self::get_sucuri_api() === FALSE ) {
+		if ( self::get_sucuri_api() === false ) {
 			self::set_sucuri_api();
 		}
 
@@ -131,7 +184,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri request header is set
 	 *
-	 * @return boolean. TRUE if set
+	 * @return boolean. true if set
 	 */
 	public static function is_sucuri_header_set() {
 		return isset( $_SERVER['HTTP_X_SUCURI_CLIENTIP'] );
@@ -143,10 +196,22 @@ class NerdPress_Helpers {
 	 * @return boolean. If the key is set
 	 */
 	public static function is_sucuri_firewall_api_key_set() {
-		if( self::get_sucuri_api() === FALSE ) {
+		if ( self::get_sucuri_api() === false ) {
 			self::set_sucuri_api();
 		}
 		return ( ! empty( self::$sucuri_api_key ) );
+	}
+
+	/**
+	 * Determine whether Sucuri Contact Email is set
+	 *
+	 * @return boolean. If the email is set
+	 */
+	public static function is_sucuri_notification_email_set() {
+		if ( self::get_sucuri_notification_email() === false ) {
+			self::set_sucuri_notification_email();
+		}
+		return ( ! empty( self::$sucuri_notification_email ) );
 	}
 
 	/**
@@ -156,7 +221,7 @@ class NerdPress_Helpers {
 	 */
 	public static function is_cloudflare_firewall_selected() {
 		$option_list = get_option( 'blog_tutor_support_settings', array() );
-		return ( isset( $option_list['firewall_choice'] ) && $option_list['firewall_choice'] == 'cloudflare' );
+		return ( isset( $option_list['firewall_choice'] ) && $option_list['firewall_choice'] === 'cloudflare' );
 	}
 
 	/**
@@ -166,7 +231,7 @@ class NerdPress_Helpers {
 	 */
 	public static function is_sucuri_firewall_selected() {
 		$option_list = get_option( 'blog_tutor_support_settings', array() );
-		return ( isset( $option_list['firewall_choice'] ) && $option_list['firewall_choice'] == 'sucuri' );
+		return ( isset( $option_list['firewall_choice'] ) && $option_list['firewall_choice'] === 'sucuri' );
 	}
 
 	/**
@@ -191,13 +256,13 @@ class NerdPress_Helpers {
 	 * Determine whether the api key is set and Sucuri firewall setting
 	 * is selected
 	 *
-	 * @return boolean. TRUE if the key is set and the firewall is selected
+	 * @return boolean. true if the key is set and the firewall is selected
 	 */
 	public static function is_sucuri_api_and_settings_set() {
-		if( self::$sucuri_buttons_flag === NULL ) {
+		if ( self::$sucuri_buttons_flag === null ) {
 			self::$sucuri_buttons_flag = (
-				self::is_sucuri_firewall_api_key_set() 
-				&& self::is_sucuri_firewall_selected() 
+				self::is_sucuri_firewall_api_key_set()
+				&& self::is_sucuri_firewall_selected()
 			);
 		}
 		return self::$sucuri_buttons_flag;
@@ -206,7 +271,7 @@ class NerdPress_Helpers {
 	/**
 	 * If the sucuri plugin is inactive but should be active
 	 *
-	 * @return boolean. TRUE if inactive but should be active
+	 * @return boolean. true if inactive but should be active
 	 */
 	public static function is_sucuri_inactive() {
 		return ( ! self::is_sucuri_firewall_api_key_set() &&
@@ -216,7 +281,7 @@ class NerdPress_Helpers {
 	/**
 	 * Determine whether Sucuri API key is missing
 	 *
-	 * @return boolean. TRUE if the key is missing
+	 * @return boolean. true if the key is missing
 	 */
 	public static function is_sucuri_key_missing() {
 		return ( ! self::is_sucuri_firewall_api_key_set() &&
@@ -230,29 +295,36 @@ class NerdPress_Helpers {
 	 */
 	public static function display_notification( $msg ) {
 		if ( ! is_array( $msg ) ) {
-			$msg = array( 'status' => 1, 'msg' => $msg );
+			$msg = array(
+				'status' => 1,
+				'msg'    => $msg,
+			);
 		}
-		
+
 		// Exit if message is empty
-		if ( $msg['msg'] == '') {
+		if ( $msg['msg'] === '' ) {
 			return;
 		}
 
 		$msg_class = ( $msg['status'] ? 'np-notice' : 'error np-notice' );
 		?>
 			<link rel="stylesheet" href="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/css/html-notifications-style.css' ); ?>" type="text/css" media="all">
-			<div class="notice <?php echo $msg_class; ?>">
-				<p><img src="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/images/nerdpress-icon-250x250.png' ); ?>" style="max-width:45px;vertical-align:middle;"><strong><?php echo $msg['msg']; ?></strong></p>
+			<div class="notice <?php echo esc_attr( $msg_class ); ?>">
+				<p><img src="<?php echo esc_url( NerdPress::$plugin_dir_url . 'includes/images/nerdpress-icon-250x250.png' ); ?>" style="max-width:45px;vertical-align:middle;"><strong><?php echo esc_html( $msg['msg'] ); ?></strong></p>
 			</div>
 		<?php
-  }
-	
+	}
+
 	/**
- 	 * Bypass clearing Cloudflare cache for non-production domains.
- 	 * @param string $domain. URL to be cleared
- 	 * @return boolean. TRUE if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
- 	 */
+	 * Bypass clearing Cloudflare cache for non-production domains.
+	 * @param string $domain. URL to be cleared
+	 * @return boolean. true if any of the strings match, or the WP_ENVIRONMENT_TYPE constant is set to staging or development
+	 */
 	public static function is_production( $home_url ) {
+		if ( defined( 'NERDPRESS_PRODUCTION_CHECK_BYPASS' ) ) {
+			return true;
+		}
+
 		$domain_bypass_strings = array(
 			'development',
 			'staging',
@@ -278,52 +350,42 @@ class NerdPress_Helpers {
 		);
 
 		if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
-			return FALSE;
+			return false;
 		}
 
 		foreach ( $domain_bypass_strings as $string ) {
 			// Is $string prepended and appended by a / or . in $home_url.
 			if ( preg_match( '#([/.]' . $string . '[/.])#m', $home_url ) ) {
-				return FALSE;
+				return false;
 			}
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
- 	 * Bypass clearing Cloudflare cache for non-production domains and NERDPRESS_CACHE_CLEAR_BYPASS constant.
- 	 * @param array $prefixes. URL(S) to be cleared
- 	 * @return boolean. TRUE if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
- 	 */
+	 * Bypass clearing Cloudflare cache for non-production domains and NERDPRESS_CACHE_CLEAR_BYPASS constant.
+	 * @param array $prefixes. URL(S) to be cleared
+	 * @return boolean. true if any of the strings match, or the NERDPRESS_CACHE_CLEAR_BYPASS constant matches
+	 */
 	public static function cache_clear_bypass_on_string( $prefixes ) {
 		$bypass_strings = array(
-      'edd_log',
-      'edd_payment',
-      'elementor_library',
-      'page_id',
-      'post_type=recipe',
-      'scheduled-action',
-      'shop_coupon',
-      'shop_order',
-      'shop_subscription',
-      'wc_user_membership',
-      'wprm_recipe',
+			'?',
 		);
-		
+
 		if ( defined( 'NERDPRESS_CACHE_CLEAR_BYPASS' ) ) {
-			$bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS; 		
+			$bypass_strings[] = NERDPRESS_CACHE_CLEAR_BYPASS;
 		}
 
 		foreach ( $bypass_strings as $string ) {
 			foreach ( $prefixes as $prefix ) {
-				if ( strpos( $prefix, $string ) !== FALSE ) {
-					return TRUE;
+				if ( strpos( $prefix, $string ) !== false ) {
+					return true;
 				}
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -334,5 +396,31 @@ class NerdPress_Helpers {
 	public static function hide_shortpixel_settings() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
 		return ( ! isset( $options['shortpixel_bulk_optimize'] ) && ! self::is_nerdpress() && defined( 'SHORTPIXEL_HIDE_API_KEY' ) );
+	}
+
+	/**
+	 * Determine whether the relay server settings are set
+	 *
+	 * @return boolean. If the relay API Token is set
+	 */
+	public static function is_relay_server_configured() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+
+		return ( self::is_production( home_url( '/' ) ) && isset( $options['np_relay_api_token'] ) );
+	}
+
+	public static function relay_server_url() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		$url     = $options['np_relay_server_url'] ? $options['np_relay_server_url'] : self::relay_server_default_url();
+		return trailingslashit( $url );
+	}
+
+	public static function relay_server_default_url() {
+		return 'https://relay.nerdpress.net/';
+	}
+
+	public static function relay_server_api_token() {
+		$options = get_option( 'blog_tutor_support_settings', array() );
+		return $options['np_relay_api_token'];
 	}
 }

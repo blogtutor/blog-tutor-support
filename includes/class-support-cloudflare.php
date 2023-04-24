@@ -463,7 +463,7 @@ class NerdPress_Cloudflare_Client {
 
 		$html  = '<style>.nerdpress-notice { border-left: 4px solid green } .nerdpress-notice.error { border-left: 4px solid red } </style>';
 		$html .= '<div class="notice nerdpress-notice' . ( ! empty( $response['success'] ) ? '' : ' error' ) . '" style="display: flex; align-items: center;">';
-		$html .= '<p><img src="' . esc_url( site_url() ) . '/wp-content/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png" style="max-width:45px;vertical-align:middle;"></p>';
+		$html .= '<p><img src="' . esc_url( plugins_url( 'includes/images/nerdpress-icon-250x250.png', dirname( __FILE__ ) ) ) . '" style="max-width:45px;vertical-align:middle;"></p>';
 		$html .= '<div><h2>NerdPress Notice:</h2>';
 
 		if ( ! empty( $response['success'] ) && empty( $response['messages'] ) ) {

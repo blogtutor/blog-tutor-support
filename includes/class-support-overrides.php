@@ -119,6 +119,7 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'cp-popup\.js'; // ConvertPro
 		$excluded_strings[] = 'wp-recipe-maker';
 		$excluded_strings[] = 'slickstream';
+		$excluded_strings[] = 'slick-film-strip';		
 		$excluded_strings[] = 'social-pug';
 		return $excluded_strings;
 	}

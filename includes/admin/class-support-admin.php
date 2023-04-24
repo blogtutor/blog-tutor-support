@@ -61,7 +61,7 @@ class NerdPress_Admin {
 		if ( ! empty( $option['admin_notice'] ) ) {
 			?>
 			<div class="notice" style="border-left-color:#0F145B">
-				<p><img src="<?php echo esc_url( content_url( '/plugins/blog-tutor-support/includes/images/nerdpress-icon-250x250.png' ) ); ?>" style="max-width:45px;vertical-align:middle;">NerdPress Notes: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
+				<p><img src="<?php echo esc_url( plugins_url( 'images/nerdpress-icon-250x250.png', dirname( __FILE__ ) ) ); ?>" style="max-width:45px;vertical-align:middle;">NerdPress Notes: <strong><?php esc_html_e( $option['admin_notice'] ); ?></strong></p>
 			</div>
 			<?php
 		}

@@ -77,7 +77,7 @@ class NerdPress_Support_Snapshot {
 			'headers'   => array(
 				'Authorization' => "Bearer $api_token",
 				'Content-Type'  => 'application/json',
-				'Domain'        => site_url(),				
+				'Domain'        => site_url(),
 			),
 			'body'      => wp_json_encode( $dump ),
 			// Bypass SSL verification when using self
@@ -186,11 +186,23 @@ class NerdPress_Support_Snapshot {
 
 
 	private static function filter_active_plugins( $all_plugins, $active_plugins ) {
-		return array_filter( $all_plugins, fn ( $key ) => in_array( $key, $active_plugins, true ), ARRAY_FILTER_USE_KEY );
+		return array_filter(
+			$all_plugins,
+			function ( $key ) use ( $active_plugins ) {
+				return in_array( $key, $active_plugins, true );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
 	}
 
 	private static function filter_inactive_plugins( $all_plugins, $active_plugins ) {
-		return array_filter( $all_plugins, fn ( $key ) => ! in_array( $key, $active_plugins, true ), ARRAY_FILTER_USE_KEY );
+		return array_filter(
+			$all_plugins,
+			function ( $key ) use ( $active_plugins ) {
+				return ! in_array( $key, $active_plugins, true );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
 	}
 }
 

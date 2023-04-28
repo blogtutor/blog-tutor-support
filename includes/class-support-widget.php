@@ -15,7 +15,7 @@ class NerdPress_Widget {
 	 * Initialize the widget.
 	 */
 	public function __construct() {
-		if ( current_user_can( 'editor' ) || current_user_can( 'administrator' ) ) {
+		if ( ( current_user_can( 'editor' ) || current_user_can( 'administrator' ) ) && $_GET['page'] !== 'feast-support' ) {
 			if ( ! is_admin() ) {
 				add_action( 'wp_footer', array( $this, 'widget' ), 50 );
 			} else {

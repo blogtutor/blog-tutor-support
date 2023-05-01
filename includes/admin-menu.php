@@ -201,18 +201,20 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		}
 
 		// "Get Help" link to open the Support Hero widget
-		$args = array(
-			'id'     => 'bt-get-help',
-			'title'  => 'Get Help',
-			'href'   => '#',
-			'parent' => 'nerdpress-menu',
-			'meta'   => array(
-				'class'   => 'btButton',
-				'title'   => 'Click to open our knowledge base and contact form.',
-				'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
-			),
-		);
-		$wp_admin_bar->add_node( $args );
+		if ( $_GET['page'] !== 'feast-support' ) {
+			$args = array(
+				'id'     => 'bt-get-help',
+				'title'  => 'Get Help',
+				'href'   => '#',
+				'parent' => 'nerdpress-menu',
+				'meta'   => array(
+					'class'   => 'btButton',
+					'title'   => 'Click to open our knowledge base and contact form.',
+					'onclick' => NerdPress_Helpers::$help_scout_widget_menu_init,
+				),
+			);
+			$wp_admin_bar->add_node( $args );
+		}
 
 		if ( NerdPress_Helpers::is_nerdpress() && NerdPress_Helpers::is_relay_server_configured() ) {
 			$args = array(

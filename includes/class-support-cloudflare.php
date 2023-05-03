@@ -357,7 +357,7 @@ class NerdPress_Cloudflare_Client {
 
 			$payload = [
 				time() + $debounce_threshold, // The next time the cache can be flushed.
-				$prefixes,                    // Store the prefixes for future retrieval.
+				serialize( $prefixes ),       // Store the prefixes for future retrieval.
 			];
 
 			set_transient( $transient_id, implode( '|', $payload ), $debounce_threshold );
@@ -365,15 +365,15 @@ class NerdPress_Cloudflare_Client {
 			// Break apart our payload into [0] our execution timestamp and [1] our cache prefixes.
 			$cache_clear_payload = explode( '|', $cache_clear_payload );
 
+			// Normalize our data.
+			$timestamp = $cache_clear_payload[0];
+			$prefixes  = unserialize( $cache_clear_payload[1] );
+
 			// Ensure that our cron hook is clear, taking into consideration our cache clear prefixes.
-			wp_clear_scheduled_hook( $this->cron_hook_tag, array( $cache_clear_payload[1] ) );
+			wp_clear_scheduled_hook( $this->cron_hook_tag, array( $prefixes ) );
 
 			// Schedule our cache clear event to happen at our desired timestamp.
-			wp_schedule_single_event(
-				$cache_clear_payload[0],
-				$this->cron_hook_tag,
-				array( $cache_clear_payload[1] )
-			);
+			wp_schedule_single_event( $timestamp, $this->cron_hook_tag, array( $prefixes ) );
 		}
 	}
 

@@ -476,7 +476,7 @@ class NerdPress_Cloudflare_Client {
 		self::$status_before           = $old_status;
 		self::$status_after            = $new_status;
 
-		self::purge_cloudflare_cache();
+		self::debounce_purge_cloudflare_cache();
 	}
 
 	/**
@@ -494,7 +494,7 @@ class NerdPress_Cloudflare_Client {
 			die();
 		}
 
-		echo self::purge_cloudflare_cache();
+		echo self::debounce_purge_cloudflare_cache();
 		die();
 	}
 
@@ -569,7 +569,7 @@ class NerdPress_Cloudflare_Client {
 
 		$url_clear               = esc_url( $_POST['url'] );
 		self::$cache_trigger_url = $url_clear;
-		echo self::purge_cloudflare_cache( array( $url_clear ) );
+		echo self::debounce_purge_cloudflare_cache( array( $url_clear ) );
 		die();
 	}
 
@@ -608,7 +608,7 @@ class NerdPress_Cloudflare_Client {
 		self::$status_before     = $old_status;
 		self::$status_after      = $new_status;
 
-		self::purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
+		self::debounce_purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
 	}
 
 	/**
@@ -642,7 +642,7 @@ class NerdPress_Cloudflare_Client {
 		self::$status_before     = 'new comment';
 		self::$status_after      = 'approved';
 
-		self::purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
+		self::debounce_purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
 	}
 
 	/**
@@ -671,7 +671,7 @@ class NerdPress_Cloudflare_Client {
 		self::$status_before     = 'approved';
 		self::$status_after      = ( $data['comment_approved'] ? $data['comment_approved'] : 'pending' );
 
-		self::purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
+		self::debounce_purge_cloudflare_cache( array( get_permalink( $post_id ) ) );
 	}
 
 	/**
@@ -692,7 +692,7 @@ class NerdPress_Cloudflare_Client {
 		self::$suppress_notification   = true;
 		self::$which_cloudflare_method = __METHOD__;
 
-		self::purge_cloudflare_cache();
+		self::debounce_purge_cloudflare_cache();
 	}
 }
 

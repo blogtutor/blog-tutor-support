@@ -125,7 +125,7 @@ class NerdPress_Cloudflare_Client {
 	/**
 	 * @var string. The hook tag used for the cron job that powers the cache purge debouncing.
 	 */
-	private $cron_hook_tag = 'nerdpress_cf_cache_clear';
+	private static $cron_hook_tag = 'nerdpress_cf_cache_clear';
 
 	/**
 	 * NerdPress_Cloudflare_Client static initializizer
@@ -174,7 +174,7 @@ class NerdPress_Cloudflare_Client {
 			add_action( 'admin_notices', array( $this, 'cloudflare_notices' ) );
 			add_action( 'wp_ajax_purge_cloudflare_full', array( $this, 'purge_cloudflare_full' ) );
 			add_action( 'wp_ajax_purge_cloudflare_url', array( $this, 'purge_cloudflare_url' ) );
-			add_action( $this->cron_hook_tag, array( $this, 'debounce_purge_cloudflare_cache_handler' ), 10, 1 );
+			add_action( self::$cron_hook_tag, array( $this, 'debounce_purge_cloudflare_cache_handler' ), 10, 1 );
 		}
 	}
 
@@ -343,7 +343,7 @@ class NerdPress_Cloudflare_Client {
 	 * @param array $prefixes The prefixes to clear.
 	 * @return void
 	 */
-	public function debounce_purge_cloudflare_cache( $prefixes = array() ) {
+	public static function debounce_purge_cloudflare_cache( $prefixes = array() ) {
 		$debounce_threshold  = 60; // TODO: Make customizable via UI.
 		$cache_clear_id      = md5( serialize( $prefixes ) );
 		$transient_id        = 'nerdpress_cf_cache_clear_' . $cache_clear_id;
@@ -370,10 +370,10 @@ class NerdPress_Cloudflare_Client {
 			$prefixes  = unserialize( $cache_clear_payload[1] );
 
 			// Ensure that our cron hook is clear, taking into consideration our cache clear prefixes.
-			wp_clear_scheduled_hook( $this->cron_hook_tag, array( $prefixes ) );
+			wp_clear_scheduled_hook( self::$cron_hook_tag, array( $prefixes ) );
 
 			// Schedule our cache clear event to happen at our desired timestamp.
-			wp_schedule_single_event( $timestamp, $this->cron_hook_tag, array( $prefixes ) );
+			wp_schedule_single_event( $timestamp, self::$cron_hook_tag, array( $prefixes ) );
 		}
 	}
 

@@ -135,7 +135,7 @@ class NerdPress_Support_Snapshot {
 		$dump['active_theme_version']      = $current_theme['Version'];
 		$dump['plugin_update_data']        = get_option( '_site_transient_update_plugins' )->response;
 		$dump['wordpress_version']         = $wp_version;
-		$dump['notes']                     = $options['admin_notice'];
+		$dump['notes']                     = isset( $options['admin_notice'] ) ? $options['admin_notice'] : '';
 		$dump['server_software']           = isset( $_SERVER['SERVER_SOFTWARE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ) : null;
 		$dump['sucuri_api_key']            = NerdPress_Helpers::is_sucuri_firewall_api_key_set() ? implode( '/', NerdPress_Helpers::get_sucuri_api() ) : null;
 		$dump['sucuri_notification_email'] = NerdPress_Helpers::is_sucuri_notification_email_set() ? NerdPress_Helpers::get_sucuri_notification_email() : null;

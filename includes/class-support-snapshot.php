@@ -22,6 +22,23 @@ class NerdPress_Support_Snapshot {
 		add_action( 'wp_loaded', array( $this, 'schedule_snapshot_cron' ) );
 
 		add_action( 'np_scheduled_snapshot', array( $this, 'take_snapshot' ) );
+
+		// Maybe handle remote request to take a new Snapshot.
+		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
+			$options        = get_option( 'blog_tutor_support_settings' );
+			$site_api_key   = $options['np_relay_api_token'] ?? '';
+			$signature      = $_REQUEST['signature'] ?? '';
+			$secret         = 'VsrlmIccJHSJZxtJ4ym2SdJt9OiFia0dgbLLg4zh';
+			$valid_signaure = base64_encode( hash_hmac( 'sha1', $site_api_key, $secret, true ) );
+
+			if ( $signature === $valid_signaure ) {
+				self::take_snapshot();
+			} else {
+				die('0');
+			}
+
+			die('1');
+		}
 	}
 
 	/**

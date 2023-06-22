@@ -27,7 +27,7 @@ class NerdPress_Support_Snapshot {
 		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
 			$options        = get_option( 'blog_tutor_support_settings' );
 			$site_api_key   = $options['np_relay_api_token'] ?? '';
-			$signature      = $_REQUEST['signature'] ?? '';
+			$signature      = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
 			$valid_signaure = base64_encode( hash_hmac( 'sha1', md5( $site_api_key ), $site_api_key, true ) );
 
 			if ( $signature === $valid_signaure ) {

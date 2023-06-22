@@ -25,12 +25,12 @@ class NerdPress_Support_Snapshot {
 
 		// Maybe handle remote request to take a new Snapshot.
 		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
-			$options        = get_option( 'blog_tutor_support_settings' );
-			$site_api_key   = $options['np_relay_api_token'] ?? '';
-			$signature      = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
-			$valid_signaure = base64_encode( hash_hmac( 'sha1', md5( $site_api_key ), $site_api_key, true ) );
+			$options         = get_option( 'blog_tutor_support_settings' );
+			$site_api_key    = $options['np_relay_api_token'] ?? '';
+			$signature       = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
+			$valid_signature = base64_encode( hash_hmac( 'sha1', md5( $site_api_key ), $site_api_key, true ) );
 
-			if ( $signature === $valid_signaure ) {
+			if ( $signature === $valid_signature ) {
 				self::take_snapshot();
 			} else {
 				die('0');

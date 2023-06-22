@@ -28,8 +28,7 @@ class NerdPress_Support_Snapshot {
 			$options        = get_option( 'blog_tutor_support_settings' );
 			$site_api_key   = $options['np_relay_api_token'] ?? '';
 			$signature      = $_REQUEST['signature'] ?? '';
-			$secret         = 'VsrlmIccJHSJZxtJ4ym2SdJt9OiFia0dgbLLg4zh';
-			$valid_signaure = base64_encode( hash_hmac( 'sha1', $site_api_key, $secret, true ) );
+			$valid_signaure = base64_encode( hash_hmac( 'sha1', md5( $site_api_key ), $site_api_key, true ) );
 
 			if ( $signature === $valid_signaure ) {
 				self::take_snapshot();

@@ -23,7 +23,6 @@ class NerdPress_Support_Overrides {
 		add_action( 'init', array( $this, 'is_auto_update_set' ) );
 		add_action( 'init', array( $this, 'check_default_options' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
-		// add_action( 'admin_head-tools_page_view-broken-links', array( $this, 'broken_link_checker_hide_link' ) );
 		add_action( 'admin_head-link-checker_page_blc_local', array( $this, 'broken_link_checker_hide_link' ) );
 		add_action( 'admin_menu', array( $this, 'hide_logtivity_settings' ) );
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {

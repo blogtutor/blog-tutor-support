@@ -93,7 +93,7 @@ if ( ! class_exists( 'NerdPress_GHU_Core' ) ) {
 		 * $args->slug = "edd-no-logins"
 		 * $plugin_path = "edd-no-logins/edd-no-logins.php"
 		 */
-		function plugins_api( $default = false, $action, $args ) {
+		function plugins_api( $action, $args ) {
 			if ( 'plugin_information' == $action ) {
 				foreach ( $this->update_data as $plugin_path => $info ) {
 					if ( $info['slug'] == $args->slug ) {
@@ -135,7 +135,7 @@ if ( ! class_exists( 'NerdPress_GHU_Core' ) ) {
 				}
 			}
 
-			return $default;
+			return false;
 		}
 
 

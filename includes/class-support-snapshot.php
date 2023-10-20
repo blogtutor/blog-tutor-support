@@ -28,7 +28,7 @@ class NerdPress_Support_Snapshot {
 	 * Ping the relay server if the PING is set in the GET request.
 	 */
 	public static function ping_relay() {
-		// If the request is a one-time call from the relay.
+		// If the request is a one-time call from the client site.
 		if (
 			isset( $_REQUEST['_snapshot_nonce'] )
 			&& wp_verify_nonce( $_REQUEST['_snapshot_nonce'], 'np_snapshot' )
@@ -42,7 +42,7 @@ class NerdPress_Support_Snapshot {
 			die;
 		}
 
-		// Maybe handle remote request to take a new Snapshot.
+		// If the request is a one-time call from Relay server.
 		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
 			$options         = get_option( 'blog_tutor_support_settings' );
 			$site_api_key    = $options['np_relay_api_token'] ?? '';

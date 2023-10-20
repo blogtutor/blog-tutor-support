@@ -22,22 +22,6 @@ class NerdPress_Support_Snapshot {
 		add_action( 'wp_loaded', array( $this, 'schedule_snapshot_cron' ) );
 
 		add_action( 'np_scheduled_snapshot', array( $this, 'take_snapshot' ) );
-
-		// Maybe handle remote request to take a new Snapshot.
-		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
-			$options         = get_option( 'blog_tutor_support_settings' );
-			$site_api_key    = $options['np_relay_api_token'] ?? '';
-			$signature       = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
-			$valid_signature = base64_encode( hash_hmac( 'sha1', md5( $site_api_key ), $site_api_key, true ) );
-
-			if ( $signature === $valid_signature ) {
-				self::take_snapshot();
-			} else {
-				die('0');
-			}
-
-			die('1');
-		}
 	}
 
 	/**
@@ -56,6 +40,22 @@ class NerdPress_Support_Snapshot {
 				wp_safe_redirect( wp_unslash( $_SERVER['HTTP_REFERER'] ) );
 			}
 			die;
+		}
+
+		// Maybe handle remote request to take a new Snapshot.
+		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
+			$options         = get_option( 'blog_tutor_support_settings' );
+			$site_api_key    = $options['np_relay_api_token'] ?? '';
+			$signature       = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
+			$valid_signature = base64_encode( hash_hmac( 'sha1', md5( $site_api_key ), $site_api_key, true ) );
+
+			if ( $signature === $valid_signature ) {
+				self::take_snapshot();
+			} else {
+				die('0');
+			}
+
+			die('1');
 		}
 	}
 

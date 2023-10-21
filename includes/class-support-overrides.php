@@ -24,6 +24,7 @@ class NerdPress_Support_Overrides {
 		add_action( 'init', array( $this, 'check_default_options' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
 		add_action( 'admin_head-link-checker_page_blc_local', array( $this, 'broken_link_checker_hide_link' ) );
+    add_action( 'admin_head-users.php', array( $this, 'hide_delete_all_content' ) );
 		add_action( 'admin_menu', array( $this, 'hide_logtivity_settings' ) );
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
@@ -38,6 +39,18 @@ class NerdPress_Support_Overrides {
 		if ( ! NerdPress_Helpers::is_nerdpress() ) {
 			remove_submenu_page( 'logs', 'logtivity-settings' );
 		}
+	}
+
+	public function hide_delete_all_content() {
+		?>
+		<style type="text/css">
+			#delete_option0,
+			#delete_option1,
+			label[for=delete_option0],
+			form#updateusers div.wrap fieldset ul:first-child li label
+			{display: none;}
+		</style>
+		<?php
 	}
 
 	public function broken_link_checker_hide_link() {

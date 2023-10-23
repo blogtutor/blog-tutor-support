@@ -44,18 +44,21 @@ class NerdPress_Support_Snapshot {
 
 		// If the request is a one-time call from Relay server.
 		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
-			$options         = get_option( 'blog_tutor_support_settings' );
-			$site_api_key    = $options['np_relay_api_token'] ?? '';
-			$signature       = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
-			$valid_signature = base64_encode( hash_hmac( 'sha1', md5( $site_api_key ), $site_api_key, true ) );
+			$options          = get_option( 'blog_tutor_support_settings' );
+			$site_api_key     = $options['np_relay_api_token'] ?? '';
+			$relay_server_url = $options['np_relay_server_url'] ?? '';
+			$signature        = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
+
+			// A valid $data will be based on the API key and origin host.
+			$data             = md5( $site_api_key . parse_url( $relay_server_url, PHP_URL_HOST ) );
+			$valid_signature  = base64_encode( hash_hmac( 'sha1', $data, $site_api_key, true ) );
 
 			if ( $signature === $valid_signature ) {
 				self::take_snapshot();
+				die('1');
 			} else {
 				die('0');
 			}
-
-			die('1');
 		}
 	}
 

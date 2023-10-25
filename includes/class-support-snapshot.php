@@ -46,7 +46,7 @@ class NerdPress_Support_Snapshot {
 		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
 			$options          = get_option( 'blog_tutor_support_settings' );
 			$site_api_key     = $options['np_relay_api_token'] ?? '';
-			$relay_server_url = $options['np_relay_server_url'] ?? '';
+			$relay_server_url = ! empty( $options['np_relay_server_url'] ) ? $options['np_relay_server_url'] : 'https://relay.nerdpress.net';
 			$signature        = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
 
 			// A valid $data will be based on the API key and origin host.

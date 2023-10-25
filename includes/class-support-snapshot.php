@@ -28,7 +28,7 @@ class NerdPress_Support_Snapshot {
 	 * Ping the relay server if the PING is set in the GET request.
 	 */
 	public static function ping_relay() {
-		// If the request is a one-time call from the relay.
+		// If the request is a one-time call from the client site.
 		if (
 			isset( $_REQUEST['_snapshot_nonce'] )
 			&& wp_verify_nonce( $_REQUEST['_snapshot_nonce'], 'np_snapshot' )
@@ -40,6 +40,25 @@ class NerdPress_Support_Snapshot {
 				wp_safe_redirect( wp_unslash( $_SERVER['HTTP_REFERER'] ) );
 			}
 			die;
+		}
+
+		// If the request is a one-time call from Relay server.
+		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
+			$options          = get_option( 'blog_tutor_support_settings' );
+			$site_api_key     = $options['np_relay_api_token'] ?? '';
+			$relay_server_url = ! empty( $options['np_relay_server_url'] ) ? $options['np_relay_server_url'] : 'https://relay.nerdpress.net';
+			$signature        = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
+
+			// A valid $data will be based on the API key and origin host.
+			$data             = md5( $site_api_key . parse_url( $relay_server_url, PHP_URL_HOST ) );
+			$valid_signature  = base64_encode( hash_hmac( 'sha1', $data, $site_api_key, true ) );
+
+			if ( $signature === $valid_signature ) {
+				self::take_snapshot();
+				die('1');
+			} else {
+				die('0');
+			}
 		}
 	}
 
@@ -135,7 +154,7 @@ class NerdPress_Support_Snapshot {
 		$dump['active_theme_version']      = $current_theme['Version'];
 		$dump['plugin_update_data']        = get_option( '_site_transient_update_plugins' )->response;
 		$dump['wordpress_version']         = $wp_version;
-		$dump['notes']                     = $options['admin_notice'];
+		$dump['notes']                     = isset( $options['admin_notice'] ) ? $options['admin_notice'] : '';
 		$dump['server_software']           = isset( $_SERVER['SERVER_SOFTWARE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ) : null;
 		$dump['sucuri_api_key']            = NerdPress_Helpers::is_sucuri_firewall_api_key_set() ? implode( '/', NerdPress_Helpers::get_sucuri_api() ) : null;
 		$dump['sucuri_notification_email'] = NerdPress_Helpers::is_sucuri_notification_email_set() ? NerdPress_Helpers::get_sucuri_notification_email() : null;

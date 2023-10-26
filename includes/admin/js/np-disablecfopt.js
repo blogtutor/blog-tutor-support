@@ -18,7 +18,7 @@ function changeCF() {
                 radio.removeAttribute("disabled");
             }
         });
-        if(cfToken.hasAtribute("disabled")){
+        if(cfToken.hasAttribute("disabled")){
             cfToken.removeAttribute("disabled");
         }
         return;

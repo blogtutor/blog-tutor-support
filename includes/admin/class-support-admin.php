@@ -205,8 +205,9 @@ class NerdPress_Admin {
 			$settings_option,
 			'options_section',
 			array(
-				'menu' => $settings_option,
-				'id'   => 'firewall_choice',
+				'menu'  => $settings_option,
+				'id'    => 'firewall_choice',
+				'class' => 'np-firewallopt'
 			)
 		);
 
@@ -224,6 +225,7 @@ class NerdPress_Admin {
 				'id'      => 'cloudflare_zone',
 				'label'   => __( 'Cloudflare DNS Zone', 'nerdpress-support' ),
 				'default' => 'dns1',
+				'class'   => 'np-cfopt'
 			)
 		);
 		add_settings_field(
@@ -236,6 +238,8 @@ class NerdPress_Admin {
 				'menu'  => $settings_option,
 				'id'    => 'cloudflare_token',
 				'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
+				'class'   => 'np-cfopt'
+
 			)
 		);
 

@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Add Admin Bar Menu Items.
 function bt_custom_toolbar_links( $wp_admin_bar ) {
 
-	if ( current_user_can( 'editor' ) || current_user_can( 'administrator' ) ) {
+	if ( current_user_can( 'edit_others_posts' ) ) {
 
 		// On front end, load plugin.php so we can check for Sucuri Plugin status.
 		if ( ! is_admin() ) {
@@ -201,7 +201,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		}
 
 		// "Get Help" link to open the Support Hero widget
-		if ( isset( $_GET['page'] ) && $_GET['page'] !== 'feast-support' ) {
+		if ( ! isset( $_GET['page'] )|| $_GET['page'] !== 'feast-support' ) {
 			$args = array(
 				'id'     => 'bt-get-help',
 				'title'  => 'Get Help',

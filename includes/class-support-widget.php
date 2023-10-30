@@ -15,11 +15,13 @@ class NerdPress_Widget {
 	 * Initialize the widget.
 	 */
 	public function __construct() {
-		if ( current_user_can( 'edit_others_posts' ) && isset( $_GET['page'] ) && $_GET['page'] !== 'feast-support' ) {
+		if ( current_user_can( 'edit_others_posts' ) ) {
 			if ( ! is_admin() ) {
 				add_action( 'wp_footer', array( $this, 'widget' ), 50 );
 			} else {
-				add_action( 'admin_footer', array( $this, 'widget' ), 50 );
+				if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'feast-support' ) {
+					add_action( 'admin_footer', array( $this, 'widget' ), 50 );
+				}
 			}
 		}
 	}

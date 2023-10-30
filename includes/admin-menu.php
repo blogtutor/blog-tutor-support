@@ -201,7 +201,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		}
 
 		// "Get Help" link to open the Support Hero widget
-		if ( ! isset( $_GET['page'] )|| $_GET['page'] !== 'feast-support' ) {
+		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'feast-support' ) {
 			$args = array(
 				'id'     => 'bt-get-help',
 				'title'  => 'Get Help',

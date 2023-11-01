@@ -14,18 +14,15 @@ function changeCF() {
     if (fwSet == 'cloudflare'){
         cfopt.forEach( opt => opt.style.opacity = 1 );
         radiosCF.forEach( function(radio){
-            if(radio.hasAttribute("disabled")){
-                radio.removeAttribute("disabled");
-            }
+            radio.removeAttribute("disabled");
         });
-        if(cfToken.hasAttribute("disabled")){
-            cfToken.removeAttribute("disabled");
-        }
+        cfToken.style.pointerEvents = "auto";
+
         return;
     } else {
         cfopt.forEach( opt => opt.style.opacity = 0.6 );
         radiosCF.forEach( radio => radio.setAttribute("disabled", "disabled"));
-        cfToken.setAttribute("disabled", "");
+        cfToken.style.pointerEvents = "none";
     }
 }
 

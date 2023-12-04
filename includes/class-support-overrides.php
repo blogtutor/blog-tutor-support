@@ -39,8 +39,7 @@ class NerdPress_Support_Overrides {
 		if ( ! NerdPress_Helpers::is_nerdpress() ) {
 			remove_submenu_page( 'logs', 'logtivity-settings' );
 			remove_submenu_page( 'lgtvy-logs', 'logtivity-settings' );
-			add_filter('logtivity_hide_settings_page', 'not_np_hide_logs');
-			function not_np_hide_logs(){ return true; }
+			add_filter( 'logtivity_hide_settings_page', '__return_true' );
 		}
 	}
 

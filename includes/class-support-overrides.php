@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 * @author Sergio Scabuzzo
 	 */
 
+
+
 class NerdPress_Support_Overrides {
 	private static $options_array     = 'blog_tutor_support_settings';
 	private static $nerdpress_options = '';
@@ -24,12 +26,12 @@ class NerdPress_Support_Overrides {
 		add_action( 'init', array( $this, 'check_default_options' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
 		add_action( 'admin_head-link-checker_page_blc_local', array( $this, 'broken_link_checker_hide_link' ) );
-    add_action( 'admin_head-users.php', array( $this, 'hide_delete_all_content' ) );
+    	add_action( 'admin_head-users.php', array( $this, 'hide_delete_all_content' ) );
 		add_action( 'admin_menu', array( $this, 'hide_logtivity_settings' ) );
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
-
+		add_action( 'init', array( $this, 'np_enqueue_scripts' ) );
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
@@ -136,6 +138,18 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'social-pug';
 		return $excluded_strings;
 	}
+
+	public function np_enqueue_scripts() {
+		wp_enqueue_script( 'jquery' );
+		wp_register_script(
+			'overrides_js',
+			esc_url( NerdPress::$plugin_dir_url . 'includes/js/np-overrides.js' ),
+			array(),
+			BT_PLUGIN_VERSION
+		);
+		wp_enqueue_script( 'overrides_js' );
+	}
+
 }
 
 new NerdPress_Support_Overrides();

@@ -31,7 +31,7 @@ class NerdPress_Support_Overrides {
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
-		add_action( 'init', array( $this, 'np_enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'np_enqueue_scripts' ) );
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
@@ -139,7 +139,10 @@ class NerdPress_Support_Overrides {
 		return $excluded_strings;
 	}
 
-	public function np_enqueue_scripts() {
+	public function np_enqueue_scripts($hook) {
+		if ( 'settings_page_wprocket' != $hook ) {
+			return;
+		}
 		wp_enqueue_script( 'jquery' );
 		wp_register_script(
 			'overrides_js',

@@ -98,7 +98,8 @@ class NerdPress_Support_Overrides {
 	}
 
 	public function nerdpress_override_alert_email( $atts ) {
-		if ( ( strpos( $atts['to'], 'alerts@nerdpress.net' ) ) || ( strpos( $atts['to'], 'alerts@blogtutor.com' ) ) ) {
+		$email_list = !is_array( $atts['to'] ) ? [ $atts['to'] ] : $atts['to'];
+		if ( ( array_search( 'alerts@nerdpress.net', $email_list ) != false ) || ( array_search( 'alerts@blogtutor.com', $email_list ) != false ) ) {
 
 			$sitename = wp_parse_url( network_home_url(), PHP_URL_HOST );
 			if ( 'www.' === substr( $sitename, 0, 4 ) ) {

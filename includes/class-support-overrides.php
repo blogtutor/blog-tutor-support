@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 * @author Sergio Scabuzzo
 	 */
 
+
+
 class NerdPress_Support_Overrides {
 	private static $options_array     = 'blog_tutor_support_settings';
 	private static $nerdpress_options = '';
@@ -24,12 +26,12 @@ class NerdPress_Support_Overrides {
 		add_action( 'init', array( $this, 'check_default_options' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
 		add_action( 'admin_head-link-checker_page_blc_local', array( $this, 'broken_link_checker_hide_link' ) );
-    add_action( 'admin_head-users.php', array( $this, 'hide_delete_all_content' ) );
+    	add_action( 'admin_head-users.php', array( $this, 'hide_delete_all_content' ) );
 		add_action( 'admin_menu', array( $this, 'hide_logtivity_settings' ) );
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
-
+		add_action( 'settings_page_wprocket', array( $this, 'np_wprocket_scripts' ) );
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
@@ -38,6 +40,8 @@ class NerdPress_Support_Overrides {
 	public function hide_logtivity_settings() {
 		if ( ! NerdPress_Helpers::is_nerdpress() ) {
 			remove_submenu_page( 'logs', 'logtivity-settings' );
+			remove_submenu_page( 'lgtvy-logs', 'logtivity-settings' );
+			add_filter( 'logtivity_hide_settings_page', '__return_true' );
 		}
 	}
 
@@ -98,7 +102,14 @@ class NerdPress_Support_Overrides {
 	}
 
 	public function nerdpress_override_alert_email( $atts ) {
-		if ( ( strpos( $atts['to'], 'alerts@nerdpress.net' ) ) || ( strpos( $atts['to'], 'alerts@blogtutor.com' ) ) ) {
+		$email_list         = !is_array( $atts['to'] ) ? [ $atts['to'] ] : $atts['to'];
+		$is_nerdpress_alert = false;
+		foreach ( $email_list as $email ) {
+			if ( ( str_contains( $email, 'alerts@nerdpress.net' ) != false) || ( str_contains( $email, 'alerts@blogtutor.com' ) != false ) ) {
+				$is_nerdpress_alert = true;
+			}
+		}
+		if ( $is_nerdpress_alert ) {
 
 			$sitename = wp_parse_url( network_home_url(), PHP_URL_HOST );
 			if ( 'www.' === substr( $sitename, 0, 4 ) ) {
@@ -136,6 +147,18 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'social-pug';
 		return $excluded_strings;
 	}
+
+	public function np_wprocket_scripts() {
+		wp_enqueue_script( 'jquery' );
+		wp_register_script(
+			'wprocket_js',
+			esc_url( NerdPress::$plugin_dir_url . 'includes/js/np-wprocket.js' ),
+			array(),
+			BT_PLUGIN_VERSION
+		);
+		wp_enqueue_script( 'wprocket_js' );
+	}
+
 }
 
 new NerdPress_Support_Overrides();

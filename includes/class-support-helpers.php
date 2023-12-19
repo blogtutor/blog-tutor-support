@@ -93,7 +93,7 @@ class NerdPress_Helpers {
 	public static function is_nerdpress() {
 		$current_user = wp_get_current_user();
 		return (
-			current_user_can( 'administrator' )
+			current_user_can( 'manage_options' )
 			&& (
 				strpos( $current_user->user_email, '@blogtutor.com' ) !== false
 				|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false

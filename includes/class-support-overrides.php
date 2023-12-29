@@ -145,6 +145,9 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'slickstream';
 		$excluded_strings[] = 'slick-film-strip';
 		$excluded_strings[] = 'social-pug';
+		$excluded_strings[] = 'shemedia';
+		$excluded_strings[] = 'blogherads';
+		$excluded_strings[] = 'sheknows-infuse\.js';
 		return $excluded_strings;
 	}
 

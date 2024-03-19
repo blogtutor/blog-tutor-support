@@ -22,6 +22,7 @@ class NerdPress_Support_Overrides {
 	 */
 	public function __construct() {
 		self::$nerdpress_options = get_option( self::$options_array, array() );
+		$imagify_options = get_option('imagify_settings');
 		add_action( 'init', array( $this, 'is_auto_update_set' ) );
 		add_action( 'init', array( $this, 'check_default_options' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
@@ -30,6 +31,9 @@ class NerdPress_Support_Overrides {
 		add_action( 'admin_menu', array( $this, 'hide_logtivity_settings' ) );
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
+		}
+		if ( ! isset( $imagify_options["display_nextgen"] ) && ! isset( self::$nerdpress_options['imagify_deactivate_nextgen_images'] ) ) {
+			add_filter( 'imagify_nextgen_images_formats', array( $this, 'nerdpress_override_imagify_nextgen_images' ) );
 		}
 		add_action( 'settings_page_wprocket', array( $this, 'np_wprocket_scripts' ) );
 		if ( class_exists( 'WooCommerce' ) ) {
@@ -146,6 +150,14 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'slick-film-strip';
 		$excluded_strings[] = 'social-pug';
 		return $excluded_strings;
+	}
+
+	public function nerdpress_override_imagify_nextgen_images( $formats ) {
+		if ( isset( $formats['webp'] ) ) {
+			unset( $formats['webp'] );
+		}
+
+		return $formats;
 	}
 
 	public function np_wprocket_scripts() {

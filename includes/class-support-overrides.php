@@ -22,7 +22,6 @@ class NerdPress_Support_Overrides {
 	 */
 	public function __construct() {
 		self::$nerdpress_options = get_option( self::$options_array, array() );
-		$imagify_options = get_option('imagify_settings');
 		add_action( 'init', array( $this, 'is_auto_update_set' ) );
 		add_action( 'init', array( $this, 'check_default_options' ) );
 		add_filter( 'wp_mail', array( $this, 'nerdpress_override_alert_email' ) );
@@ -32,8 +31,11 @@ class NerdPress_Support_Overrides {
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
-		if ( ! isset( $imagify_options["display_nextgen"] ) && ! isset( self::$nerdpress_options['imagify_deactivate_nextgen_images'] ) ) {
-			add_filter( 'imagify_nextgen_images_formats', array( $this, 'nerdpress_override_imagify_nextgen_images' ) );
+		if ( class_exists( '\Imagify\Plugin' ) {
+			$imagify_options = get_option('imagify_settings');
+			if ( ( ! isset( $imagify_options["display_nextgen"] ) || 0 === $imagify_options["display_nextgen"] ) && ! isset( self::$nerdpress_options['imagify_deactivate_nextgen_images'] ) ) {
+				add_filter( 'imagify_nextgen_images_formats', array( $this, 'nerdpress_override_imagify_nextgen_images' ) );
+			}
 		}
 		add_action( 'settings_page_wprocket', array( $this, 'np_wprocket_scripts' ) );
 		if ( class_exists( 'WooCommerce' ) ) {

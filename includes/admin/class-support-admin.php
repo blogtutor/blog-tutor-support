@@ -159,7 +159,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		add_settings_field(
+    add_settings_field(
 			'np_relay_api_token',
 			__( 'NerdPress Relay API Token', 'nerdpress-support' ),
 			array( $this, 'nerdpress_relay_api_token_element_callback' ),
@@ -253,6 +253,20 @@ class NerdPress_Admin {
 				'id'          => 'shortpixel_bulk_optimize',
 				'label'       => __( 'Un-hide ShortPixel settings for users.', 'nerdpress-support' ),
 				'description' => __( 'SHORTPIXEL_HIDE_API_KEY constant ' ),
+			)
+		);
+
+		// Add option to disable/enable excluding WP Rocket delay js list.
+		add_settings_field(
+			'imagify_deactivate_nextgen_images',
+			__( 'Imagify NextGen Images', 'nerdpress-support' ),
+			array( $this, 'checkbox_imagify_deactivate_nextgen_images_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'imagify_deactivate_nextgen_images',
+				'label' => __( 'Allow Imagify\'s NextGen image creation for WebP.', 'nerdpress-support' ),
 			)
 		);
 
@@ -431,6 +445,26 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-exclude-wp-rocket-delay-js-field.php';
 
 	}
+
+	/**
+	 * Checkbox Exclude WP Rocket Delay JS element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_imagify_deactivate_nextgen_images_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+		include dirname( __FILE__ ) . '/views/html-imagify-deactivate-nextgen-images-element-field.php';
+
+	}
+
 	/**
 	 * Checkbox ShortPixel Bulk Optimize element callback.
 	 *

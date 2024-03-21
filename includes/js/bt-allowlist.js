@@ -52,5 +52,5 @@ window.crNerdPressNotification = function(message) {
 
 		document.body.appendChild(npBox);
 
-		jQuery(npBox).fadeIn(2000).delay(10000).fadeOut(6000); 
+		jQuery(npBox).fadeIn(1500).delay(6000).fadeOut(2000); 
 }

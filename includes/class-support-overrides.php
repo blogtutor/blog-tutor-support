@@ -31,6 +31,12 @@ class NerdPress_Support_Overrides {
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
+		if ( class_exists( '\Imagify\Plugin' ) ) {
+			$imagify_options = get_option( 'imagify_settings' );
+			if ( ( ! isset( $imagify_options["display_nextgen"] ) || 0 === $imagify_options["display_nextgen"] ) && ! isset( self::$nerdpress_options['imagify_deactivate_nextgen_images'] ) ) {
+				add_filter( 'imagify_nextgen_images_formats', array( $this, 'nerdpress_override_imagify_nextgen_images' ) );
+			}
+		}
 		add_action( 'settings_page_wprocket', array( $this, 'np_wprocket_scripts' ) );
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
@@ -148,6 +154,14 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'blogherads';
 		$excluded_strings[] = 'sheknows-infuse\.js';
 		return $excluded_strings;
+	}
+
+	public function nerdpress_override_imagify_nextgen_images( $formats ) {
+		if ( isset( $formats['webp'] ) ) {
+			unset( $formats['webp'] );
+		}
+
+		return $formats;
 	}
 
 	public function np_wprocket_scripts() {

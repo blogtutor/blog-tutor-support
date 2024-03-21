@@ -94,7 +94,7 @@ class NerdPress_Admin {
 		// Set Custom Fields cection.
 		add_settings_section(
 			'options_section',
-			__( 'NerdPress Support Section', 'nerdpress-support' ),
+			__( '', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
 			$settings_option
 		);
@@ -294,7 +294,7 @@ class NerdPress_Admin {
 		// Set Custom Fields section.
 		add_settings_section(
 			'information_section',
-			__( 'NerdPress Server Information Section', 'nerdpress-support' ),
+			__( '', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
 			$information_option
 		);
@@ -325,7 +325,7 @@ class NerdPress_Admin {
 			// Set Custom Fields cection.
 			add_settings_section(
 				'information_section',
-				__( 'Sucuri settings Section', 'nerdpress-support' ),
+				__( '', 'nerdpress-support' ),
 				array( $this, 'section_options_callback' ),
 				$sucuri_option
 			);

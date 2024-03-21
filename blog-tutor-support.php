@@ -19,10 +19,6 @@ include( dirname( __FILE__ ) . '/github-updater.php' );
 // Load Admin menu
 include( dirname( __FILE__ ) . '/includes/admin-menu.php' );
 
-if ( ! defined( 'BT_PLUGIN_VERSION' ) ) {
-	define( 'BT_PLUGIN_VERSION', '2.2' );
-}
-
 if ( ! class_exists( 'NerdPress' ) ) {
 		/**
 		 * NerdPress main class.
@@ -59,6 +55,16 @@ if ( ! class_exists( 'NerdPress' ) ) {
 		}
 
 		/**
+		 * Remove mu-plugin on uninstall.
+		 */
+		public static function on_uninstall() {
+			$muPluginPath = WPMU_PLUGIN_DIR . '/np-disable-plugin.php';
+			if (file_exists($muPluginPath)) {
+				unlink($muPluginPath);
+			}
+		}
+
+		/**
 		 * Return an instance of this class.
 		 *
 		 * @return object A single instance of this class.
@@ -86,6 +92,7 @@ if ( ! class_exists( 'NerdPress' ) ) {
 			include_once dirname( __FILE__ ) . '/includes/class-support-widget.php';
 			include_once dirname( __FILE__ ) . '/includes/class-support-overrides.php';
 			include_once dirname( __FILE__ ) . '/includes/class-support-shortpixel.php';
+			include_once dirname( __FILE__ ) . '/includes/class-support-mu.php';
 
 			if ( NerdPress_Helpers::is_relay_server_configured() ) {
 				include_once dirname( __FILE__ ) . '/includes/class-support-snapshot.php';
@@ -107,4 +114,4 @@ if ( ! class_exists( 'NerdPress' ) ) {
 	 */
 	add_action( 'plugins_loaded', array( 'NerdPress', 'get_instance' ) );
 }
-
+register_uninstall_hook(__FILE__, ['NerdPress', 'on_uninstall']);

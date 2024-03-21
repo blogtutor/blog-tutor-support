@@ -94,122 +94,9 @@ class NerdPress_Admin {
 		// Set Custom Fields cection.
 		add_settings_section(
 			'options_section',
-			__( 'NerdPress Support Section', 'nerdpress-support' ),
+			__( '', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
 			$settings_option
-		);
-
-		// Add option to disable/enable Core auto updates.
-		add_settings_field(
-			'auto_update_core',
-			__( 'Core Auto-Updates', 'nerdpress-support' ),
-			array( $this, 'checkbox_auto_update_core_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'auto_update_core',
-				'label' => __( 'Enable to allow major version auto-updates for Core.', 'nerdpress-support' ),
-			)
-		);
-
-		// Add option to disable/enable plugin auto updates.
-		add_settings_field(
-			'auto_update_plugins',
-			__( 'Plugin Auto-Updates', 'nerdpress-support' ),
-			array( $this, 'checkbox_auto_update_plugins_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'auto_update_plugins',
-				'label' => __( 'Enable core auto-update functionality for plugins.', 'nerdpress-support' ),
-			)
-		);
-
-		// Add option to disable/enable theme auto updates.
-		add_settings_field(
-			'auto_update_themes',
-			__( 'Theme Auto-Updates', 'nerdpress-support' ),
-			array( $this, 'checkbox_auto_update_themes_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'auto_update_themes',
-				'label' => __( 'Enable core auto-update functionality for themes.', 'nerdpress-support' ),
-			)
-		);
-
-		// Add option to disable/enable excluding WP Rocket delay js list.
-		add_settings_field(
-			'exclude_wp_rocket_delay_js',
-			__( 'WP Rocket Delay JS', 'nerdpress-support' ),
-			array( $this, 'checkbox_exclude_wp_rocket_delay_js_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'exclude_wp_rocket_delay_js',
-				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
-			)
-		);
-
-		// Add option to disable/enable excluding WP Rocket delay js list.
-		add_settings_field(
-			'imagify_deactivate_nextgen_images',
-			__( 'Imagify NextGen Images', 'nerdpress-support' ),
-			array( $this, 'checkbox_imagify_deactivate_nextgen_images_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'imagify_deactivate_nextgen_images',
-				'label' => __( 'Allow Imagify\'s NextGen image creation for WebP.', 'nerdpress-support' ),
-			)
-		);
-
-		// Add option to disable/enable ShortPixel bulk optimization.
-		add_settings_field(
-			'shortpixel_bulk_optimize',
-			__( 'ShortPixel Settings', 'nerdpress-support' ),
-			array( $this, 'checkbox_shortpixel_bulk_optimize_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'        => $settings_option,
-				'id'          => 'shortpixel_bulk_optimize',
-				'label'       => __( 'Un-hide ShortPixel settings for users.', 'nerdpress-support' ),
-				'description' => __( 'SHORTPIXEL_HIDE_API_KEY constant ' ),
-			)
-		);
-
-		// Add admin notice text area
-		add_settings_field(
-			'admin_notice',
-			__( 'NerdPress Support Notice', 'nerdpress-support' ),
-			array( $this, 'textarea_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'        => $settings_option,
-				'id'          => 'admin_notice',
-				'description' => __( 'Enter notice that will show for NerdPress admins only.', 'nerdpress-support' ),
-			)
-		);
-
-		// Add option to hide "Need Help?" tab in dashboard.
-		add_settings_field(
-			'hide_tab',
-			__( 'Hide Help Tab?', 'nerdpress-support' ),
-			array( $this, 'checkbox_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'hide_tab',
-				'label' => __( 'Hides the "Need Help?" tab in the bottom of the dashboard.', 'nerdpress-support' ),
-			)
 		);
 
 		// Add the choice of firewall option
@@ -272,7 +159,7 @@ class NerdPress_Admin {
 			)
 		);
 
-		add_settings_field(
+    add_settings_field(
 			'np_relay_api_token',
 			__( 'NerdPress Relay API Token', 'nerdpress-support' ),
 			array( $this, 'nerdpress_relay_api_token_element_callback' ),
@@ -282,6 +169,118 @@ class NerdPress_Admin {
 				'menu'  => $settings_option,
 				'id'    => 'np_relay_api_token',
 				'label' => __( 'NerdPress Relay API Token', 'nerdpress-support' ),
+			)
+		);
+
+		// Add admin notice text area
+		add_settings_field(
+			'admin_notice',
+			__( 'NerdPress Support Notice', 'nerdpress-support' ),
+			array( $this, 'textarea_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'        => $settings_option,
+				'id'          => 'admin_notice',
+				'description' => __( 'Enter notice that will show for NerdPress admins only.', 'nerdpress-support' ),
+			)
+		);
+
+		// Add option to disable/enable Core auto updates.
+		add_settings_field(
+			'auto_update_core',
+			__( 'Core Auto-Updates', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_core_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_core',
+				'label' => __( 'Enable to allow major version auto-updates for Core.', 'nerdpress-support' ),
+			)
+		);
+
+		// Add option to disable/enable plugin auto updates.
+		add_settings_field(
+			'auto_update_plugins',
+			__( 'Plugin Auto-Updates', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_plugins_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_plugins',
+				'label' => __( 'Enable core auto-update functionality for plugins.', 'nerdpress-support' ),
+			)
+		);
+
+		// Add option to disable/enable theme auto updates.
+		add_settings_field(
+			'auto_update_themes',
+			__( 'Theme Auto-Updates', 'nerdpress-support' ),
+			array( $this, 'checkbox_auto_update_themes_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'auto_update_themes',
+				'label' => __( 'Enable core auto-update functionality for themes.', 'nerdpress-support' ),
+			)
+		);
+
+		// Add option to disable/enable excluding WP Rocket delay js list.
+		add_settings_field(
+			'exclude_wp_rocket_delay_js',
+			__( 'WP Rocket Delay JS', 'nerdpress-support' ),
+			array( $this, 'checkbox_exclude_wp_rocket_delay_js_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'exclude_wp_rocket_delay_js',
+				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
+			)
+		);
+		// Add option to disable/enable ShortPixel bulk optimization.
+		add_settings_field(
+			'shortpixel_bulk_optimize',
+			__( 'ShortPixel Settings', 'nerdpress-support' ),
+			array( $this, 'checkbox_shortpixel_bulk_optimize_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'        => $settings_option,
+				'id'          => 'shortpixel_bulk_optimize',
+				'label'       => __( 'Un-hide ShortPixel settings for users.', 'nerdpress-support' ),
+				'description' => __( 'SHORTPIXEL_HIDE_API_KEY constant ' ),
+			)
+		);
+
+		// Add option to disable/enable excluding WP Rocket delay js list.
+		add_settings_field(
+			'imagify_deactivate_nextgen_images',
+			__( 'Imagify NextGen Images', 'nerdpress-support' ),
+			array( $this, 'checkbox_imagify_deactivate_nextgen_images_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'imagify_deactivate_nextgen_images',
+				'label' => __( 'Allow Imagify\'s NextGen image creation for WebP.', 'nerdpress-support' ),
+			)
+		);
+
+		// Add option to hide "Need Help?" tab in dashboard.
+		add_settings_field(
+			'hide_tab',
+			__( 'Hide Help Tab?', 'nerdpress-support' ),
+			array( $this, 'checkbox_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'hide_tab',
+				'label' => __( 'Hides the "Need Help?" tab in the bottom of the dashboard.', 'nerdpress-support' ),
 			)
 		);
 
@@ -295,7 +294,7 @@ class NerdPress_Admin {
 		// Set Custom Fields section.
 		add_settings_section(
 			'information_section',
-			__( 'NerdPress Server Information Section', 'nerdpress-support' ),
+			__( '', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
 			$information_option
 		);
@@ -326,7 +325,7 @@ class NerdPress_Admin {
 			// Set Custom Fields cection.
 			add_settings_section(
 				'information_section',
-				__( 'Sucuri settings Section', 'nerdpress-support' ),
+				__( '', 'nerdpress-support' ),
 				array( $this, 'section_options_callback' ),
 				$sucuri_option
 			);

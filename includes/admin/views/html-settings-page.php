@@ -33,6 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		?>
 		<form method="post" action="options.php">
 		<?php
+			submit_button();		
 			settings_fields( 'blog_tutor_support_settings' );
 			do_settings_sections( 'blog_tutor_support_settings' );
 			submit_button();

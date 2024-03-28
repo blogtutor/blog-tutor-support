@@ -94,9 +94,96 @@ class NerdPress_Admin {
 		// Set Custom Fields cection.
 		add_settings_section(
 			'options_section',
-			__( 'NerdPress Support Section', 'nerdpress-support' ),
+			__( '', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
 			$settings_option
+		);
+
+		// Add the choice of firewall option
+		add_settings_field(
+			'firewall_choice',
+			__( 'Firewall', 'nerdpress-support' ),
+			array( $this, 'radiobutton_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'firewall_choice',
+				'class' => 'np-firewallopt'
+			)
+		);
+
+		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] === 'cloudflare' );
+
+		// Add field Cloudflare Options
+		add_settings_field(
+			'cloudflare_zone',
+			__( 'Cloudflare DNS Zone', 'nerdpress-support' ),
+			array( $this, 'cloudflare_dns_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'    => $settings_option,
+				'id'      => 'cloudflare_zone',
+				'label'   => __( 'Cloudflare DNS Zone', 'nerdpress-support' ),
+				'default' => 'dns1',
+				'class'   => 'np-cfopt'
+			)
+		);
+		add_settings_field(
+			'cloudflare_token',
+			__( 'Cloudflare API Token', 'nerdpress-support' ),
+			array( $this, 'cloudflare_token_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'cloudflare_token',
+				'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
+				'class'   => 'np-cfopt'
+
+			)
+		);
+
+		// Add Relay Server Settings
+		add_settings_field(
+			'np_relay_server_url',
+			__( 'NerdPress Relay Server URL', 'nerdpress-support' ),
+			array( $this, 'nerdpress_relay_server_url_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'np_relay_server_url',
+				'label' => __( 'NerdPress Relay Server URL', 'nerdpress-support' ),
+			)
+		);
+
+    add_settings_field(
+			'np_relay_api_token',
+			__( 'NerdPress Relay API Token', 'nerdpress-support' ),
+			array( $this, 'nerdpress_relay_api_token_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'np_relay_api_token',
+				'label' => __( 'NerdPress Relay API Token', 'nerdpress-support' ),
+			)
+		);
+
+		// Add admin notice text area
+		add_settings_field(
+			'admin_notice',
+			__( 'NerdPress Support Notice', 'nerdpress-support' ),
+			array( $this, 'textarea_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'        => $settings_option,
+				'id'          => 'admin_notice',
+				'description' => __( 'Enter notice that will show for NerdPress admins only.', 'nerdpress-support' ),
+			)
 		);
 
 		// Add option to disable/enable Core auto updates.
@@ -169,17 +256,17 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add admin notice text area
+		// Add option to disable/enable excluding WP Rocket delay js list.
 		add_settings_field(
-			'admin_notice',
-			__( 'NerdPress Support Notice', 'nerdpress-support' ),
-			array( $this, 'textarea_element_callback' ),
+			'imagify_deactivate_nextgen_images',
+			__( 'Imagify NextGen Images', 'nerdpress-support' ),
+			array( $this, 'checkbox_imagify_deactivate_nextgen_images_element_callback' ),
 			$settings_option,
 			'options_section',
 			array(
-				'menu'        => $settings_option,
-				'id'          => 'admin_notice',
-				'description' => __( 'Enter notice that will show for NerdPress admins only.', 'nerdpress-support' ),
+				'menu'  => $settings_option,
+				'id'    => 'imagify_deactivate_nextgen_images',
+				'label' => __( 'Allow Imagify\'s NextGen image creation for WebP.', 'nerdpress-support' ),
 			)
 		);
 
@@ -197,79 +284,6 @@ class NerdPress_Admin {
 			)
 		);
 
-		// Add the choice of firewall option
-		add_settings_field(
-			'firewall_choice',
-			__( 'Firewall', 'nerdpress-support' ),
-			array( $this, 'radiobutton_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'firewall_choice',
-				'class' => 'np-firewallopt'
-			)
-		);
-
-		$has_cloudflare = ( isset( $bt_options['firewall_choice'] ) && $bt_options['firewall_choice'] === 'cloudflare' );
-
-		// Add field Cloudflare Options
-		add_settings_field(
-			'cloudflare_zone',
-			__( 'Cloudflare DNS Zone', 'nerdpress-support' ),
-			array( $this, 'cloudflare_dns_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'    => $settings_option,
-				'id'      => 'cloudflare_zone',
-				'label'   => __( 'Cloudflare DNS Zone', 'nerdpress-support' ),
-				'default' => 'dns1',
-				'class'   => 'np-cfopt'
-			)
-		);
-		add_settings_field(
-			'cloudflare_token',
-			__( 'Cloudflare API Token', 'nerdpress-support' ),
-			array( $this, 'cloudflare_token_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'cloudflare_token',
-				'label' => __( 'Cloudflare Access Token', 'nerdpress-support' ),
-				'class'   => 'np-cfopt'
-
-			)
-		);
-
-		// Add Relay Server Settings
-		add_settings_field(
-			'np_relay_server_url',
-			__( 'NerdPress Relay Server URL', 'nerdpress-support' ),
-			array( $this, 'nerdpress_relay_server_url_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'np_relay_server_url',
-				'label' => __( 'NerdPress Relay Server URL', 'nerdpress-support' ),
-			)
-		);
-
-		add_settings_field(
-			'np_relay_api_token',
-			__( 'NerdPress Relay API Token', 'nerdpress-support' ),
-			array( $this, 'nerdpress_relay_api_token_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'np_relay_api_token',
-				'label' => __( 'NerdPress Relay API Token', 'nerdpress-support' ),
-			)
-		);
-
 		// Register settings.
 		register_setting( $settings_option, $settings_option, array( $this, 'validate_options' ) );
 
@@ -280,7 +294,7 @@ class NerdPress_Admin {
 		// Set Custom Fields section.
 		add_settings_section(
 			'information_section',
-			__( 'NerdPress Server Information Section', 'nerdpress-support' ),
+			__( '', 'nerdpress-support' ),
 			array( $this, 'section_options_callback' ),
 			$information_option
 		);
@@ -311,7 +325,7 @@ class NerdPress_Admin {
 			// Set Custom Fields cection.
 			add_settings_section(
 				'information_section',
-				__( 'Sucuri settings Section', 'nerdpress-support' ),
+				__( '', 'nerdpress-support' ),
 				array( $this, 'section_options_callback' ),
 				$sucuri_option
 			);
@@ -431,6 +445,26 @@ class NerdPress_Admin {
 		include dirname( __FILE__ ) . '/views/html-exclude-wp-rocket-delay-js-field.php';
 
 	}
+
+	/**
+	 * Checkbox Exclude WP Rocket Delay JS element callback.
+	 *
+	 * @param array $args Callback arguments.
+	 */
+	public function checkbox_imagify_deactivate_nextgen_images_element_callback( $args ) {
+		$menu    = $args['menu'];
+		$id      = $args['id'];
+		$options = get_option( $menu );
+
+		if ( isset( $options[ $id ] ) ) {
+			$current = $options[ $id ];
+		} else {
+			$current = isset( $args['default'] ) ? $args['default'] : '0';
+		}
+		include dirname( __FILE__ ) . '/views/html-imagify-deactivate-nextgen-images-element-field.php';
+
+	}
+
 	/**
 	 * Checkbox ShortPixel Bulk Optimize element callback.
 	 *

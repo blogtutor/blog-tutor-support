@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
 				}
 				
 				if(npMsgString === null)
-					npMsgString = 'Your IP (' + ip +  ') has been automatically<br />added to the Sucuri Firewall allowlist for the next 24 hours';
+					npMsgString = 'Your IP (' + ip +  ') has been automatically<br />added to the Sucuri Firewall allowlist for the next 24 hours.';
 
 				allowlistNotify(npMsgString);
 			}
@@ -47,10 +47,10 @@ window.crNerdPressNotification = function(message) {
 		npBox.style.color = '#fff';
 		npBox.style.position = 'absolute';
 		npBox.style.top = '3rem';
-		npBox.style.right = '5rem';
+		npBox.style.right = '320px';
 		npBox.style.display = 'none';
 
 		document.body.appendChild(npBox);
 
-		jQuery(npBox).fadeIn(2000).delay(10000).fadeOut(6000); 
+		jQuery(npBox).fadeIn(1500).delay(6000).fadeOut(2000); 
 }

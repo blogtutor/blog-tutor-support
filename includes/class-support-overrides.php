@@ -154,7 +154,6 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'blogherads';
 		$excluded_strings[] = 'sheknows-infuse\.js';
 		$excluded_strings[] = 'adt_ei';
-		$excluded_strings[] = 'sheknows-infuse\.js';
 		return $excluded_strings;
 	}
 

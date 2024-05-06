@@ -31,7 +31,7 @@ class NerdPress_Support_Overrides {
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
-		if ( ! is_admin() && defined('PERFMATTERS_VERSION') ) {
+		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_perfmatters_delay_js'] )  ) {
 			add_filter( 'perfmatters_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
 		if ( class_exists( '\Imagify\Plugin' ) ) {

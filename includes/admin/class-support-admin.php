@@ -241,6 +241,20 @@ class NerdPress_Admin {
 				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
 			)
 		);
+		// Add option to disable/enable excluding WP Rocket delay js list.
+		add_settings_field(
+			'exclude_perfmatters_delay_js',
+			__( 'Perfmatters Delay JS', 'nerdpress-support' ),
+			array( $this, 'checkbox_exclude_wp_rocket_delay_js_element_callback' ),
+			$settings_option,
+			'options_section',
+			array(
+				'menu'  => $settings_option,
+				'id'    => 'exclude_perfmatters_delay_js',
+				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
+			)
+		);
+
 		// Add option to disable/enable ShortPixel bulk optimization.
 		add_settings_field(
 			'shortpixel_bulk_optimize',

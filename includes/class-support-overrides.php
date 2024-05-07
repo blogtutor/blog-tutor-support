@@ -32,7 +32,7 @@ class NerdPress_Support_Overrides {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_perfmatters_delay_js'] )  ) {
-			add_filter( 'perfmatters_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
+			add_filter( 'perfmatters_delay_js_exclusions', array( $this, 'nerdpress_override_perfmatters_delay_js_exclusions' ) );
 		}
 		if ( class_exists( '\Imagify\Plugin' ) ) {
 			$imagify_options = get_option( 'imagify_settings' );
@@ -158,6 +158,30 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'sheknows-infuse\.js';
 		$excluded_strings[] = 'adt_ei';
 		return $excluded_strings;
+	}
+
+	public function nerdpress_override_perfmatters_delay_js_exclusions( $pexcluded_strings = array() ) {
+		$pexcluded_strings[] = 'google-analytics';
+		$pexcluded_strings[] = '/gtag/';
+		$pexcluded_strings[] = '/gtm.js';
+		$pexcluded_strings[] = '/gtm-';
+		$pexcluded_strings[] = "ga( '";
+		$pexcluded_strings[] = "ga('";
+		$pexcluded_strings[] = 'gtag(';
+		$pexcluded_strings[] = 'gtagTracker'; // Monster Insights
+		$pexcluded_strings[] = 'mediavine';
+		$pexcluded_strings[] = 'adthrive';
+		$pexcluded_strings[] = 'ads.min.js';
+		$pexcluded_strings[] = 'nutrifox';
+		$pexcluded_strings[] = 'flodesk';
+		$pexcluded_strings[] = 'cp-popup.js'; // ConvertPro
+		$pexcluded_strings[] = 'slickstream';
+		$pexcluded_strings[] = 'slick-film-strip';
+		$pexcluded_strings[] = 'social-pug';
+		$pexcluded_strings[] = 'shemedia';
+		$pexcluded_strings[] = 'blogherads';
+		$pexcluded_strings[] = 'sheknows-infuse.js';
+		return $pexcluded_strings;
 	}
 
 	public function nerdpress_override_imagify_nextgen_images( $formats ) {

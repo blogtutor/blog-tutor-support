@@ -241,7 +241,8 @@ class NerdPress_Admin {
 				'label' => __( 'Disable our hard coded list of excluded JS.', 'nerdpress-support' ),
 			)
 		);
-		// Add option to disable/enable excluding WP Rocket delay js list.
+		
+		// Add option to disable/enable excluding Perfmatters delay js list.
 		add_settings_field(
 			'exclude_perfmatters_delay_js',
 			__( 'Perfmatters Delay JS', 'nerdpress-support' ),

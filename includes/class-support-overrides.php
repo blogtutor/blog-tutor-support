@@ -41,6 +41,7 @@ class NerdPress_Support_Overrides {
 			}
 		}
 		add_action( 'settings_page_wprocket', array( $this, 'np_wprocket_scripts' ) );
+		add_action( 'settings_page_perfmatters', array( $this, 'np_perfmatters_scripts' ) );
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
@@ -208,6 +209,16 @@ class NerdPress_Support_Overrides {
 			BT_PLUGIN_VERSION
 		);
 		wp_enqueue_script( 'wprocket_js' );
+	}
+	public function np_perfmatters_scripts() {
+		wp_enqueue_script( 'jquery' );
+		wp_register_script(
+			'perfmatters_js',
+			esc_url( NerdPress::$plugin_dir_url . 'includes/js/np-perfmatters.js' ),
+			array(),
+			BT_PLUGIN_VERSION
+		);
+		wp_enqueue_script( 'perfmatters_js' );
 	}
 
 }

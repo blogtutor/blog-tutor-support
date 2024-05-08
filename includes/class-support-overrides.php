@@ -184,6 +184,7 @@ class NerdPress_Support_Overrides {
 		$pexcluded_strings[] = 'shemedia';
 		$pexcluded_strings[] = 'blogherads';
 		$pexcluded_strings[] = 'sheknows-infuse.js';
+		$pexcluded_strings[] = 'adt_ei';		
 		$pexcluded_strings[] = '/wp-content/plugins/wp-recipe-maker-premium/dist/public-pro.js';
 		$pexcluded_strings[] = '/wp-content/plugins/wp-recipe-maker-premium/dist/public-elite.js';
 		$pexcluded_strings[] = '/wp-content/plugins/wp-recipe-maker/dist/public-modern.js';

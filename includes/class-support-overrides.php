@@ -31,13 +31,21 @@ class NerdPress_Support_Overrides {
 		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
 			add_filter( 'rocket_delay_js_exclusions', array( $this, 'nerdpress_override_rocket_delay_js_exclusions' ) );
 		}
+		if ( ! is_admin() && ! isset( self::$nerdpress_options['exclude_perfmatters_delay_js'] )  ) {
+			add_filter( 'perfmatters_delay_js_exclusions', array( $this, 'nerdpress_override_perfmatters_delay_js_exclusions' ) );
+		}
+		if ( ! isset( self::$nerdpress_options['exclude_wp_rocket_delay_js'] ) ) {
+			add_action( 'settings_page_wprocket', array( $this, 'np_wprocket_scripts' ) );
+		}
+		if ( ! isset( self::$nerdpress_options['exclude_perfmatters_delay_js'] )  ) {
+			add_action( 'settings_page_perfmatters', array( $this, 'np_perfmatters_scripts' ) );
+		}
 		if ( class_exists( '\Imagify\Plugin' ) ) {
 			$imagify_options = get_option( 'imagify_settings' );
 			if ( ( ! isset( $imagify_options["display_nextgen"] ) || 0 === $imagify_options["display_nextgen"] ) && ! isset( self::$nerdpress_options['imagify_deactivate_nextgen_images'] ) ) {
 				add_filter( 'imagify_nextgen_images_formats', array( $this, 'nerdpress_override_imagify_nextgen_images' ) );
 			}
 		}
-		add_action( 'settings_page_wprocket', array( $this, 'np_wprocket_scripts' ) );
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
@@ -153,7 +161,36 @@ class NerdPress_Support_Overrides {
 		$excluded_strings[] = 'shemedia';
 		$excluded_strings[] = 'blogherads';
 		$excluded_strings[] = 'sheknows-infuse\.js';
+		$excluded_strings[] = 'adt_ei';
+		$excluded_strings[] = '/wp-content/plugins/wp-recipe-maker-premium/dist/public-pro\.js';
+		$excluded_strings[] = '/wp-content/plugins/wp-recipe-maker-premium/dist/public-elite\.js';
+		$excluded_strings[] = '/wp-content/plugins/wp-recipe-maker/dist/public-modern\.js';
 		return $excluded_strings;
+	}
+
+	public function nerdpress_override_perfmatters_delay_js_exclusions( $pexcluded_strings = array() ) {
+		$pexcluded_strings[] = 'google-analytics';
+		$pexcluded_strings[] = '/gtag/';
+		$pexcluded_strings[] = '/gtm.js';
+		$pexcluded_strings[] = '/gtm-';
+		$pexcluded_strings[] = "ga( '";
+		$pexcluded_strings[] = "ga('";
+		$pexcluded_strings[] = 'gtag(';
+		$pexcluded_strings[] = 'gtagTracker'; // Monster Insights
+		$pexcluded_strings[] = 'mediavine';
+		$pexcluded_strings[] = 'adthrive';
+		$pexcluded_strings[] = 'ads.min.js';
+		$pexcluded_strings[] = 'nutrifox';
+		$pexcluded_strings[] = 'flodesk';
+		$pexcluded_strings[] = 'cp-popup.js'; // ConvertPro
+		$pexcluded_strings[] = 'slickstream';
+		$pexcluded_strings[] = 'slick-film-strip';
+		$pexcluded_strings[] = 'social-pug';
+		$pexcluded_strings[] = 'shemedia';
+		$pexcluded_strings[] = 'blogherads';
+		$pexcluded_strings[] = 'sheknows-infuse.js';
+		$pexcluded_strings[] = 'adt_ei';		
+		return $pexcluded_strings;
 	}
 
 	public function nerdpress_override_imagify_nextgen_images( $formats ) {
@@ -173,6 +210,16 @@ class NerdPress_Support_Overrides {
 			BT_PLUGIN_VERSION
 		);
 		wp_enqueue_script( 'wprocket_js' );
+	}
+	public function np_perfmatters_scripts() {
+		wp_enqueue_script( 'jquery' );
+		wp_register_script(
+			'perfmatters_js',
+			esc_url( NerdPress::$plugin_dir_url . 'includes/js/np-perfmatters.js' ),
+			array(),
+			BT_PLUGIN_VERSION
+		);
+		wp_enqueue_script( 'perfmatters_js' );
 	}
 
 }

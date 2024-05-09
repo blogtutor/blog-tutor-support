@@ -11,7 +11,7 @@ if ( ! class_exists( 'NerdPress_GHU_Core' ) ) {
 
 		function __construct() {
 			add_action( 'admin_init', array( $this, 'admin_init' ) );
-			add_filter( 'plugins_api', array( $this, 'plugins_api' ), 10, 2 );
+			add_filter( 'plugins_api', array( $this, 'plugins_api' ), 10, 3 );
 			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'set_update_data' ) );
 			add_filter( 'upgrader_source_selection', array( $this, 'upgrader_source_selection' ), 10, 4 );
 			add_filter( 'extra_plugin_headers', array( $this, 'extra_plugin_headers' ) );
@@ -93,7 +93,7 @@ if ( ! class_exists( 'NerdPress_GHU_Core' ) ) {
 		 * $args->slug = "edd-no-logins"
 		 * $plugin_path = "edd-no-logins/edd-no-logins.php"
 		 */
-		function plugins_api( $action, $args ) {
+		function plugins_api( $default, $action, $args ) {
 			if ( 'plugin_information' == $action ) {
 				foreach ( $this->update_data as $plugin_path => $info ) {
 					if ( $info['slug'] == $args->slug ) {

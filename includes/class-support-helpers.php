@@ -411,7 +411,7 @@ class NerdPress_Helpers {
 
 	public static function relay_server_url() {
 		$options = get_option( 'blog_tutor_support_settings', array() );
-		$url     = $options['np_relay_server_url'] ? $options['np_relay_server_url'] : self::relay_server_default_url();
+		$url     = ! empty( $options['np_relay_server_url'] ) ? $options['np_relay_server_url'] : self::relay_server_default_url();
 		return trailingslashit( $url );
 	}
 

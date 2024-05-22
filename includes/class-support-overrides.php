@@ -191,6 +191,7 @@ class NerdPress_Support_Overrides {
 		$pexcluded_strings[] = 'blogherads';
 		$pexcluded_strings[] = 'sheknows-infuse.js';
 		$pexcluded_strings[] = 'adt_ei';
+		$pexcluded_strings[] = 'gpt\.js';
 		return $pexcluded_strings;
 	}
 

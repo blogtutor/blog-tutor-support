@@ -49,11 +49,11 @@ class NerdPress_Support_Overrides {
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
-		function remove_background_updates_test( $tests ) {
-			unset( $tests['direct']['persistent_object_cache'], $tests['direct']['yoast-page-comments-check'], $tests['async']['background_updates'] );
+		function remove_site_health_test( $tests ) {
+			unset( $tests['direct']['persistent_object_cache'], $tests['direct']['yoast-page-comments-check'] );
 			return $tests;
 		}
-		add_filter( 'site_status_tests', 'remove_background_updates_test', 99 );
+		add_filter( 'site_status_tests', 'remove_site_health_test', 99 );
 	}
 
 	public function hide_logtivity_settings() {

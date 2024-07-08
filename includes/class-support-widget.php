@@ -24,7 +24,37 @@ class NerdPress_Widget {
 				}
 			}
 		}
+
+		add_action( 'wp_dashboard_setup', array( $this, 'register_widget' ) );
+
 	}
+
+	public function register_widget() {
+		if (NerdPress_Helpers::is_relay_server_configured()) {
+			wp_add_dashboard_widget(
+				'nerdpress_widget',
+				'<span class="ab-icon"></span>NerdPress Stats <span class="small">powered by:</span><span class="cf-logo small ab-icon"></span>',
+				array($this, 'render_widget'),
+				null,
+				null,
+				'side',
+				'high'
+			);
+		}
+    }
+
+	public function render_widget() {
+		$html = self::send_request_to_relay();
+		if ( is_wp_error( $html ) ) {
+            echo 'Error when fetching data from Cloudflare. Please try again later.' ;
+            return;
+        }
+        ?>
+        <div class="nerdpress-widget-content">
+			<?php echo json_decode($html['body'])->html;?>
+        </div>
+        <?php
+    }
 
 	public function widget() {
 		$options                = get_option( 'blog_tutor_support_settings', array() );
@@ -60,6 +90,37 @@ class NerdPress_Widget {
 			</script>
 			<?php
 		}
+		wp_enqueue_script( 'chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '2.9.4', true );
+
+	}
+
+		public static function send_request_to_relay() {
+
+		if ( defined( 'SSLVERIFY_DEV' ) && SSLVERIFY_DEV === false ) {
+			$status = false;
+		} else {
+			$status = true;
+		}
+
+		$relay_url = NerdPress_Helpers::relay_server_url() . 'wp-json/nerdpress/v1/client-display-traffic';
+		$api_token = NerdPress_Helpers::relay_server_api_token();
+
+		$args = array(
+			'headers'   => array(
+				'Authorization' => "Bearer $api_token",
+				'Content-Type'  => 'application/json',
+				'Domain'        => site_url(),
+			),
+			// Bypass SSL verification when using self
+			// signed cert. Like when in a local dev environment.
+			'sslverify' => $status,
+			'timeout' => 10
+		);
+
+		// Make request to the relay server.
+		$api_response = wp_remote_get( $relay_url, $args );
+
+		return $api_response;
 	}
 }
 

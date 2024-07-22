@@ -63,3 +63,71 @@
 	filter: invert(67%) sepia(22%) saturate(892%) hue-rotate(170deg)
 		brightness(96%) contrast(87%) !important;
 }
+.nerdpress-relay-traffic-chart {
+	min-height: 265px;
+}
+#nerdpress-widget-loading {
+	min-height: 265px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#nerdpress-relay-traffic {
+	width: 100%;
+	min-height: 265px;
+}
+.dots-nerdpress-graph-loading {
+	width: 4.5px;
+	height: 4.5px;
+	border-radius: 50%;
+	color: #984f9f;
+	box-shadow: 21.3px -21.3px 0 0px, 42.6px -21.3px 0 0px, 63.8px -21.3px 0 0px,
+		21.3px 0 0 5.6px, 42.6px 0 0 5.6px, 63.8px 0 0 5.6px,
+		21.3px 21.3px 0 0px, 42.6px 21.3px 0 0px, 63.8px 21.3px 0 0px;
+	transform: translateX(-42.6px);
+	animation: dots-nerdpress-graph-loading 2s infinite linear;
+}
+
+@keyframes dots-nerdpress-graph-loading {
+	12.5% {
+		box-shadow: 21.3px -21.3px 0 0px, 42.6px -21.3px 0 0px,
+			63.8px -21.3px 0 5.6px, 21.3px 0 0 5.6px, 42.6px 0 0 0px,
+			63.8px 0 0 5.6px, 21.3px 21.3px 0 0px, 42.6px 21.3px 0 0px,
+			63.8px 21.3px 0 0px;
+	}
+
+	25% {
+		box-shadow: 21.3px -21.3px 0 5.6px, 42.6px -21.3px 0 0px,
+			63.8px -21.3px 0 5.6px, 21.3px 0 0 0px, 42.6px 0 0 0px,
+			63.8px 0 0 0px, 21.3px 21.3px 0 0px, 42.6px 21.3px 0 5.6px,
+			63.8px 21.3px 0 0px;
+	}
+
+	50% {
+		box-shadow: 21.3px -21.3px 0 5.6px, 42.6px -21.3px 0 5.6px,
+			63.8px -21.3px 0 0px, 21.3px 0 0 0px, 42.6px 0 0 0px, 63.8px 0 0 0px,
+			21.3px 21.3px 0 0px, 42.6px 21.3px 0 0px, 63.8px 21.3px 0 5.6px;
+	}
+
+	62.5% {
+		box-shadow: 21.3px -21.3px 0 0px, 42.6px -21.3px 0 0px,
+			63.8px -21.3px 0 0px, 21.3px 0 0 5.6px, 42.6px 0 0 0px,
+			63.8px 0 0 0px, 21.3px 21.3px 0 0px, 42.6px 21.3px 0 5.6px,
+			63.8px 21.3px 0 5.6px;
+	}
+
+	75% {
+		box-shadow: 21.3px -21.3px 0 0px, 42.6px -21.3px 0 5.6px,
+			63.8px -21.3px 0 0px, 21.3px 0 0 0px, 42.6px 0 0 0px,
+			63.8px 0 0 5.6px, 21.3px 21.3px 0 0px, 42.6px 21.3px 0 0px,
+			63.8px 21.3px 0 5.6px;
+	}
+
+	87.5% {
+		box-shadow: 21.3px -21.3px 0 0px, 42.6px -21.3px 0 5.6px,
+			63.8px -21.3px 0 0px, 21.3px 0 0 0px, 42.6px 0 0 5.6px,
+			63.8px 0 0 0px, 21.3px 21.3px 0 5.6px, 42.6px 21.3px 0 0px,
+			63.8px 21.3px 0 0px;
+	}
+}

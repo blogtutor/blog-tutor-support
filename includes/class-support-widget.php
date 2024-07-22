@@ -26,6 +26,8 @@ class NerdPress_Widget {
 		}
 
 		add_action( 'wp_dashboard_setup', array( $this, 'register_widget' ) );
+		add_action( 'rest_api_init', array( $this, 'register_traffic_frontend_api' ) );
+
 
 	}
 
@@ -44,17 +46,38 @@ class NerdPress_Widget {
     }
 
 	public function render_widget() {
-		$html = self::send_request_to_relay();
-		if ( is_wp_error( $html ) ) {
-            echo 'Error when fetching data from Cloudflare. Please try again later.' ;
-            return;
-        }
-        ?>
-        <div class="nerdpress-widget-content">
-			<?php echo json_decode($html['body'])->html;?>
-        </div>
-        <?php
-    }
+		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
+		$firewall_choice   = $nerdpress_options['firewall_choice'];
+		if (($firewall_choice !== 'cloudflare')) {
+			?>
+			<div class="nerdpress-widget-content" id="nerdpress-widget-loading">
+				<p>It looks like your site isn't currently on our Cloudflare Enterprise service. Please <a href="#" onclick="Beacon('open');Beacon('navigate', '/ask/message');">contact us</a> to discuss how this feature can help your site's performance and security.</p>
+			</div>
+			<?php
+				return;
+			}
+		?>
+		<div class="nerdpress-widget-content" id="nerdpress-widget-loading">
+			<div class="dots-nerdpress-graph-loading"></div>
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$.ajax({
+					url: '<?php echo rest_url( 'nerdpress/v1/client-display-traffic' ); ?>',
+					type: 'GET',
+					timeout: 10000,
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+				}).done(function(response) {
+					$('#nerdpress-widget-loading').html(response.html);
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					$('#nerdpress-widget-loading').html('Error when fetching data from Cloudflare. Please try again later.');
+				});
+			});
+		</script>
+		<?php
+		wp_enqueue_script( 'chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '2.9.4', true );
+}
 
 	public function widget() {
 		$options                = get_option( 'blog_tutor_support_settings', array() );
@@ -90,11 +113,9 @@ class NerdPress_Widget {
 			</script>
 			<?php
 		}
-		wp_enqueue_script( 'chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '2.9.4', true );
-
 	}
 
-		public static function send_request_to_relay() {
+	public static function send_request_to_relay( WP_REST_Request $request ) {
 
 		if ( defined( 'SSLVERIFY_DEV' ) && SSLVERIFY_DEV === false ) {
 			$status = false;
@@ -111,8 +132,8 @@ class NerdPress_Widget {
 				'Content-Type'  => 'application/json',
 				'Domain'        => site_url(),
 			),
-			// Bypass SSL verification when using self
-			// signed cert. Like when in a local dev environment.
+			// Bypass SSL verification when using self-signed cert.
+			// Like when in a local dev environment.
 			'sslverify' => $status,
 			'timeout' => 10
 		);
@@ -120,7 +141,59 @@ class NerdPress_Widget {
 		// Make request to the relay server.
 		$api_response = wp_remote_get( $relay_url, $args );
 
-		return $api_response;
+		// Check if the request was successful.
+		if ( is_wp_error( $api_response ) ) {
+			// Handle error.
+			$error_message = $api_response->get_error_message();
+			error_log( "API request failed: $error_message" );
+
+			// Return an error response.
+			return new \WP_REST_Response(
+				array(
+					'error' => $error_message,
+				),
+				500
+			);
+		}
+
+		// Parse the response body.
+		$response_body = json_decode( $api_response['body'], true );
+
+		// Check if the response body is valid JSON.
+		if ( $response_body === null ) {
+			// Handle invalid JSON response.
+			error_log( "Invalid JSON response from API" );
+
+			// Return an error response.
+			return new \WP_REST_Response(
+				array(
+					'error' => 'Invalid JSON response from API',
+				),
+				500
+			);
+		}
+
+		// Extract the necessary data from the response body.
+		$data = [
+			'html' => $response_body['html'],
+		];
+
+		// Return the JSON response.
+		return new \WP_REST_Response(
+			$data,
+			200
+		);
+	}
+
+	function register_traffic_frontend_api() {
+		register_rest_route(
+			'nerdpress/v1',
+			'/client-display-traffic',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'send_request_to_relay' ),
+			)
+		);
 	}
 }
 

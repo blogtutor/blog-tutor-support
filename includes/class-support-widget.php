@@ -35,7 +35,7 @@ class NerdPress_Widget {
 		if (NerdPress_Helpers::is_relay_server_configured()) {
 			wp_add_dashboard_widget(
 				'nerdpress_widget',
-				'<span class="ab-icon"></span>NerdPress Stats <span class="small">powered by:</span><span class="cf-logo small ab-icon"></span>',
+				'<span class="ab-icon"></span>Web Analytics - provided by NerdPress',
 				array($this, 'render_widget'),
 				null,
 				null,
@@ -60,6 +60,7 @@ class NerdPress_Widget {
 		<div class="nerdpress-widget-content" id="nerdpress-widget-loading">
 			<div class="dots-nerdpress-graph-loading"></div>
 		</div>
+		<span>Cloudflare Enterprise Web Analytics may report slightly different numbers than Google Analytics.</span>
 		<script type="text/javascript">
 			jQuery(document).ready(function($) {
 				$.ajax({

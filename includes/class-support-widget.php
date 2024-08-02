@@ -35,7 +35,7 @@ class NerdPress_Widget {
 		if (NerdPress_Helpers::is_relay_server_configured()) {
 			wp_add_dashboard_widget(
 				'nerdpress_widget',
-				'<span class="ab-icon"></span>Web Analytics provided by NerdPress',
+				'<span class="ab-icon"></span>NerdPress Stats',
 				array($this, 'render_widget'),
 				null,
 				null,
@@ -46,16 +46,6 @@ class NerdPress_Widget {
     }
 
 	public function render_widget() {
-		$nerdpress_options = get_option( 'blog_tutor_support_settings' );
-		$firewall_choice   = $nerdpress_options['firewall_choice'];
-		if (($firewall_choice !== 'cloudflare')) {
-			?>
-			<div class="nerdpress-widget-content" id="nerdpress-widget-loading">
-				<p>It looks like your site isn't currently on our Cloudflare Enterprise service. Please <a href="#" onclick="Beacon('open');Beacon('navigate', '/ask/message');">contact us</a> to discuss how this feature can help your site's performance and security.</p>
-			</div>
-			<?php
-				return;
-			}
 		?>
 		<div class="nerdpress-widget-content" id="nerdpress-widget-loading">
 			<div class="dots-nerdpress-graph-loading"></div>

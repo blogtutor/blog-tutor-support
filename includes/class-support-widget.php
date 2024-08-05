@@ -33,7 +33,7 @@ class NerdPress_Widget {
 
 	public function register_widget() {
 		$user = wp_get_current_user();
-		$allowed_roles = array('editor', 'administrator');
+		$allowed_roles = array('administrator');
 
 		if (
 			NerdPress_Helpers::is_relay_server_configured()

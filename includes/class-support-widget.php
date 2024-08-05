@@ -32,7 +32,13 @@ class NerdPress_Widget {
 	}
 
 	public function register_widget() {
-		if (NerdPress_Helpers::is_relay_server_configured()) {
+		$user = wp_get_current_user();
+		$allowed_roles = array('editor', 'administrator');
+
+		if (
+			NerdPress_Helpers::is_relay_server_configured()
+			&& array_intersect( $allowed_roles, $user->roles )
+			) {
 			wp_add_dashboard_widget(
 				'nerdpress_widget',
 				'<span class="ab-icon"></span>NerdPress Stats',

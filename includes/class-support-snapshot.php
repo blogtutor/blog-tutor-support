@@ -26,7 +26,10 @@ class NerdPress_Support_Snapshot {
 	}
 
 	public static function ping_relay_from_option( $old_value, $new_value, $option_name) {
-		if ( 'blog_tutor_support_settings' !== $option_name ) {
+		if (
+			'blog_tutor_support_settings' !== $option_name
+			&& NerdPress_Helpers::is_relay_server_configured()
+		) {
 			return;
 		}
 		self::take_snapshot();

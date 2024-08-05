@@ -113,7 +113,7 @@ class NerdPress_Support_Snapshot {
 			// Bypass SSL verification when using self
 			// signed cert. Like when in a local dev environment.
 			'sslverify' => $status,
-			'timeout' => 20,
+			'blocking' => false,
 		);
 
 		// Make request to the relay server.

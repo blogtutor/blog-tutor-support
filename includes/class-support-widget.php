@@ -67,7 +67,7 @@ class NerdPress_Widget {
 				}).done(function(response) {
 					$('#nerdpress-widget-loading').html(response.html);
 				}).fail(function(jqXHR, textStatus, errorThrown) {
-					$('#nerdpress-widget-loading').html('Error when fetching data from Cloudflare. Please try again later.');
+					$('#nerdpress-widget-loading').html('<span>Oh no! We\'ve hit a snag fetching the data. 😭</span><span>Please try again later. If this continues to be an <a  href="#" onclick="window.Beacon(\'init\', \'85b7b97c-d6a0-4ff9-a392-8344155cc991\');Beacon(\'open\');Beacon(\'navigate\', \'/ask\');">issue please let us know.<a/></span>');
 				});
 			});
 		</script>

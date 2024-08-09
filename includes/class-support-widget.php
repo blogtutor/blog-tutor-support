@@ -119,7 +119,7 @@ class NerdPress_Widget {
 			$status = true;
 		}
 
-		$relay_url = NerdPress_Helpers::relay_server_url() . 'wp-json/nerdpress/v1/client-display-traffic';
+		$relay_url = NerdPress_Helpers::relay_server_url() . 'wp-json/nerdpress/v1/client-display-traffic?timezone='. esc_url( wp_timezone_string() );
 		$api_token = NerdPress_Helpers::relay_server_api_token();
 
 		$args = array(

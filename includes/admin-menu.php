@@ -15,7 +15,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		}
 
 		?>
-			<link rel="stylesheet" href="<?php echo NerdPress::$plugin_dir_url . 'includes/css/html-admin-menu.css?ver=' . BT_PLUGIN_VERSION; ?>" type="text/css" media="all">
+			<link rel="stylesheet" href="<?php echo NerdPress::$plugin_dir_url . 'includes/css/html-admin-menu.css'; ?>" type="text/css" media="all">
 		<?php
 
 		// Add "NerdPress" parent menu items.

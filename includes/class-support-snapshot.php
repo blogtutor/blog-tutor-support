@@ -20,19 +20,8 @@ class NerdPress_Support_Snapshot {
 	public function __construct() {
 		add_action( 'wp_loaded', array( $this, 'ping_relay' ) );
 		add_action( 'wp_loaded', array( $this, 'schedule_snapshot_cron' ) );
-		add_action( 'update_option_blog_tutor_support_settings', array( $this, 'ping_relay_from_option' ), 10, 3 );
 
 		add_action( 'np_scheduled_snapshot', array( $this, 'take_snapshot' ) );
-	}
-
-	public static function ping_relay_from_option( $old_value, $new_value, $option_name) {
-		if (
-			'blog_tutor_support_settings' !== $option_name
-			&& NerdPress_Helpers::is_relay_server_configured()
-		) {
-			return;
-		}
-		self::take_snapshot();
 	}
 
 	/**
@@ -208,7 +197,7 @@ class NerdPress_Support_Snapshot {
 		if ( isset( get_option( 'blog_tutor_support_settings' )['admin_notice'] ) ) {
 			$dump['notes'] = get_option( 'blog_tutor_support_settings' )['admin_notice'];
 		}
-
+		
 		return $dump;
 	}
 

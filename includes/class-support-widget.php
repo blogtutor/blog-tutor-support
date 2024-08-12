@@ -24,56 +24,7 @@ class NerdPress_Widget {
 				}
 			}
 		}
-
-		add_action( 'wp_dashboard_setup', array( $this, 'register_widget' ) );
-		add_action( 'rest_api_init', array( $this, 'register_traffic_frontend_api' ) );
-
-
 	}
-
-	public function register_widget() {
-		$user = wp_get_current_user();
-		$allowed_roles = array('administrator');
-
-		if (
-			NerdPress_Helpers::is_relay_server_configured()
-			&& array_intersect( $allowed_roles, $user->roles )
-			) {
-			wp_add_dashboard_widget(
-				'nerdpress_widget',
-				'<span class="ab-icon"></span>NerdPress Stats',
-				array($this, 'render_widget'),
-				null,
-				null,
-				'side',
-				'high'
-			);
-		}
-    }
-
-	public function render_widget() {
-		?>
-		<div class="nerdpress-widget-content" id="nerdpress-widget-loading">
-			<div class="dots-nerdpress-graph-loading"></div>
-		</div>
-		<script type="text/javascript">
-			jQuery(document).ready(function($) {
-				$.ajax({
-					url: '<?php echo rest_url( 'nerdpress/v1/client-display-traffic' ); ?>',
-					type: 'GET',
-					timeout: 10000,
-					dataType: "json",
-					contentType: "application/json; charset=utf-8",
-				}).done(function(response) {
-					$('#nerdpress-widget-loading').html(response.html);
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					$('#nerdpress-widget-loading').html('<span>Oh no! We\'ve hit a snag fetching the data. 😭</span><span>Please try again later. If this continues to be an <a  href="#" onclick="window.Beacon(\'init\', \'85b7b97c-d6a0-4ff9-a392-8344155cc991\');Beacon(\'open\');Beacon(\'navigate\', \'/ask\');">issue please let us know.<a/></span>');
-				});
-			});
-		</script>
-		<?php
-		wp_enqueue_script( 'chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '2.9.4', true );
-}
 
 	public function widget() {
 		$options                = get_option( 'blog_tutor_support_settings', array() );
@@ -109,87 +60,6 @@ class NerdPress_Widget {
 			</script>
 			<?php
 		}
-	}
-
-	public static function send_request_to_relay( WP_REST_Request $request ) {
-
-		if ( defined( 'SSLVERIFY_DEV' ) && SSLVERIFY_DEV === false ) {
-			$status = false;
-		} else {
-			$status = true;
-		}
-
-		$relay_url = NerdPress_Helpers::relay_server_url() . 'wp-json/nerdpress/v1/client-display-traffic';
-		$api_token = NerdPress_Helpers::relay_server_api_token();
-
-		$args = array(
-			'headers'   => array(
-				'Authorization' => "Bearer $api_token",
-				'Content-Type'  => 'application/json',
-				'Domain'        => site_url(),
-			),
-			// Bypass SSL verification when using self-signed cert.
-			// Like when in a local dev environment.
-			'sslverify' => $status,
-			'timeout' => 10
-		);
-
-		// Make request to the relay server.
-		$api_response = wp_remote_get( $relay_url, $args );
-
-		// Check if the request was successful.
-		if ( is_wp_error( $api_response ) ) {
-			// Handle error.
-			$error_message = $api_response->get_error_message();
-			error_log( "API request failed: $error_message" );
-
-			// Return an error response.
-			return new \WP_REST_Response(
-				array(
-					'error' => $error_message,
-				),
-				500
-			);
-		}
-
-		// Parse the response body.
-		$response_body = json_decode( $api_response['body'], true );
-
-		// Check if the response body is valid JSON.
-		if ( $response_body === null ) {
-			// Handle invalid JSON response.
-			error_log( "Invalid JSON response from API" );
-
-			// Return an error response.
-			return new \WP_REST_Response(
-				array(
-					'error' => 'Invalid JSON response from API',
-				),
-				500
-			);
-		}
-
-		// Extract the necessary data from the response body.
-		$data = [
-			'html' => $response_body['html'],
-		];
-
-		// Return the JSON response.
-		return new \WP_REST_Response(
-			$data,
-			200
-		);
-	}
-
-	function register_traffic_frontend_api() {
-		register_rest_route(
-			'nerdpress/v1',
-			'/client-display-traffic',
-			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'send_request_to_relay' ),
-			)
-		);
 	}
 }
 

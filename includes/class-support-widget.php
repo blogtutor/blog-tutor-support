@@ -38,6 +38,7 @@ class NerdPress_Widget {
 		if (
 			NerdPress_Helpers::is_relay_server_configured()
 			&& array_intersect( $allowed_roles, $user->roles )
+			&& NerdPress_Helpers::is_nerdpress()
 			) {
 			wp_add_dashboard_widget(
 				'nerdpress_widget',

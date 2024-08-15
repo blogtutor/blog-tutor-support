@@ -38,6 +38,7 @@ class NerdPress_Widget {
 		if (
 			NerdPress_Helpers::is_relay_server_configured()
 			&& array_intersect( $allowed_roles, $user->roles )
+			&& NerdPress_Helpers::is_nerdpress()
 			) {
 			wp_add_dashboard_widget(
 				'nerdpress_widget',
@@ -102,7 +103,7 @@ class NerdPress_Widget {
 			}(window, document, window.Beacon || function() {});
 		</script>
 		<?php
-		if ( is_admin() && ( ! isset( $options['hide_tab'] ) ) && ! defined('IFRAME_REQUEST') ) {
+		if ( is_admin() && ( ! isset( $options['hide_tab'] ) ) && ! defined('IFRAME_REQUEST') && ! NerdPress_Helpers::is_nerdpress() ) {
 			?>
 			<script type = "text/javascript">
 				<?php echo NerdPress_Helpers::$help_scout_widget_init; ?>

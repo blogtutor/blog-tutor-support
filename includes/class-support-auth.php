@@ -34,7 +34,7 @@ class NerdPress_Auth {
                 }
 
                 // Set the cookie for 12 hours
-                setcookie( 'NP_CF_Authorization', '1', time() + 12 * 60 * 60, '/', null, false, true );
+                setcookie( 'NP_CF_Authorization', md5( get_current_user_id() ), time() + 12 * 60 * 60, '/', null, false, true );
 
                 // remove set_cookie and nonce from the URL and reload the page
                 wp_safe_redirect( remove_query_arg( array( 'set_cookie', 'nonce' ), $_SERVER['REQUEST_URI'] ) );
@@ -59,7 +59,16 @@ class NerdPress_Auth {
      * @return bool True if the user has a valid CF_Authorization cookie, false otherwise.
      */
     function has_valid_cf_authorization_cookie() {
-        return isset( $_COOKIE['NP_CF_Authorization'] );
+        if ( isset( $_COOKIE['NP_CF_Authorization'] ) ) {
+            return false;
+        }
+
+        if ( md5( get_current_user_id() ) === $_COOKIE['NP_CF_Authorization'] ) {
+            return true;
+        }
+
+        return false;
+
     }
 }
 

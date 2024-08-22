@@ -59,7 +59,7 @@ class NerdPress_Auth {
      * @return bool True if the user has a valid CF_Authorization cookie, false otherwise.
      */
     function has_valid_cf_authorization_cookie() {
-        if ( isset( $_COOKIE['NP_CF_Authorization'] ) ) {
+        if ( ! isset( $_COOKIE['NP_CF_Authorization'] ) ) {
             return false;
         }
 

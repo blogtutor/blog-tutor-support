@@ -21,7 +21,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		// Add "NerdPress" parent menu items.
 		$args = array(
 			'id'     => 'nerdpress-menu',
-			'title'  => '<span class="ab-icon"></span><span class="ab-label">' . __( 'NerdPress', 'nerdpress-support' ) . '</span>',
+			'title'  => '<div><span class="ab-icon"></span><span class="ab-label">' . __( 'NerdPress', 'nerdpress-support' ) . '</span></div>',
 			'parent' => false,
 		);
 		$wp_admin_bar->add_node( $args );
@@ -201,7 +201,7 @@ function bt_custom_toolbar_links( $wp_admin_bar ) {
 		}
 
 		// "Get Help" link to open the Support Hero widget
-		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'feast-support' ) {
+		if ( ! NerdPress_Helpers::is_wprocket() ){
 			$args = array(
 				'id'     => 'bt-get-help',
 				'title'  => 'Get Help',

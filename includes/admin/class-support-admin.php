@@ -18,17 +18,6 @@ class NerdPress_Admin {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'settings_menu' ), 59 );
 		add_action( 'admin_init', array( $this, 'settings_tabs' ) );
-		add_action( 'admin_head', array( $this, 'hide_wp_rocket_beacon' ) );
-	}
-
-	/**
-	 * Hide WP Rocket's help beacon.
-	 */
-	public function hide_wp_rocket_beacon() {
-		$current_screen = get_current_screen();
-		if ( $current_screen->id === 'settings_page_wprocket' && ! NerdPress_Helpers::is_nerdpress() ) {
-			echo '<style type="text/css">div#beacon-container {display: none;}</style>';
-		}
 	}
 
 	/**
@@ -282,20 +271,6 @@ class NerdPress_Admin {
 				'menu'  => $settings_option,
 				'id'    => 'imagify_deactivate_nextgen_images',
 				'label' => __( 'Allow Imagify\'s NextGen image creation for WebP.', 'nerdpress-support' ),
-			)
-		);
-
-		// Add option to hide "Need Help?" tab in dashboard.
-		add_settings_field(
-			'hide_tab',
-			__( 'Hide Help Tab?', 'nerdpress-support' ),
-			array( $this, 'checkbox_element_callback' ),
-			$settings_option,
-			'options_section',
-			array(
-				'menu'  => $settings_option,
-				'id'    => 'hide_tab',
-				'label' => __( 'Hides the "Need Help?" tab in the bottom of the dashboard.', 'nerdpress-support' ),
 			)
 		);
 

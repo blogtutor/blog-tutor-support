@@ -15,7 +15,7 @@ class NerdPress_Helpers {
 	private static $sucuri_notification_email  = false;
 	private static $sucuri_buttons_flag        = null;
 	public static $help_scout_widget_init      = 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991")';
-	public static $help_scout_widget_menu_init = 'window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");';
+	public static $help_scout_widget_menu_init = 'if(window.Beacon("info")) { window.Beacon("destroy"); } window.Beacon("init", "85b7b97c-d6a0-4ff9-a392-8344155cc991"); window.Beacon("open");';
 
 	private static function set_sucuri_api() {
 		$input_lines = static::get_sucuri_settings_contents();
@@ -99,6 +99,13 @@ class NerdPress_Helpers {
 				|| strpos( $current_user->user_email, '@nerdpress.net' ) !== false
 			)
 		);
+	}
+
+	/**
+	 * Check if the page is a WP Rocket admin page
+	 */
+	public static function is_wprocket() {
+		return ( isset( $_GET['page'] ) && $_GET['page'] === 'wprocket' ) ? true : false;
 	}
 
 	/**

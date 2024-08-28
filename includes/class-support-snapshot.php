@@ -20,8 +20,19 @@ class NerdPress_Support_Snapshot {
 	public function __construct() {
 		add_action( 'wp_loaded', array( $this, 'ping_relay' ) );
 		add_action( 'wp_loaded', array( $this, 'schedule_snapshot_cron' ) );
+		add_action( 'update_option_blog_tutor_support_settings', array( $this, 'ping_relay_from_option' ), 10, 3 );
 
 		add_action( 'np_scheduled_snapshot', array( $this, 'take_snapshot' ) );
+	}
+
+	public static function ping_relay_from_option( $old_value, $new_value, $option_name) {
+		if (
+			'blog_tutor_support_settings' !== $option_name
+			&& NerdPress_Helpers::is_relay_server_configured()
+		) {
+			return;
+		}
+		self::take_snapshot();
 	}
 
 	/**
@@ -46,7 +57,7 @@ class NerdPress_Support_Snapshot {
 		if ( isset( $_REQUEST['np_dispatch'] ) && isset( $_REQUEST['action' ] ) && 'trigger_snapshot' == $_REQUEST['action'] ) {
 			$options          = get_option( 'blog_tutor_support_settings' );
 			$site_api_key     = $options['np_relay_api_token'] ?? '';
-			$relay_server_url = ! empty( $options['np_relay_server_url'] ) ? $options['np_relay_server_url'] : 'https://relay.nerdpress.net';
+			$relay_server_url = ! empty( $options['np_relay_server_url'] ) ? $options['np_relay_server_url'] : rtrim( NerdPress_Helpers::relay_server_default_url(), '/' );
 			$signature        = $_SERVER['HTTP_X_NERDPRESS_SIGNATURE'] ?? '';
 
 			// A valid $data will be based on the API key and origin host.
@@ -162,13 +173,34 @@ class NerdPress_Support_Snapshot {
 		$dump['wp_users_can_register']     = ! ! get_option( 'users_can_register' );
 		$dump['wp_default_role']           = get_option( 'default_role' );
 		$dump['inactive_themes_data']      = wp_get_themes();
+		$dump['theme_information']         = [
+			"name" =>  $current_theme['Name'],
+			"version" => $current_theme['Version'],
+			"author" => $current_theme['Author'],
+			"inactive_themes_data" => [],
+		];
+		 if (! empty($current_theme->parent())) {
+			$dump['theme_information']['parent']['name'] = $current_theme->parent()->get('Name');
+			$dump['theme_information']['parent']['version'] = $current_theme->parent()->get('Version');
+			$dump['theme_information']['parent']['author'] = $current_theme->parent()->get('Author');
+		 }
 
-		// Removing the active theme from the theme data.
-		$i = -1;
+		// Removing the active theme from the theme data and getting info for inactive themes
 		foreach ( $dump['inactive_themes_data'] as $key => $value ) {
-			$i++;
-			if ( $value['Name'] === $current_theme['Name'] ) {
+			// add to inactive themes array
+			$dump['theme_information']['inactive_themes_data'][$key] = [
+				"name" =>  $value['Name'],
+				"version" => $value['Version'],
+				"author" => $value['Author'],
+			];
+			if (! empty($value->parent())) {
+				$dump['theme_information']['inactive_themes_data'][$key]['parent']['name'] = $value->parent()->get('Name');
+				$dump['theme_information']['inactive_themes_data'][$key]['parent']['version'] = $value->parent()->get('Version');
+				$dump['theme_information']['inactive_themes_data'][$key]['parent']['author'] = $value->parent()->get('Author');
+			 }
+			if ( $value['Name'] === $current_theme['Name'] || $value['Name'] === $dump['theme_information']['parent']['name']) {
 				unset( $dump['inactive_themes_data'][ $key ] );
+				unset( $dump['theme_information']['inactive_themes_data'][$key] );
 			}
 		}
 

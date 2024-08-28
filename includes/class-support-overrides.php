@@ -49,6 +49,13 @@ class NerdPress_Support_Overrides {
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_filter( 'woocommerce_background_image_regeneration', '__return_false' );
 		}
+
+		add_filter( 'site_status_tests', array( $this, 'remove_site_health_test'), 99 );
+	}
+
+	public static function remove_site_health_test( $tests ) {
+		unset( $tests['direct']['persistent_object_cache'], $tests['direct']['yoast-page-comments-check'] );
+		return $tests;
 	}
 
 	public function hide_logtivity_settings() {
